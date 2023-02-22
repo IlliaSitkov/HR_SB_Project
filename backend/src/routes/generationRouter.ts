@@ -51,7 +51,7 @@ generationRouter.route("/:id")
     )
     .delete(
         /*authorize()*/
-        //requestValidator(idSchema, "params"),
+        // requestValidator(idSchema, "params"),
         asyncHandler(async (req: Request, res: Response) => {
             const {id} = req.params;
             await generationService.deleteGenerationById(Number(id));
