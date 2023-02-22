@@ -1,8 +1,8 @@
 import express, { Express } from 'express';
 import morgan from 'morgan';
 import dotenv from "dotenv";
-import { prisma } from "./src/config/connectDB";
-import {generationRouter} from "./src/routes/generationRouter";
+import { prisma } from "./config/connectDB";
+import {generationRouter} from "./routes/generationRouter";
 
 prisma.$connect().then(() => {
     console.log("DB connected")
