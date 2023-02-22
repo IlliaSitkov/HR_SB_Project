@@ -1,6 +1,7 @@
 import {Button} from "react-bootstrap";
 import {useMsal, AuthenticatedTemplate, UnauthenticatedTemplate} from "@azure/msal-react";
 import {loginHandle, logoutHandle} from "../utils/authConfig";
+import {authHost} from "../http";
 
 const HomePage = () => {
 
@@ -20,7 +21,8 @@ const HomePage = () => {
                 </AuthenticatedTemplate>
             </div>
             <AuthenticatedTemplate>
-                <h2>Logged in</h2>
+                <Button variant="secondary"
+                        onClick={async () => await authHost.get('/api/users')}>Api call</Button>
             </AuthenticatedTemplate>
         </>
     )
