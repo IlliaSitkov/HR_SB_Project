@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Person {
+  id                 Int        @id @default(autoincrement())
+  name               String
+  parental           String
+  surname            String
+  status             Status
+  date_birth         DateTime
+  email              String     @unique
+  telephone          String     @unique
+  parent             Person?    @relation("ParentRel", fields: [parent_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  parent_id          Int?
+  children           Person[]   @relation("ParentRel")
+  faculty            Faculty    @relation(fields: [faculty_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  faculty_id         Int
+  specialty          Specialty  @relation(fields: [specialty_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  specialty_id       Int
+  year_enter         Int
+  avatar             Bytes
+  about              String
+  telegram           String?    @unique
+  facebook           String?    @unique
+  date_fill_form     DateTime
+  date_vysviata      DateTime?
+  date_poshanuvannia DateTime?
+  date_exclusion     DateTime?
+  role               Role?
+  Activity           Activity[]
+}
+
+model Faculty {
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+  Person Person[]
+}
+
+model Specialty {
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+  Person Person[]
+}
+
+model Generation {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String @unique
+}
+
+model Event {
+  id          Int        @id @default(autoincrement())
+  name        String
+  date_start  DateTime
+  date_end    DateTime
+  description String
+  category    Category   @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  category_id Int
+  photo       Bytes
+  Activity    Activity[]
+}
+
+model Category {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  Event Event[]
+}
+
+model Activity {
+  person       Person @relation(fields: [person_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  person_id    Int
+  event        Event  @relation(fields: [event_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  event_id     Int
+  hours        Int
+  position     Role
+  contribution String
+
+  @@id([person_id, event_id])
+}
+
+enum Role {
+  HOLOVA
+  PYSAR
+  SKARBNYK
+  HR_HEAD
+  RECHNYK
+  KOMIRNYK
+  RAK_MEMBER
+  BRATCHYK
+}
+
+enum Status {
+  NEWCOMER
+  MALIUK
+  BRATCHYK
+  POSHANOVANYI
+  EX_BRATCHYK
+}
