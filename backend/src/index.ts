@@ -1,8 +1,7 @@
 import express, { Express } from 'express';
 import morgan from 'morgan';
 import dotenv from "dotenv";
-import {prisma} from "./config/connectDB";
-import {generationRouter} from "./routes/generationRouter";
+import { prisma } from "./config/connectDB";
 
 prisma.$connect().then(() => {
     console.log("DB connected")
@@ -17,7 +16,7 @@ app.use(morgan("dev"));
 const port = process.env.PORT || 8000;
 
 // Routes
-app.use("/api/generations", generationRouter);
+// app.use("/api/users", require("./src/routes/userRouter"));
 
 app.listen(port, () => {
     console.log(`
