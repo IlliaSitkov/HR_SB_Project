@@ -1,9 +1,14 @@
 import React from 'react';
+import {BrowserRouter} from 'react-router-dom';
+
 import './App.css';
+import {AppRouter} from './components';
 
 function App() {
   return (
-    <div>Hello world</div>
+      <BrowserRouter>
+        <AppRouter/>
+      </BrowserRouter>
   );
 }
 
