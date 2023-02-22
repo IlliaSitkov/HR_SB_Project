@@ -7,11 +7,15 @@ import {
 } from '../pages'
 import {MainLayout} from '../components/layout';
 import {NonIndexRouteObject} from "react-router-dom";
+import AuthWrapper from "../components/auth/AuthWrapper";
 
-export const routes:NonIndexRouteObject[] = [
+export const routes: NonIndexRouteObject[] = [
     {
         path: HOME_ROUTE,
-        element: <MainLayout/>,
+        element:
+            <AuthWrapper>
+                <MainLayout/>
+            </AuthWrapper>,
         children: [
             {
                 path: "",
