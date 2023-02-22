@@ -38,7 +38,7 @@ export class GenerationService {
     };
 
     isThereDependentPerson = async (id: number) => {
-        //TODO: change after person service and repo implemented with method findPeopleByGenerationId()
+        // TODO: change after person service and repo implemented with method findPeopleByGenerationId()
         /*const dependentPeople = await Person.find({ generation_id: id });
         return dependentPeople.length > 0;*/
         return false;

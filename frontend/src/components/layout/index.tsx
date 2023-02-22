@@ -4,4 +4,4 @@ import HorizontalCenterLayout from './HorizontalCenterLayout';
 export {
     MainLayout,
     HorizontalCenterLayout
-};
+}

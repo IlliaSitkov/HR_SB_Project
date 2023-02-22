@@ -9,7 +9,7 @@ export class GenerationRepository {
     }
 
     generationExists = async (id: number) => {
-        const generation = await prisma.generation.findFirst({where: {id: id}});
+        const generation = await prisma.generation.findFirst({where: {id}});
         if (!generation) {
             throw ApiError.badRequest(`Покоління з id:${id} не знайдено`);
         }
@@ -26,7 +26,7 @@ export class GenerationRepository {
 
     updateGeneration = async (id: number, generation: GenerationDto) => {
         try {
-            await prisma.generation.update({where: {id: id}, data: generation});
+            await prisma.generation.update({where: {id}, data: generation});
             return await this.generationExists(id);
         } catch (err) {
             throw ApiError.badRequest(
@@ -36,6 +36,6 @@ export class GenerationRepository {
     };
 
     deleteGenerationById = async (id: number) => {
-        return prisma.generation.delete({where: {id: id}});
+        return prisma.generation.delete({where: {id}});
     };
 }
