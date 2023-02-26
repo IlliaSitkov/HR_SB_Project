@@ -1,11 +1,15 @@
-import {prisma} from "../datasource/connectDB";
-import {ApiError} from "../models/ApiError";
-import {PersonPatchDto, PersonPostDto} from "../models/Person";
-import {injectable} from "inversify";
-import {Status} from "@prisma/client";
+import {prisma} from '../datasource/connectDB';
+import {ApiError} from '../models/ApiError';
+import {PersonPatchDto, PersonPostDto} from '../models/Person';
+import {inject, injectable} from 'inversify';
+import {Status} from '@prisma/client';
+import {PrismaErrorUtil} from '../datasource/PrismaErrorUtil';
 
 @injectable()
 export class PersonRepository {
+
+    constructor(@inject(PrismaErrorUtil) private errorUtil: PrismaErrorUtil) {
+    }
 
     getPeople = async () => {
         return prisma.person.findMany();
@@ -22,14 +26,22 @@ export class PersonRepository {
     createPerson = async (person: PersonPostDto) => {
         try {
             // @ts-ignore
-            return prisma.person.create({data: person});
-        } catch (err) {
-            throw ApiError.badRequest("Людина з такою поштою або таким телефоном вже існує");
+            return await prisma.person.create({data: person});
+        } catch (err: any) {
+            console.log("Err");
+            console.log(err);
+            if (this.errorUtil.isUniqueConstraintViolation(err)) {
+                throw ApiError.badRequest('Людина з такими контактами (поштою, телефоном, телеграмом чи фейсбуком) вже існує');
+            } else {
+                throw ApiError.internal('Помилка при додаванні людини');
+            }
         }
     };
 
     updatePerson = async (id: number, person: PersonPatchDto) => {
         const p = await this.personExists(id);
+        if (p.status !== person.status)
+            throw  ApiError.badRequest("Передано некоректний статус людини");
         try {
             return await prisma.person.update({where: {id},
                 data: {
@@ -39,8 +51,8 @@ export class PersonRepository {
                     date_birth: person.date_birth ? person.date_birth : p.date_birth,
                     avatar: person.avatar ? person.avatar : p.avatar,
 
-                    faculty_id: person.faculty ? person.faculty.id : p.faculty_id, // ???
-                    specialty_id: person.specialty ? person.specialty.id : p.specialty_id,
+                    faculty_id: person.faculty_id ? person.faculty_id : p.faculty_id, // ???
+                    specialty_id: person.specialty_id ? person.specialty_id : p.specialty_id,
                     year_enter: person.year_enter ? person.year_enter : p.year_enter,
 
                     email: person.email ? person.email : p.email,
@@ -49,9 +61,9 @@ export class PersonRepository {
                     facebook: person.facebook ? person.facebook : p.facebook,
 
                     role: person.role && p.status === Status.BRATCHYK ? person.role : p.role,
-                    parent_id: person.parent ? person.parent.id : p.parent_id,
-                    //@ts-ignore
-                    generation_id: person.generation ? person.generation.id : p.generation_id,
+                    parent_id: person.parent_id ? person.parent_id : p.parent_id,
+                    // @ts-ignore
+                    generation_id: person.generation_id ? person.generation_id : p.generation_id,
                     about: person.about ? person.about : p.about,
 
                     date_fill_form: person.date_fill_form ? person.date_fill_form : p.date_fill_form,
@@ -60,14 +72,24 @@ export class PersonRepository {
                     date_exclusion: person.date_exclusion ? person.date_exclusion : p.date_exclusion
                 }});
         } catch (err) {
-            throw ApiError.badRequest(
-                "Людина з такою поштою або таким телефоном вже існує"
-            );
+            if (this.errorUtil.isUniqueConstraintViolation(err)) {
+                throw ApiError.badRequest('Людина з такими контактами (поштою, телефоном, телеграмом чи фейсбуком) вже існує');
+            } else {
+                throw ApiError.internal('Помилка при додаванні людини');
+            }
         }
     };
 
     deletePersonById = async (id: number) => {
-        return prisma.person.delete({where: {id}});
+        try {
+            return await prisma.person.delete({where: {id}});
+        } catch (e) {
+            if (this.errorUtil.isNotFound(e)) {
+                throw ApiError.notFound(`Людину з id:${id} не знайдено`);
+            } else {
+                throw ApiError.internal('Помилка при видаленні людини');
+            }
+        }
     };
 
     getFaculty = async (id: number | undefined) => {
@@ -88,5 +110,10 @@ export class PersonRepository {
                 throw ApiError.notFound(`Спеціальність з id:${id} не знайдено`)
         }
         return specialty;
+    }
+
+    findPeopleByGenerationId = async (generationId: number) => {
+        // @ts-ignore
+        return await prisma.person.findMany({where: {generation_id: generationId}});
     }
 }

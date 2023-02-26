@@ -1,6 +1,6 @@
-import Joi from "joi";
-import {intId} from "./idSchema";
-import {Role, Status} from "@prisma/client";
+import Joi from 'joi';
+import {intId} from './idSchema';
+import {Role, Status} from '@prisma/client';
 
 const statusField = {
     status: Joi.string()
@@ -30,30 +30,26 @@ const commonFieldsCreate = {
 
     name: Joi.string()
         .trim()
-        .alphanum()
         .required(),
 
     parental: Joi.string()
-        .trim()
-        .alphanum(),
+        .trim(),
 
     surname: Joi.string()
         .trim()
-        .alphanum()
         .required()
 };
 const commonFieldsUpdate = {
+    ...statusField,
+
     name: Joi.string()
-        .trim()
-        .alphanum(),
+        .trim(),
 
     parental: Joi.string()
-        .trim()
-        .alphanum(),
+        .trim(),
 
     surname: Joi.string()
-        .trim()
-        .alphanum(),
+        .trim(),
 
     telephone: Joi.string()
         .trim(),

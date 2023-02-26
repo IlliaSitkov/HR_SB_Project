@@ -1,5 +1,5 @@
-import {NextFunction, Request, Response} from "express";
-import Joi from "joi";
+import {NextFunction, Request, Response} from 'express';
+import Joi from 'joi';
 
 export const personValidator = (schemas: any) => {
     return (req: Request, res: Response, next: NextFunction) => {

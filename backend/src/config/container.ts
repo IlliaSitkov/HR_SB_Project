@@ -1,12 +1,12 @@
 import { Container } from 'inversify';
 import 'reflect-metadata';
-import {GenerationRepository} from "../repositories/GenerationRepository";
-import {GenerationService} from "../services/GenerationService";
-import {CategoryRepository} from "../repositories/CategoryRepository";
-import {PrismaErrorUtil} from "../datasource/PrismaErrorUtil";
-import {CategoryService} from "../services/CategoryService";
-import {PersonRepository} from "../repositories/PersonRepository";
-import {PersonService} from "../services/PersonService";
+import {GenerationRepository} from '../repositories/GenerationRepository';
+import {GenerationService} from '../services/GenerationService';
+import {CategoryRepository} from '../repositories/CategoryRepository';
+import {PrismaErrorUtil} from '../datasource/PrismaErrorUtil';
+import {CategoryService} from '../services/CategoryService';
+import {PersonRepository} from '../repositories/PersonRepository';
+import {PersonService} from '../services/PersonService';
 
 const container = new Container();
 

@@ -1,9 +1,9 @@
-import {inject, injectable} from "inversify";
-import {PersonRepository} from "../repositories/PersonRepository";
-import {Person, PersonPatchDto, PersonPostDto} from "../models/Person";
-import {Status} from "@prisma/client";
-import {ApiError} from "../models/ApiError";
-import {GenerationService} from "./GenerationService";
+import {inject, injectable} from 'inversify';
+import {PersonRepository} from '../repositories/PersonRepository';
+import {Person, PersonPatchDto, PersonPostDto} from '../models/Person';
+import {Status} from '@prisma/client';
+import {ApiError} from '../models/ApiError';
+import {GenerationService} from './GenerationService';
 
 @injectable()
 export class PersonService {
@@ -28,7 +28,7 @@ export class PersonService {
     };
 
     deletePersonById = async (id: number) => {
-        await this.getPersonById(id);
+        // await this.getPersonById(id);
         // TODO: think about dependant events
         return this.personRepository.deletePersonById(id);
     };
@@ -38,9 +38,8 @@ export class PersonService {
         const specialty = await this.personRepository.getSpecialty(personData.specialty_id);
         const parent = personData.parent_id ?
             await this.getPersonById(personData.parent_id) : undefined;
-        // @ts-ignore
-        if (!this.canBeParent(parent))
-            throw ApiError.badRequest("Ця людина не може бути патроном. Вона має бути братчиком або пошанованим");
+        if (parent && !this.canBeParent(parent))
+            throw ApiError.badRequest('Ця людина не може бути патроном. Вона має бути братчиком або пошанованим');
         const generation = personData.generation_id ?
             await this.generationService.getGenerationById(personData.generation_id) : undefined;
 
@@ -51,8 +50,8 @@ export class PersonService {
             date_birth: personData.date_birth,
             avatar: personData.avatar,
 
-            faculty,
-            specialty,
+            faculty_id: faculty ? faculty.id : null,
+            specialty_id: specialty ? specialty.id : null,
             year_enter: personData.year_enter,
 
             email: personData.email,
@@ -62,9 +61,8 @@ export class PersonService {
 
             status: personData.status,
             role: personData.role,
-            // @ts-ignore
-            parent,
-            generation,
+            parent_id: parent ? parent.id : null,
+            generation_id: generation ? generation.id : null,
             about: personData.about,
 
             date_fill_form: personData.date_fill_form,

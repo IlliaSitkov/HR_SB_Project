@@ -3,7 +3,7 @@ import {Router} from 'express';
 const router:Router = Router();
 
 import {generationRouter} from './generationRouter';
-import {categoryRouter} from "./categoryRouter";
+import {categoryRouter} from './categoryRouter';
 import {personRouter} from "./personRouter";
 
 router.use('/generations', generationRouter);

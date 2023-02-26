@@ -1,6 +1,6 @@
-import {inject, injectable} from "inversify";
-import {CategoryRepository} from "../repositories/CategoryRepository";
-import {Category} from "../models/Category";
+import {inject, injectable} from 'inversify';
+import {CategoryRepository} from '../repositories/CategoryRepository';
+import {Category} from '../models/Category';
 
 @injectable()
 export class CategoryService {

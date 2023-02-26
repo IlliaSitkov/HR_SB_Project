@@ -1,7 +1,7 @@
-import {Request, Response, NextFunction} from "express";
-import {ApiError} from "../models/ApiError";
-import Joi from "joi";
-import {ErrorResponse} from "../models/ErrorResponse";
+import {Request, Response, NextFunction} from 'express';
+import {ApiError} from '../models/ApiError';
+import Joi from 'joi';
+import {ErrorResponse} from '../models/ErrorResponse';
 
 export const errorHandler = (error: Error, req: Request, res: Response, next: NextFunction) => {
     console.log(error);
