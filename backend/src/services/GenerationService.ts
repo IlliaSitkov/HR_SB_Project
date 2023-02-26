@@ -1,13 +1,15 @@
-import {ApiError} from "../models/ApiError";
-import {Generation, GenerationDto} from "../models/Generation";
-import {inject, injectable} from "inversify";
+import {ApiError} from '../models/ApiError';
+import {Generation, GenerationDto} from '../models/Generation';
+import {inject, injectable} from 'inversify';
 import 'reflect-metadata';
-import {GenerationRepository} from "../repositories/GenerationRepository";
+import {GenerationRepository} from '../repositories/GenerationRepository';
+import {PersonRepository} from '../repositories/PersonRepository';
 
 @injectable()
 export class GenerationService {
 
-    public constructor(@inject(GenerationRepository) private generationRepository: GenerationRepository) {}
+    public constructor(@inject(GenerationRepository) private generationRepository: GenerationRepository,
+                       @inject(PersonRepository) private personRepository: PersonRepository) {}
 
     getGenerations = async () => {
         return this.generationRepository.getGenerations();
@@ -18,8 +20,7 @@ export class GenerationService {
     };
 
     createGeneration = async (generation: GenerationDto) => {
-        const gen = await this.generationRepository.createGeneration(generation);
-        return gen;
+        return await this.generationRepository.createGeneration(generation);
     };
 
     updateGeneration = async (id: number, generation: GenerationDto) => {
@@ -30,17 +31,15 @@ export class GenerationService {
         await this.getGenerationById(id);
         if (await this.isThereDependentPerson(id)) {
             throw ApiError.badRequest(
-                "Присутні люди з цього покоління. Покоління не може бути видалене"
+                'Присутні люди з цього покоління. Покоління не може бути видалене'
             );
         }
         return this.generationRepository.deleteGenerationById(id);
     };
 
     isThereDependentPerson = async (id: number) => {
-        // TODO: change after person service and repo implemented with method findPeopleByGenerationId()
-        /*const dependentPeople = await Person.find({ generation_id: id });
-        return dependentPeople.length > 0;*/
-        return false;
+        const dependentPeople = await this.personRepository.findPeopleByGenerationId(id);
+        return dependentPeople.length > 0;
     };
 
     checkAndFormatGenerationData = (generationData: any) => {

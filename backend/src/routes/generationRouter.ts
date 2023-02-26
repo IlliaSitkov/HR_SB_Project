@@ -1,16 +1,17 @@
-import {Request, Response, Router} from "express";
-import asyncHandler from "express-async-handler";
-import {requestValidator} from "../middleware/requestMiddleware";
-import {generationSchema, idSchema} from "../validators/generationSchema";
-import {container} from "../config/container";
-import {GenerationService} from "../services/GenerationService";
+import {Request, Response, Router} from 'express';
+import asyncHandler from 'express-async-handler';
+import {requestValidator} from '../middleware/requestMiddleware';
+import {generationSchema} from '../validators/generationSchema';
+import {idSchema} from '../validators/idSchema';
+import {container} from '../config/container';
+import {GenerationService} from '../services/GenerationService';
 
 export const generationRouter = Router();
 
 const generationService = container.get<GenerationService>(GenerationService);
 
 // @route GET api/generations
-generationRouter.route("/")
+generationRouter.route('/')
     .get(
         asyncHandler(async (req: Request, res: Response) => {
             const generations = await generationService.getGenerations();
@@ -19,7 +20,7 @@ generationRouter.route("/")
     )
     .post(
         /*authorize()*/
-        requestValidator(generationSchema, "body"),
+        requestValidator(generationSchema, 'body'),
         asyncHandler(async (req: Request, res: Response) => {
             const generationDTO = generationService.checkAndFormatGenerationData(req.body);
             const newGeneration = await generationService.createGeneration(generationDTO);
@@ -28,33 +29,30 @@ generationRouter.route("/")
     );
 
 // @route  GET api/generations/:id
-generationRouter.route("/:id")
+generationRouter.route('/:id')
     .get(
         /*authorize()*/
-        requestValidator(idSchema, "params"),
+        requestValidator(idSchema, 'params'),
         asyncHandler(async (req: Request, res: Response) => {
-            const {id} = req.params;
-            const generation = await generationService.getGenerationById(Number(id));
+            const generation = await generationService.getGenerationById(Number(req.params.id));
             res.json(generation);
         })
     )
     .put(
         /*authorize()*/
-        requestValidator(idSchema, "params"),
-        requestValidator(generationSchema, "body"),
+        requestValidator(idSchema, 'params'),
+        requestValidator(generationSchema, 'body'),
         asyncHandler(async (req: Request, res: Response) => {
-            const {id} = req.params;
             const generationDTO = generationService.checkAndFormatGenerationData(req.body);
-            const updatedGeneration = await generationService.updateGeneration(Number(id), generationDTO);
+            const updatedGeneration = await generationService.updateGeneration(Number(req.params.id), generationDTO);
             res.json(updatedGeneration);
         })
     )
     .delete(
         /*authorize()*/
-        // requestValidator(idSchema, "params"),
+        requestValidator(idSchema, 'params'),
         asyncHandler(async (req: Request, res: Response) => {
-            const {id} = req.params;
-            await generationService.deleteGenerationById(Number(id));
-            res.json({message: "Success"});
+            const generation = await generationService.deleteGenerationById(Number(req.params.id));
+            res.json(generation);
         })
     );

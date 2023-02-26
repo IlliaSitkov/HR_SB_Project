@@ -1,8 +1,8 @@
-import {Category} from "../models/Category";
-import {prisma} from "../datasource/connectDB";
-import {ApiError} from "../models/ApiError";
-import {inject, injectable} from "inversify";
-import {PrismaErrorUtil} from "../datasource/PrismaErrorUtil";
+import {Category} from '../models/Category';
+import {prisma} from '../datasource/connectDB';
+import {ApiError} from '../models/ApiError';
+import {inject, injectable} from 'inversify';
+import {PrismaErrorUtil} from '../datasource/PrismaErrorUtil';
 
 @injectable()
 export class CategoryRepository {
@@ -21,9 +21,9 @@ export class CategoryRepository {
             });
         } catch (e: any) {
             if (this.errorUtil.isUniqueConstraintViolation(e)) {
-                throw ApiError.badRequest("Category name should be unique");
+                throw ApiError.badRequest('Категорія з такою назвою вже існує');
             } else {
-                throw ApiError.internal("Failed to update the category");
+                throw ApiError.internal('Помилка при додаванні категорії');
             }
         }
     }
@@ -37,9 +37,9 @@ export class CategoryRepository {
             return await prisma.category.update({where:{id}, data:{name}});
         } catch (e: any) {
             if (this.errorUtil.isUniqueConstraintViolation(e)) {
-                throw ApiError.badRequest("Category name should be unique");
+                throw ApiError.badRequest('Категорія з такою назвою вже існує');
             } else {
-                throw ApiError.internal("Failed to update the category");
+                throw ApiError.internal('Помилка при редагуванні категорії');
             }
         }
     }
@@ -49,9 +49,9 @@ export class CategoryRepository {
             return await prisma.category.findUniqueOrThrow({where:{id}});
         } catch (e: any) {
             if (this.errorUtil.isNotFound(e)) {
-                throw ApiError.notFound("Category not found");
+                throw ApiError.notFound(`Категорію з id:${id} не знайдено`);
             } else {
-                throw ApiError.internal("Failed to update the category");
+                throw ApiError.internal('Помилка при отриманні категорії');
             }
         }
     }
@@ -61,9 +61,9 @@ export class CategoryRepository {
             return await prisma.category.delete({where:{id}});
         } catch (e) {
             if (this.errorUtil.isNotFound(e)) {
-                throw ApiError.notFound("Category not found");
+                throw ApiError.notFound(`Категорію з id:${id} не знайдено`);
             } else {
-                throw ApiError.internal("Failed to delete the category");
+                throw ApiError.internal('Помилка при видаленні категорії');
             }
         }
     }

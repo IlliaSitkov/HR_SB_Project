@@ -1,5 +1,5 @@
-import {injectable} from "inversify";
-import {PrismaErrorCode} from "./PrismaErrorCode";
+import {injectable} from 'inversify';
+import {PrismaErrorCode} from './PrismaErrorCode';
 
 @injectable()
 export class PrismaErrorUtil {
@@ -7,7 +7,7 @@ export class PrismaErrorUtil {
     isNotFound(e: any) {
         return e.code === PrismaErrorCode.RecordNotFound
             || e.code === PrismaErrorCode.DependencyNotFound
-            || e.name === "NotFoundError";
+            || e.name === 'NotFoundError';
     }
 
     isUniqueConstraintViolation(e: any) {

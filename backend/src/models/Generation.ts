@@ -4,8 +4,3 @@ export interface Generation {
 }
 
 export type GenerationDto = Pick<Generation, "name">;
-
-export type GenerationForGet = {
-    id: number,
-    name: string
-}
