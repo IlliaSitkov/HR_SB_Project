@@ -1,13 +1,13 @@
 import {Request, Response, Router} from "express";
 import asyncHandler from "express-async-handler";
-import {ClassesCreator} from "../config/ClassesCreator";
 import {requestValidator} from "../middleware/requestMiddleware";
 import {generationSchema, idSchema} from "../validators/generationSchema";
+import {container} from "../config/container";
+import {GenerationService} from "../services/GenerationService";
 
 export const generationRouter = Router();
 
-const classesCreator = ClassesCreator.getInstance();
-const generationService = classesCreator.getGenerationService();
+const generationService = container.get<GenerationService>(GenerationService);
 
 // @route GET api/generations
 generationRouter.route("/")

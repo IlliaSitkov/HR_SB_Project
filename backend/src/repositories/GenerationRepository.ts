@@ -1,7 +1,9 @@
 import {prisma} from "../config/connectDB";
 import {ApiError} from "../models/ApiError";
 import {GenerationDto} from "../models/Generation";
+import {injectable} from "inversify";
 
+@injectable()
 export class GenerationRepository {
 
     getGenerations = async () => {

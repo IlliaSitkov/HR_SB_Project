@@ -1,14 +1,13 @@
-import {GenerationRepository} from "../repositories/GenerationRepository";
 import {ApiError} from "../models/ApiError";
 import {Generation, GenerationDto} from "../models/Generation";
+import {inject, injectable} from "inversify";
+import 'reflect-metadata';
+import {GenerationRepository} from "../repositories/GenerationRepository";
 
+@injectable()
 export class GenerationService {
 
-    private generationRepository: GenerationRepository;
-
-    public constructor(generationRepository: GenerationRepository) {
-        this.generationRepository = generationRepository;
-    }
+    public constructor(@inject(GenerationRepository) private generationRepository: GenerationRepository) {}
 
     getGenerations = async () => {
         return this.generationRepository.getGenerations();
