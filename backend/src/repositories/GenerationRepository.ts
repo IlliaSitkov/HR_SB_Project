@@ -13,7 +13,7 @@ export class GenerationRepository {
     generationExists = async (id: number) => {
         const generation = await prisma.generation.findFirst({where: {id}});
         if (!generation) {
-            throw ApiError.badRequest(`Покоління з id:${id} не знайдено`);
+            throw ApiError.notFound(`Покоління з id:${id} не знайдено`);
         }
         return generation;
     };

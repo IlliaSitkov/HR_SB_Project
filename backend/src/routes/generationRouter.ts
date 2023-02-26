@@ -1,7 +1,8 @@
 import {Request, Response, Router} from "express";
 import asyncHandler from "express-async-handler";
 import {requestValidator} from "../middleware/requestMiddleware";
-import {generationSchema, idSchema} from "../validators/generationSchema";
+import {generationSchema} from "../validators/generationSchema";
+import {idSchema} from "../validators/idSchema";
 import {container} from "../config/container";
 import {GenerationService} from "../services/GenerationService";
 
@@ -51,7 +52,7 @@ generationRouter.route("/:id")
     )
     .delete(
         /*authorize()*/
-        // requestValidator(idSchema, "params"),
+        requestValidator(idSchema, "params"),
         asyncHandler(async (req: Request, res: Response) => {
             const {id} = req.params;
             await generationService.deleteGenerationById(Number(id));

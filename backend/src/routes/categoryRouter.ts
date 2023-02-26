@@ -4,7 +4,7 @@ import {categorySchema} from "../validators/categorySchema";
 import asyncHandler from "express-async-handler";
 import {container} from "../config/container";
 import {CategoryService} from "../services/CategoryService";
-import {idSchema} from "../validators/generationSchema";
+import {idSchema} from "../validators/idSchema";
 import {Category} from "../models/Category";
 
 export const categoryRouter = express.Router();
