@@ -1,4 +1,4 @@
-import {prisma} from "../config/connectDB";
+import {prisma} from "../datasource/connectDB";
 import {ApiError} from "../models/ApiError";
 import {GenerationDto} from "../models/Generation";
 import {injectable} from "inversify";
