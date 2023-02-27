@@ -1,4 +1,4 @@
-import axios, {AxiosRequestConfig} from 'axios';
+import axios, {AxiosRequestConfig, InternalAxiosRequestConfig} from 'axios';
 import {getAccessToken} from "../utils/authConfig";
 
 const host = axios.create({
@@ -9,7 +9,7 @@ const authHost = axios.create({
     baseURL: process.env.REACT_APP_API_URL
 })
 
-const authInterceptor = (config:AxiosRequestConfig) => {
+const authInterceptor = (config:InternalAxiosRequestConfig) => {
     config.headers!.Authorization = `Bearer ${getAccessToken()}`;
     return config;
 }

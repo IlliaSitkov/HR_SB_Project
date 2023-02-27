@@ -1,4 +1,3 @@
-import {Outlet} from "react-router-dom";
 import {FC, ReactElement} from "react";
 
 const HorizontalCenterLayout:FC<{children?:ReactElement, style?:object}> = ({children, style = {}}) => {
@@ -12,5 +11,4 @@ const HorizontalCenterLayout:FC<{children?:ReactElement, style?:object}> = ({chi
         </div>
     );
 }
-
 export default HorizontalCenterLayout;
