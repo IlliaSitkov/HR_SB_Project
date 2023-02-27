@@ -4,7 +4,7 @@ import {AuthenticatedTemplate, UnauthenticatedTemplate, useIsAuthenticated} from
 import {isAuthenticated, loginHandle, logoutHandle} from "../utils/authConfig";
 import {authHost} from "../http";
 import {useEffect, useState} from "react";
-import NearestBirthdays from "../components/NearestBirthdays";
+import NearestBirthdays from "../components/NearestBirthdays/NearestBirthdays";
 import {PersonBirthday} from "../models/person";
 import {getNearestBirthdays} from "../http/person";
 

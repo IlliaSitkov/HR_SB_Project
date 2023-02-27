@@ -1,7 +1,7 @@
 import {Button, Table} from "react-bootstrap";
-import {getProfilePhoto} from "../http/user";
+import {getProfilePhoto} from "../../http/user";
 import {useEffect, useState} from "react";
-import {PersonBirthday} from "../models/person";
+import {PersonBirthday} from "../../models/person";
 
 const NearestBirthdays = ({birthdays}: { birthdays: PersonBirthday[] }) => {
     const headerTitle = {
