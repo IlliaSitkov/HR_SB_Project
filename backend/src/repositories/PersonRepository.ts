@@ -80,6 +80,37 @@ export class PersonRepository {
         }
     };
 
+    updatePersonStatusToMaliuk = async (id: number) => {
+        return await prisma.person.update({where: {id},
+            data: {
+                status: Status.MALIUK
+            }});
+    };
+
+    updatePersonStatusToBratchyk = async (id: number, date_vysviata: Date) => {
+        return await prisma.person.update({where: {id},
+            data: {
+                status: Status.BRATCHYK,
+                date_vysviata: date_vysviata
+            }});
+    };
+
+    updatePersonStatusToPoshanovanyi = async (id: number, date_poshanuvannia: Date) => {
+        return await prisma.person.update({where: {id},
+            data: {
+                status: Status.POSHANOVANYI,
+                date_poshanuvannia: date_poshanuvannia
+            }});
+    };
+
+    updatePersonStatusToExBratchyk = async (id: number, date_exclusion: Date) => {
+        return await prisma.person.update({where: {id},
+            data: {
+                status: Status.EX_BRATCHYK,
+                date_exclusion: date_exclusion
+            }});
+    };
+
     deletePersonById = async (id: number) => {
         try {
             return await prisma.person.delete({where: {id}});
