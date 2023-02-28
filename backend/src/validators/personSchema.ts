@@ -18,6 +18,10 @@ export const statusUpdateSchema = Joi.object({
     date: Joi.date().required()
 });
 
+export const statusUpdateSchemaToMaliuk = Joi.object({
+    ...statusField
+});
+
 // ---------------------------
 // name, parental?, surname, date_birth, avatar?
 // faculty, specialty, year_enter
@@ -60,7 +64,10 @@ const commonFieldsUpdate = {
     // Should not be added on front, have to be updated by separate request
     status: Joi.string()
         .valid(Status.NEWCOMER, Status.MALIUK, Status.BRATCHYK, Status.POSHANOVANYI, Status.EX_BRATCHYK)
-        .allow()
+        .allow(),
+
+    // Should not be added on front
+    id: Joi.allow()
 }
 
 const commonFieldsOfNewcomerAndMaliukCreate = {

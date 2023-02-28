@@ -6,7 +6,7 @@ import {newcomerCreateSchema, newcomerUpdateSchema,
     bratchykCreateSchema, bratchykUpdateSchema,
     poshanovanyiCreateSchema, poshanovanyiUpdateSchema,
     exBratchykCreateSchema, exBratchykUpdateSchema,
-    statusSchema, statusUpdateSchema} from '../validators/personSchema';
+    statusSchema, statusUpdateSchema, statusUpdateSchemaToMaliuk} from '../validators/personSchema';
 import {idSchema} from '../validators/idSchema';
 import {container} from '../config/container';
 import {PersonService} from '../services/PersonService';
@@ -79,15 +79,23 @@ personRouter.route('/:id')
         })
     );
 
+// @route  GET api/people/:id/status
 personRouter.route('/:id/status')
     .put(
         /*authorize()*/
         requestValidator(idSchema, 'params'),
-        requestValidator(statusUpdateSchema, 'body'),
+        personValidator({
+            statusSchema,
+            NEWCOMER: statusUpdateSchemaToMaliuk,
+            MALIUK: statusUpdateSchemaToMaliuk,
+            BRATCHYK: statusUpdateSchema,
+            POSHANOVANYI: statusUpdateSchema,
+            EX_BRATCHYK: statusUpdateSchema
+        }),
+        //requestValidator(statusUpdateSchema, 'body'),
         asyncHandler(async (req: Request, res: Response) => {
             const {id} = req.params;
             const updatedPerson = await personService.updateStatus(Number(id), req.body.status, req.body.date);
-            // TODO: think about what to do if status can not be changed
             res.json(updatedPerson);
         })
     );

@@ -42,6 +42,7 @@ export class PersonService {
             throw ApiError.badRequest('Ця людина не може бути патроном. Вона має бути братчиком або пошанованим');
         const generation = personData.generation_id ?
             await this.generationService.getGenerationById(personData.generation_id) : undefined;
+        const role = personData.role && personData.status === Status.BRATCHYK ? personData.role : undefined;
 
         const person: Person = {
             name: personData.name,
@@ -60,7 +61,7 @@ export class PersonService {
             facebook: personData.facebook,
 
             status: personData.status,
-            role: personData.role,
+            role: role,
             parent_id: parent ? parent.id : null,
             generation_id: generation ? generation.id : null,
             about: personData.about,
@@ -75,15 +76,24 @@ export class PersonService {
 
     updateStatus = async (id: number, status: Status, date: Date) => {
         const person = await this.getPersonById(id);
-        // TODO: implement logic:
+        if (status === person.status)
+            return person;
         // newcomer -> maliuk
-        // maliuk -> bratchyk (add date_vusviata)
-        // bratchyk -> poshanovanyi (add date_poshanuvannia)
-        // OR bratchyk -> exBrathyk (add date_exclusion)
-
-        // @ts-ignore
-        return this.personRepository.updatePerson(id, person);
-    }
+        if (person.status === Status.NEWCOMER && status === Status.MALIUK)
+            return await this.personRepository.updatePersonStatusToMaliuk(id);
+        // maliuk -> bratchyk (add date_vysviata)
+        if (person.status === Status.MALIUK && status === Status.BRATCHYK)
+            return await this.personRepository.updatePersonStatusToBratchyk(id, date);
+        if (person.status === Status.BRATCHYK) {
+            // bratchyk -> poshanovanyi (add date_poshanuvannia)
+            if (status === Status.POSHANOVANYI)
+                return await this.personRepository.updatePersonStatusToPoshanovanyi(id, date);
+            // bratchyk -> exBrathyk (add date_exclusion)
+            if (status === Status.EX_BRATCHYK)
+                return await this.personRepository.updatePersonStatusToExBratchyk(id, date);
+        }
+        throw ApiError.badRequest('Статус не може бути оновлено');
+    };
 
     canBeParent = (parent: Person | undefined) => {
         return parent && (parent.status === Status.BRATCHYK || parent.status === Status.POSHANOVANYI);
