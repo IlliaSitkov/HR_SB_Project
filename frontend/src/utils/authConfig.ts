@@ -40,20 +40,18 @@ export const logoutHandle = (instance = msalInstance) => {
 
 export const requestAccessToken = async (instance = msalInstance) => {
     const accounts = msalInstance.getAllAccounts();
-    const name = accounts[0] && accounts[0].name;
 
     const request = {
-        ...loginRequest,
+        scopes:[process.env.REACT_APP_ACCESS_TOKEN_API as string],
         account: accounts[0]
     };
-
     return (await instance.acquireTokenSilent(request)).accessToken;
 };
 
 export const getAccessToken = async () => {
-    const token = customSessionStorage.getAuthToken();
+    let token = customSessionStorage.getAuthToken();
     if(token === null){
-        const token = await requestAccessToken();
+        token = await requestAccessToken();
         customSessionStorage.setAuthToken(token);
     }
     return token;

@@ -2,6 +2,7 @@ import {Category} from '../models/Category';
 import {prisma} from '../datasource/connectDB';
 import {ApiError} from '../models/ApiError';
 import {inject, injectable} from 'inversify';
+import 'reflect-metadata';
 import {PrismaErrorUtil} from '../datasource/PrismaErrorUtil';
 
 @injectable()

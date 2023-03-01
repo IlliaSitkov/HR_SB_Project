@@ -1,10 +1,12 @@
 import {Button} from "react-bootstrap";
-import {useMsal, AuthenticatedTemplate, UnauthenticatedTemplate} from "@azure/msal-react";
+import {AuthenticatedTemplate, UnauthenticatedTemplate} from "@azure/msal-react";
+
 import {loginHandle, logoutHandle} from "../utils/authConfig";
 import {authHost} from "../http";
+import {useState} from "react";
 
 const HomePage = () => {
-
+    const [generations, setGenerations] = useState('');
     return (
         <>
             <h1>This is home page</h1>
@@ -22,7 +24,12 @@ const HomePage = () => {
             </div>
             <AuthenticatedTemplate>
                 <Button variant="secondary"
-                        onClick={async () => await authHost.get('/api/users')}>Api call</Button>
+                        onClick={async () => {
+                            const s:object = (await authHost.get('/api/generations')).data;
+                            console.log(s);
+                            setGenerations(JSON.stringify(s))
+                        }}>Api call</Button>
+                {generations}
             </AuthenticatedTemplate>
         </>
     )

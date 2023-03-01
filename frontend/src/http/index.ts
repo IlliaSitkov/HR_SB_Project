@@ -9,8 +9,8 @@ const authHost = axios.create({
     baseURL: process.env.REACT_APP_API_URL
 })
 
-const authInterceptor = (config:AxiosRequestConfig) => {
-    config.headers!.Authorization = `Bearer ${getAccessToken()}`;
+const authInterceptor = async (config:AxiosRequestConfig) => {
+    config.headers!.Authorization = `Bearer ${await getAccessToken()}`;
     return config;
 }
 

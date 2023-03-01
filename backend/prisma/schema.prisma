@@ -8,37 +8,39 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model Person {
-  id                 Int        @id @default(autoincrement())
+  id                 Int         @id @default(autoincrement())
   name               String
-  parental           String
+  parental           String?
   surname            String
   status             Status
-  date_birth         DateTime
-  email              String     @unique
-  telephone          String     @unique
-  parent             Person?    @relation("ParentRel", fields: [parent_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  date_birth         DateTime?
+  email              String?     @unique
+  telephone          String?     @unique
+  parent             Person?     @relation("ParentRel", fields: [parent_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   parent_id          Int?
-  children           Person[]   @relation("ParentRel")
-  faculty            Faculty    @relation(fields: [faculty_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  faculty_id         Int
-  specialty          Specialty  @relation(fields: [specialty_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  specialty_id       Int
-  year_enter         Int
-  avatar             Bytes
-  about              String
-  telegram           String?    @unique
-  facebook           String?    @unique
-  date_fill_form     DateTime
+  children           Person[]    @relation("ParentRel")
+  faculty            Faculty?    @relation(fields: [faculty_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  faculty_id         Int?
+  specialty          Specialty?  @relation(fields: [specialty_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  specialty_id       Int?
+  year_enter         Int?
+  avatar             Bytes?
+  about              String?
+  telegram           String?     @unique
+  facebook           String?     @unique
+  date_fill_form     DateTime?
   date_vysviata      DateTime?
   date_poshanuvannia DateTime?
   date_exclusion     DateTime?
   role               Role?
   Activity           Activity[]
-  generation         Generation @relation(fields: [generation_id], references: [id])
-  generation_id      Int
+  generation         Generation? @relation(fields: [generation_id], references: [id])
+  generation_id      Int?
+  User               User?
 }
 
 model Faculty {
@@ -60,9 +62,10 @@ model Generation {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String @unique
+  id        Int    @id @default(autoincrement())
+  person    Person @relation(fields: [person_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  person_id Int    @unique
+  role      SystemRole
 }
 
 model Event {
@@ -93,6 +96,11 @@ model Activity {
   contribution String
 
   @@id([person_id, event_id])
+}
+
+enum SystemRole {
+    HR
+    USER
 }
 
 enum Role {
