@@ -8,5 +8,4 @@ const MainLayout = () =>{
         </HorizontalCenterLayout>
     )
 }
-
 export default MainLayout;

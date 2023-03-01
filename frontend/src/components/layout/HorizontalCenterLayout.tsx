@@ -11,5 +11,4 @@ const HorizontalCenterLayout:FC<{children?:ReactElement, style?:object}> = ({chi
         </div>
     );
 }
-
 export default HorizontalCenterLayout;
