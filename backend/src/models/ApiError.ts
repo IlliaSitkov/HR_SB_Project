@@ -1,3 +1,5 @@
+import StatusCode from 'status-code-enum';
+
 export class ApiError extends Error {
 
     private readonly _code : number;
@@ -13,14 +15,14 @@ export class ApiError extends Error {
     }
 
     static badRequest(msg: string) {
-        return new ApiError(400, msg);
+        return new ApiError(StatusCode.ClientErrorBadRequest, msg);
     }
 
     static notFound(msg: string) {
-        return new ApiError(404, msg);
+        return new ApiError(StatusCode.ClientErrorNotFound, msg);
     }
 
     static internal(msg: string) {
-        return new ApiError(500, msg);
+        return new ApiError(StatusCode.ServerErrorInternal, msg);
     }
 }

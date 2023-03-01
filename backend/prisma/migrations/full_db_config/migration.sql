@@ -1,4 +1,7 @@
 -- CreateEnum
+CREATE TYPE "SystemRole" AS ENUM ('HR', 'USER');
+
+-- CreateEnum
 CREATE TYPE "Role" AS ENUM ('HOLOVA', 'PYSAR', 'SKARBNYK', 'HR_HEAD', 'RECHNYK', 'KOMIRNYK', 'RAK_MEMBER', 'BRATCHYK');
 
 -- CreateEnum
@@ -8,25 +11,26 @@ CREATE TYPE "Status" AS ENUM ('NEWCOMER', 'MALIUK', 'BRATCHYK', 'POSHANOVANYI', 
 CREATE TABLE "Person" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "parental" TEXT NOT NULL,
+    "parental" TEXT,
     "surname" TEXT NOT NULL,
     "status" "Status" NOT NULL,
-    "date_birth" TIMESTAMP(3) NOT NULL,
-    "email" TEXT NOT NULL,
-    "telephone" TEXT NOT NULL,
+    "date_birth" TIMESTAMP(3),
+    "email" TEXT,
+    "telephone" TEXT,
     "parent_id" INTEGER,
-    "faculty_id" INTEGER NOT NULL,
-    "specialty_id" INTEGER NOT NULL,
-    "year_enter" INTEGER NOT NULL,
-    "avatar" BYTEA NOT NULL,
-    "about" TEXT NOT NULL,
+    "faculty_id" INTEGER,
+    "specialty_id" INTEGER,
+    "year_enter" INTEGER,
+    "avatar" BYTEA,
+    "about" TEXT,
     "telegram" TEXT,
     "facebook" TEXT,
-    "date_fill_form" TIMESTAMP(3) NOT NULL,
+    "date_fill_form" TIMESTAMP(3),
     "date_vysviata" TIMESTAMP(3),
     "date_poshanuvannia" TIMESTAMP(3),
     "date_exclusion" TIMESTAMP(3),
     "role" "Role",
+    "generation_id" INTEGER,
 
     CONSTRAINT "Person_pkey" PRIMARY KEY ("id")
 );
@@ -58,8 +62,8 @@ CREATE TABLE "Generation" (
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
-    "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
+    "person_id" INTEGER NOT NULL,
+    "role" "SystemRole" NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -90,7 +94,7 @@ CREATE TABLE "Activity" (
     "person_id" INTEGER NOT NULL,
     "event_id" INTEGER NOT NULL,
     "hours" INTEGER NOT NULL,
-    "position" "Role" NOT NULL,
+    "position" TEXT NOT NULL,
     "contribution" TEXT NOT NULL,
 
     CONSTRAINT "Activity_pkey" PRIMARY KEY ("person_id","event_id")
@@ -118,10 +122,7 @@ CREATE UNIQUE INDEX "Specialty_name_key" ON "Specialty"("name");
 CREATE UNIQUE INDEX "Generation_name_key" ON "Generation"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_password_key" ON "User"("password");
+CREATE UNIQUE INDEX "User_person_id_key" ON "User"("person_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
@@ -134,6 +135,12 @@ ALTER TABLE "Person" ADD CONSTRAINT "Person_faculty_id_fkey" FOREIGN KEY ("facul
 
 -- AddForeignKey
 ALTER TABLE "Person" ADD CONSTRAINT "Person_specialty_id_fkey" FOREIGN KEY ("specialty_id") REFERENCES "Specialty"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Person" ADD CONSTRAINT "Person_generation_id_fkey" FOREIGN KEY ("generation_id") REFERENCES "Generation"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_person_id_fkey" FOREIGN KEY ("person_id") REFERENCES "Person"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Event" ADD CONSTRAINT "Event_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "Category"("id") ON DELETE NO ACTION ON UPDATE CASCADE;

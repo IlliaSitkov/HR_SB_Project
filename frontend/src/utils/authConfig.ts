@@ -14,7 +14,7 @@ export const msalConfig = {
 };
 
 export const loginRequest = {
-    scopes: ["User.Read", "User.ReadBasic.All"]
+    scopes: ["User.Read"]
 }
 
 export const logoutRequest = {}
@@ -38,26 +38,21 @@ export const logoutHandle = (instance = msalInstance) => {
     }).catch(e => console.error(e))
 };
 
-export const isAuthenticated = () => msalInstance.getAllAccounts().length !== 0;
-
-export const requestAccessToken = async (scopes: string[], instance = msalInstance) => {
+export const requestAccessToken = async (instance = msalInstance) => {
     const accounts = msalInstance.getAllAccounts();
 
     const request = {
-        scopes: scopes,
+        scopes:[process.env.REACT_APP_ACCESS_TOKEN_API as string],
         account: accounts[0]
     };
     return (await instance.acquireTokenSilent(request)).accessToken;
 };
 
-export const graphConfig = {
-    graphPhotoEndpoint: "https://graph.microsoft.com/v1.0/"
-}
-
 export const getAccessToken = async () => {
-    return await requestAccessToken([process.env.REACT_APP_ACCESS_TOKEN_API as string]);
+    let token = customSessionStorage.getAuthToken();
+    if(token === null){
+        token = await requestAccessToken();
+        customSessionStorage.setAuthToken(token);
+    }
+    return token;
 };
-
-export const getGraphApiAccessToken = async () =>{
-    return await requestAccessToken(['User.ReadBasic.All']);
-}

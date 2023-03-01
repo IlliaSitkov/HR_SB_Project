@@ -14,4 +14,7 @@ export class PrismaErrorUtil {
         return e.code === PrismaErrorCode.UniqueConstraintViolation;
     }
 
+    isRelationViolation(e: any){
+        return e.code === PrismaErrorCode.RelationViolation;
+    }
 }

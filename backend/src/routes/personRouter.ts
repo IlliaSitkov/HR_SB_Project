@@ -1,26 +1,29 @@
-import {Request, Response, Router} from 'express';
-import asyncHandler from 'express-async-handler';
-import {requestValidator} from '../middleware/requestMiddleware';
-import {newcomerCreateSchema, newcomerUpdateSchema,
+import {Request, Response, Router} from "express";
+import asyncHandler from "express-async-handler";
+import {requestValidator} from "../middleware/requestMiddleware";
+import {
+    newcomerCreateSchema, newcomerUpdateSchema,
     maliukCreateSchema, maliukUpdateSchema,
     bratchykCreateSchema, bratchykUpdateSchema,
     poshanovanyiCreateSchema, poshanovanyiUpdateSchema,
     exBratchykCreateSchema, exBratchykUpdateSchema,
-    statusSchema, statusUpdateSchema, statusUpdateSchemaToMaliuk} from '../validators/personSchema';
-import {idSchema} from '../validators/idSchema';
-import {container} from '../config/container';
-import {PersonService} from '../services/PersonService';
-import {personValidator} from '../middleware/personValidator';
+    statusSchema, statusUpdateSchema, statusUpdateSchemaToMaliuk
+} from "../validators/personSchema";
+import {idSchema} from "../validators/idSchema";
+import authMiddleware from "../middleware/authMiddleware";
+import {container} from "../config/container";
+import {PersonService} from "../services/PersonService";
+import {personValidator} from "../middleware/personValidator";
 
 
-export const personRouter:Router = Router();
+const personRouter:Router = Router();
 
 const personService = container.get<PersonService>(PersonService);
 
 // @route GET api/people
-personRouter.route('/')
+personRouter.route("/")
     .get(
-        /*authorize()*/
+        ...authMiddleware(),
         asyncHandler(async (req: Request, res: Response) => {
             const people = await personService.getPeople();
             res.json(people);
@@ -28,6 +31,7 @@ personRouter.route('/')
     )
     .post(
         /*authorize()*/
+        ...authMiddleware(),
         personValidator({
             statusSchema,
             NEWCOMER: newcomerCreateSchema,
@@ -44,10 +48,11 @@ personRouter.route('/')
     );
 
 // @route  GET api/people/:id
-personRouter.route('/:id')
+personRouter.route("/:id")
     .get(
         /*authorize()*/
-        requestValidator(idSchema, 'params'),
+        ...authMiddleware(),
+        requestValidator(idSchema, "params"),
         asyncHandler(async (req: Request, res: Response) => {
             const person = await personService.getPersonById(Number(req.params.id));
             res.json(person);
@@ -55,7 +60,8 @@ personRouter.route('/:id')
     )
     .patch(
         /*authorize()*/
-        requestValidator(idSchema, 'params'),
+        ...authMiddleware(),
+        requestValidator(idSchema, "params"),
         personValidator({
             statusSchema,
             NEWCOMER: newcomerUpdateSchema,
@@ -72,7 +78,8 @@ personRouter.route('/:id')
     )
     .delete(
         /*authorize()*/
-        requestValidator(idSchema, 'params'),
+        ...authMiddleware(),
+        requestValidator(idSchema, "params"),
         asyncHandler(async (req: Request, res: Response) => {
             const person = await personService.deletePersonById(Number(req.params.id));
             res.json(person);
@@ -80,10 +87,11 @@ personRouter.route('/:id')
     );
 
 // @route  GET api/people/:id/status
-personRouter.route('/:id/status')
+personRouter.route("/:id/status")
     .put(
         /*authorize()*/
-        requestValidator(idSchema, 'params'),
+        ...authMiddleware(),
+        requestValidator(idSchema, "params"),
         personValidator({
             statusSchema,
             NEWCOMER: statusUpdateSchemaToMaliuk,
@@ -92,10 +100,11 @@ personRouter.route('/:id/status')
             POSHANOVANYI: statusUpdateSchema,
             EX_BRATCHYK: statusUpdateSchema
         }),
-        //requestValidator(statusUpdateSchema, 'body'),
         asyncHandler(async (req: Request, res: Response) => {
             const {id} = req.params;
             const updatedPerson = await personService.updateStatus(Number(id), req.body.status, req.body.date);
             res.json(updatedPerson);
         })
     );
+
+export default personRouter;

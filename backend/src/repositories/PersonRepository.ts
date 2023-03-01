@@ -25,7 +25,6 @@ export class PersonRepository {
 
     createPerson = async (person: PersonPostDto) => {
         try {
-            // @ts-ignore
             return await prisma.person.create({data: person});
         } catch (err: any) {
             console.log("Err");
@@ -62,7 +61,6 @@ export class PersonRepository {
 
                     role: person.role && p.status === Status.BRATCHYK ? person.role : p.role,
                     parent_id: person.parent_id ? person.parent_id : p.parent_id,
-                    // @ts-ignore
                     generation_id: person.generation_id ? person.generation_id : p.generation_id,
                     about: person.about ? person.about : p.about,
 
@@ -70,7 +68,7 @@ export class PersonRepository {
                     date_vysviata: person.date_vysviata ? person.date_vysviata : p.date_vysviata,
                     date_poshanuvannia: person.date_poshanuvannia ? person.date_poshanuvannia : p.date_poshanuvannia,
                     date_exclusion: person.date_exclusion ? person.date_exclusion : p.date_exclusion
-                }});
+            }});
         } catch (err) {
             if (this.errorUtil.isUniqueConstraintViolation(err)) {
                 throw ApiError.badRequest('Людина з такими контактами (поштою, телефоном, телеграмом чи фейсбуком) вже існує');
@@ -85,7 +83,7 @@ export class PersonRepository {
             data: {
                 status: Status.MALIUK
             }});
-    };
+    }
 
     updatePersonStatusToBratchyk = async (id: number, date_vysviata: Date) => {
         return await prisma.person.update({where: {id},
@@ -93,7 +91,7 @@ export class PersonRepository {
                 status: Status.BRATCHYK,
                 date_vysviata: date_vysviata
             }});
-    };
+    }
 
     updatePersonStatusToPoshanovanyi = async (id: number, date_poshanuvannia: Date) => {
         return await prisma.person.update({where: {id},
@@ -101,7 +99,7 @@ export class PersonRepository {
                 status: Status.POSHANOVANYI,
                 date_poshanuvannia: date_poshanuvannia
             }});
-    };
+    }
 
     updatePersonStatusToExBratchyk = async (id: number, date_exclusion: Date) => {
         return await prisma.person.update({where: {id},
@@ -109,7 +107,7 @@ export class PersonRepository {
                 status: Status.EX_BRATCHYK,
                 date_exclusion: date_exclusion
             }});
-    };
+    }
 
     deletePersonById = async (id: number) => {
         try {
@@ -143,8 +141,7 @@ export class PersonRepository {
         return specialty;
     }
 
-    findPeopleByGenerationId = async (generationId: number) => {
-        // @ts-ignore
-        return await prisma.person.findMany({where: {generation_id: generationId}});
+    findPeopleByGenerationId = async (generation_id: number) => {
+        return await prisma.person.findMany({where: {generation_id}});
     }
 }

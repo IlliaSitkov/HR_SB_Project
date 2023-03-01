@@ -22,12 +22,12 @@ export const statusUpdateSchemaToMaliuk = Joi.object({
     ...statusField
 });
 
-// ---------------------------
-// name, parental?, surname, date_birth, avatar?
-// faculty, specialty, year_enter
-// email, telephone, telegram, facebook?
-// status, role, parent_id, generation?, about
-// date_fill_form, date_vysviata, date_poshanuvannia, date_exclusion
+//---------------------------
+//name, parental?, surname, date_birth, avatar?
+//faculty, specialty, year_enter
+//email, telephone, telegram, facebook?
+//status, role, parent_id, generation?, about
+//date_fill_form, date_vysviata, date_poshanuvannia, date_exclusion
 
 const commonFieldsCreate = {
     ...statusField,
@@ -61,12 +61,12 @@ const commonFieldsUpdate = {
     facebook: Joi.string()
         .trim(),
 
-    // Should not be added on front, have to be updated by separate request
+    //Should not be added on front, have to be updated by separate request
     status: Joi.string()
         .valid(Status.NEWCOMER, Status.MALIUK, Status.BRATCHYK, Status.POSHANOVANYI, Status.EX_BRATCHYK)
         .allow(),
 
-    // Should not be added on front
+    //Should not be added on front
     id: Joi.allow()
 }
 
@@ -147,7 +147,7 @@ const commonFieldsOfBratchykAndPoshanovanyiAndExBratchyk = {
     about: Joi.string()
         .trim(),
 
-    // Should not be included on front !!!
+    //Should not be included on front !!!
     date_fill_form: Joi.date().allow(),
 }
 
@@ -166,7 +166,7 @@ const commonFieldsOfPoshanovanyiAndExBratchyk = {
 
     generation_id: intId(),
 
-    // Should not be included on front !!!
+    //Should not be included on front !!!
     year_enter: Joi.number()
         .integer()
         .min(1990).allow(),
@@ -182,7 +182,7 @@ export const newcomerCreateSchema = Joi.object({
 
     ...commonFieldsOfNewcomerAndMaliukAndBratchykCreate,
 
-    // they should not be in a form that newcomers fill by themselves !!! Only for create by HR
+    //they should not be in a form that newcomers fill by themselves !!! Only for create by HR
     ...commonFieldsOfNewcomerAndMaliukAndUpdateBratchykAndPoshanovanyiAndExBratchyk
 
 });

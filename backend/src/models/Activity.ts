@@ -1,3 +1,4 @@
+
 export interface Activity {
     personId: number,
     eventId: number,

@@ -28,8 +28,8 @@ export class PersonService {
     };
 
     deletePersonById = async (id: number) => {
-        // await this.getPersonById(id);
-        // TODO: think about dependant events
+        //await this.getPersonById(id);
+        //TODO: think about dependant events
         return this.personRepository.deletePersonById(id);
     };
 
@@ -78,10 +78,10 @@ export class PersonService {
         const person = await this.getPersonById(id);
         if (status === person.status)
             return person;
-        // newcomer -> maliuk
+        //newcomer -> maliuk
         if (person.status === Status.NEWCOMER && status === Status.MALIUK)
             return await this.personRepository.updatePersonStatusToMaliuk(id);
-        // maliuk -> bratchyk (add date_vysviata)
+        //maliuk -> bratchyk (add date_vysviata)
         if (person.status === Status.MALIUK && status === Status.BRATCHYK)
             return await this.personRepository.updatePersonStatusToBratchyk(id, date);
         if (person.status === Status.BRATCHYK) {
@@ -93,7 +93,7 @@ export class PersonService {
                 return await this.personRepository.updatePersonStatusToExBratchyk(id, date);
         }
         throw ApiError.badRequest('Статус не може бути оновлено');
-    };
+    }
 
     canBeParent = (parent: Person | undefined) => {
         return parent && (parent.status === Status.BRATCHYK || parent.status === Status.POSHANOVANYI);

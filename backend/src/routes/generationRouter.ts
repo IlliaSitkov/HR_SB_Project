@@ -1,18 +1,21 @@
-import {Request, Response, Router} from 'express';
-import asyncHandler from 'express-async-handler';
-import {requestValidator} from '../middleware/requestMiddleware';
-import {generationSchema} from '../validators/generationSchema';
-import {idSchema} from '../validators/idSchema';
-import {container} from '../config/container';
-import {GenerationService} from '../services/GenerationService';
+import {Request, Response, Router} from "express";
+import asyncHandler from "express-async-handler";
+import {requestValidator} from "../middleware/requestMiddleware";
+import {generationSchema} from "../validators/generationSchema";
+import {idSchema} from "../validators/idSchema";
+import authMiddleware from "../middleware/authMiddleware";
+import {container} from "../config/container";
+import {GenerationService} from "../services/GenerationService";
+import {RoleEnum} from "../utils/enum/Role.enum";
 
-export const generationRouter = Router();
+const generationRouter:Router = Router();
 
 const generationService = container.get<GenerationService>(GenerationService);
 
 // @route GET api/generations
-generationRouter.route('/')
+generationRouter.route("/")
     .get(
+        ...authMiddleware(RoleEnum.HR),
         asyncHandler(async (req: Request, res: Response) => {
             const generations = await generationService.getGenerations();
             res.json(generations);
@@ -20,7 +23,8 @@ generationRouter.route('/')
     )
     .post(
         /*authorize()*/
-        requestValidator(generationSchema, 'body'),
+        ...authMiddleware(RoleEnum.HR),
+        requestValidator(generationSchema, "body"),
         asyncHandler(async (req: Request, res: Response) => {
             const generationDTO = generationService.checkAndFormatGenerationData(req.body);
             const newGeneration = await generationService.createGeneration(generationDTO);
@@ -29,10 +33,11 @@ generationRouter.route('/')
     );
 
 // @route  GET api/generations/:id
-generationRouter.route('/:id')
+generationRouter.route("/:id")
     .get(
         /*authorize()*/
-        requestValidator(idSchema, 'params'),
+        ...authMiddleware(RoleEnum.HR),
+        requestValidator(idSchema, "params"),
         asyncHandler(async (req: Request, res: Response) => {
             const generation = await generationService.getGenerationById(Number(req.params.id));
             res.json(generation);
@@ -40,8 +45,9 @@ generationRouter.route('/:id')
     )
     .put(
         /*authorize()*/
-        requestValidator(idSchema, 'params'),
-        requestValidator(generationSchema, 'body'),
+        ...authMiddleware(RoleEnum.HR),
+        requestValidator(idSchema, "params"),
+        requestValidator(generationSchema, "body"),
         asyncHandler(async (req: Request, res: Response) => {
             const generationDTO = generationService.checkAndFormatGenerationData(req.body);
             const updatedGeneration = await generationService.updateGeneration(Number(req.params.id), generationDTO);
@@ -50,9 +56,12 @@ generationRouter.route('/:id')
     )
     .delete(
         /*authorize()*/
-        requestValidator(idSchema, 'params'),
+        ...authMiddleware(RoleEnum.HR),
+        requestValidator(idSchema, "params"),
         asyncHandler(async (req: Request, res: Response) => {
             const generation = await generationService.deleteGenerationById(Number(req.params.id));
             res.json(generation);
         })
     );
+
+export default generationRouter;
