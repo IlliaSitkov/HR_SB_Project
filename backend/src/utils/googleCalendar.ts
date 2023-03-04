@@ -34,7 +34,6 @@ export const createBirthday = async (name: string, day: number, month: number) =
     if (currentDate.getMonth() > month && currentDate.getDate()) {
         closestBirthday.setFullYear(currentDate.getFullYear() + 1);
     }
-    console.log(closestBirthday.toString());
 
     //Birthday as full-day event
     const birthday = {
@@ -51,11 +50,9 @@ export const createBirthday = async (name: string, day: number, month: number) =
         visibility: 'public',
         transparency: 'transparent'
     }
-    const result = await calendar.events.insert({
+    return await calendar.events.insert({
         calendarId: process.env.BIRTHDAY_CALENDAR_ID as string,
         requestBody: birthday
     })
-
-    console.log(result);
 }
 

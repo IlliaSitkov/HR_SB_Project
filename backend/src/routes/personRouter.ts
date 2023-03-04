@@ -2,21 +2,30 @@ import {Request, Response, Router} from "express";
 import asyncHandler from "express-async-handler";
 import {requestValidator} from "../middleware/requestMiddleware";
 import {
-    newcomerCreateSchema, newcomerUpdateSchema,
-    maliukCreateSchema, maliukUpdateSchema,
-    bratchykCreateSchema, bratchykUpdateSchema,
-    poshanovanyiCreateSchema, poshanovanyiUpdateSchema,
-    exBratchykCreateSchema, exBratchykUpdateSchema,
-    statusSchema, statusUpdateSchema, statusUpdateSchemaToMaliuk
+    bratchykCreateSchema,
+    bratchykUpdateSchema,
+    exBratchykCreateSchema,
+    exBratchykUpdateSchema,
+    maliukCreateSchema,
+    maliukUpdateSchema,
+    newcomerCreateSchema,
+    newcomerUpdateSchema,
+    poshanovanyiCreateSchema,
+    poshanovanyiUpdateSchema,
+    statusSchema,
+    statusUpdateSchema,
+    statusUpdateSchemaToMaliuk
 } from "../validators/personSchema";
 import {idSchema} from "../validators/idSchema";
 import authMiddleware from "../middleware/authMiddleware";
 import {container} from "../config/container";
 import {PersonService} from "../services/PersonService";
 import {personValidator} from "../middleware/personValidator";
+import {RoleEnum} from "../utils/enum/Role.enum";
+import StatusCode from "status-code-enum";
 
 
-const personRouter:Router = Router();
+const personRouter: Router = Router();
 
 const personService = container.get<PersonService>(PersonService);
 
@@ -44,6 +53,20 @@ personRouter.route("/")
             const personDTO = await personService.checkAndFormatPersonData(req.body);
             const newPerson = await personService.createPerson(personDTO);
             res.json(newPerson);
+        })
+    );
+
+personRouter.route("/sync-birthdays")
+    .get(
+        ...authMiddleware(RoleEnum.HR),
+        asyncHandler(async (req: Request, res: Response) => {
+            try {
+                await personService.syncAllBirthdays();
+                res.status(StatusCode.SuccessOK).send("Success");
+            } catch (e){
+                console.log(e);
+                res.status(StatusCode.ServerErrorInternal).send("Error has happened");
+            }
         })
     );
 
