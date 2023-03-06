@@ -42,17 +42,12 @@ export const requestAccessToken = async (instance = msalInstance) => {
     const accounts = msalInstance.getAllAccounts();
 
     const request = {
-        scopes:[process.env.REACT_APP_ACCESS_TOKEN_API as string],
+        scopes: [process.env.REACT_APP_ACCESS_TOKEN_API as string],
         account: accounts[0]
     };
     return (await instance.acquireTokenSilent(request)).accessToken;
 };
 
 export const getAccessToken = async () => {
-    let token = customSessionStorage.getAuthToken();
-    if(token === null){
-        token = await requestAccessToken();
-        customSessionStorage.setAuthToken(token);
-    }
-    return token;
+    return await requestAccessToken();
 };
