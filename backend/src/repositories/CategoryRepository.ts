@@ -12,7 +12,7 @@ export class CategoryRepository {
     }
 
     getAllCategories = (): Promise<Category[]> => {
-        return prisma.category.findMany();
+        return prisma.category.findMany({orderBy: {id: 'asc'}});
     }
 
     createCategory = async (name: string): Promise<Category> => {

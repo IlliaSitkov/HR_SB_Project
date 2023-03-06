@@ -1,1 +1,14 @@
 
+:root {
+    --bin-hover: #af0303;
+    --pen-hover: #0101b4;
+    --check-hover: #046c04;
+}
+
+button.empty {
+    border: none;
+    background-color: transparent;
+}
+
+
+
