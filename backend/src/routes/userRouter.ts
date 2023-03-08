@@ -34,7 +34,7 @@ userRouter.route('/')
     );
 
 userRouter.route('/:id')
-    //Update an user
+    //Update a user
     .put(
         ...authMiddleware(RoleEnum.HR),
         requestValidator(idSchema, 'params'),
