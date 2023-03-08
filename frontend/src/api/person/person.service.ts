@@ -7,8 +7,32 @@ const url: string = "http://localhost:8000/api/people"
 
 const urlById = (id: number): string => `${url}/${id}`;
 
+const tempData = [
+    {
+        id: 1,
+        name: "Ira",
+        surname: "Matviienko",
+        status: "BRATCHYK"
+    },
+    {
+        id: 2,
+        name: "User",
+        surname: "User",
+        status: "MALIUK"
+    },
+    {
+        id: 3,
+        name: "Someone",
+        surname: "Someone",
+        status: "POSHANOVANYI"
+    }
+];
+
 export const getAllPeople = async (): Promise<Person[]> => {
-    return (await axios.get(url)).data;
+    const data = (await axios.get(url)).data;
+    console.log("Got people: ");
+    console.log(data);
+    return data;
 };
 
 export const createPerson = async (person: Person): Promise<Person> => {

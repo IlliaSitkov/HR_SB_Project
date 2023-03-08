@@ -1,6 +1,25 @@
 import {FC} from "react";
-import {Person} from "../../../../api/person";
+import {getFullName, Person, statuses} from "../../../../api/person";
+import {Button, Card} from "react-bootstrap";
+import {useNavigate} from "react-router-dom";
 
 export const PersonItem: FC<{person: Person}> = ({person}) => {
-    return <div>PersonItem</div>
+    // @ts-ignore
+    const status = statuses[person.status];
+    const navigate = useNavigate();
+
+    const showPersonDetails = () => {
+        navigate(`/people/${person.id}`, { replace: true });
+    }
+
+    return <Card className = "flex-fill mb-2">
+        <Card.Img variant="top" src="https://kvitkay.com.ua/image/catalog/IMG_9625.JPG" />
+        <Card.Body className="text-center">
+            <Card.Title>{getFullName(person)}</Card.Title>
+            <Card.Text style={{ background: status.color }} className="rounded">
+                {status.ukr}
+            </Card.Text>
+            <Button variant="primary" onClick={showPersonDetails}>Деталі</Button>
+        </Card.Body>
+    </Card>;
 }

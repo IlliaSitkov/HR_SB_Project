@@ -23,8 +23,8 @@ export interface Person {
     date_birth?: Date | null,
     avatar?: Buffer | null,
 
-    faculty: Faculty | null,
-    specialty: Specialty | null,
+    faculty?: Faculty | null,
+    specialty?: Specialty | null,
     year_enter?: number | null,
 
     email?: string | null,
@@ -34,8 +34,8 @@ export interface Person {
 
     status: string, //TODO: get from somewhere
     role?: string | null, //TODO: get from somewhere
-    parent: Person | null,
-    generation: Generation | null,
+    parent?: Person | null,
+    generation?: Generation | null,
     about?: string | null,
 
     date_fill_form?: Date | null,
