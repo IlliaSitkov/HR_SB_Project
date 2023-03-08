@@ -12,11 +12,23 @@ export class PersonRepository {
     }
 
     getPeople = async () => {
-        return prisma.person.findMany();
+        return prisma.person.findMany({
+            include: {
+                parent: true,
+                faculty: true,
+                specialty: true,
+                generation: true,
+            }
+        });
     };
 
     personExists = async (id: number) => {
-        const person = await prisma.person.findFirst({where: {id}});
+        const person = await prisma.person.findFirst({where: {id}, include: {
+                parent: true,
+                faculty: true,
+                specialty: true,
+                generation: true,
+            }});
         if (!person) {
             throw ApiError.badRequest(`Людину з id:${id} не знайдено`);
         }
@@ -25,7 +37,12 @@ export class PersonRepository {
 
     createPerson = async (person: PersonPostDto) => {
         try {
-            return await prisma.person.create({data: person});
+            return await prisma.person.create({data: person, include: {
+                    parent: true,
+                    faculty: true,
+                    specialty: true,
+                    generation: true,
+                }});
         } catch (err: any) {
             console.log('Err');
             console.log(err);
@@ -68,7 +85,12 @@ export class PersonRepository {
                     date_vysviata: person.date_vysviata ? person.date_vysviata : p.date_vysviata,
                     date_poshanuvannia: person.date_poshanuvannia ? person.date_poshanuvannia : p.date_poshanuvannia,
                     date_exclusion: person.date_exclusion ? person.date_exclusion : p.date_exclusion
-            }});
+                }, include: {
+                    parent: true,
+                    faculty: true,
+                    specialty: true,
+                    generation: true,
+                }});
         } catch (err) {
             if (this.errorUtil.isUniqueConstraintViolation(err)) {
                 throw ApiError.badRequest('Людина з такими контактами (поштою, телефоном, телеграмом чи фейсбуком) вже існує');
@@ -82,6 +104,11 @@ export class PersonRepository {
         return prisma.person.update({where: {id},
             data: {
                 status: Status.MALIUK
+            }, include: {
+                parent: true,
+                faculty: true,
+                specialty: true,
+                generation: true,
             }});
     };
 
@@ -89,7 +116,12 @@ export class PersonRepository {
         return prisma.person.update({where: {id},
             data: {
                 status: Status.BRATCHYK,
-                date_vysviata
+                date_vysviata: date_vysviata
+            }, include: {
+                parent: true,
+                faculty: true,
+                specialty: true,
+                generation: true,
             }});
     };
 
@@ -97,7 +129,12 @@ export class PersonRepository {
         return prisma.person.update({where: {id},
             data: {
                 status: Status.POSHANOVANYI,
-                date_poshanuvannia
+                date_poshanuvannia: date_poshanuvannia
+            }, include: {
+                parent: true,
+                faculty: true,
+                specialty: true,
+                generation: true,
             }});
     };
 
@@ -105,13 +142,23 @@ export class PersonRepository {
         return prisma.person.update({where: {id},
             data: {
                 status: Status.EX_BRATCHYK,
-                date_exclusion
+                date_exclusion: date_exclusion
+            }, include: {
+                parent: true,
+                faculty: true,
+                specialty: true,
+                generation: true,
             }});
     };
 
     deletePersonById = async (id: number) => {
         try {
-            return await prisma.person.delete({where: {id}});
+            return await prisma.person.delete({where: {id}, include: {
+                    parent: true,
+                    faculty: true,
+                    specialty: true,
+                    generation: true,
+                }});
         } catch (e) {
             if (this.errorUtil.isNotFound(e)) {
                 throw ApiError.notFound(`Людину з id:${id} не знайдено`);
@@ -142,6 +189,11 @@ export class PersonRepository {
     };
 
     findPeopleByGenerationId = async (generation_id: number) => {
-        return prisma.person.findMany({where: {generation_id}});
-    };
+        return prisma.person.findMany({where: {generation_id}, include: {
+                parent: true,
+                faculty: true,
+                specialty: true,
+                generation: true,
+            }});
+    }
 }
