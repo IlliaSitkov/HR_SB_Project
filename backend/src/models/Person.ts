@@ -1,4 +1,4 @@
-import { Status, Role } from '@prisma/client'
+import {Status, Role} from '@prisma/client'
 
 export interface Person {
     id?: number,
@@ -31,3 +31,4 @@ export interface Person {
 
 export type PersonPostDto = Omit<Person, 'id'>;
 export type PersonPatchDto = Omit<Person, 'id'>;
+export type PersonBirthday = Pick<Person, 'name' | 'parental' | 'surname' | 'email'> & { birthday: Person['date_birth'] };

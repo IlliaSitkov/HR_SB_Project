@@ -1,15 +1,26 @@
 import {inject, injectable} from 'inversify';
 import {PersonRepository} from '../repositories/PersonRepository';
-import {Person, PersonPatchDto, PersonPostDto} from '../models/Person';
+import {Person, PersonBirthday, PersonPatchDto, PersonPostDto} from '../models/Person';
 import {Status} from '@prisma/client';
 import {ApiError} from '../models/ApiError';
 import {GenerationService} from './GenerationService';
+import {clearAllBirthdays, createBirthday} from "../utils/googleCalendar";
 
 @injectable()
 export class PersonService {
 
     public constructor(@inject(PersonRepository) private personRepository: PersonRepository,
-                       @inject(GenerationService) private generationService: GenerationService) {}
+                       @inject(GenerationService) private generationService: GenerationService) {
+    }
+
+    private addBirthdayToCalendar = (person: Person) => {
+        //There is birthday and person is in organization
+        return <boolean>(person.date_birth &&
+            !person.date_poshanuvannia &&
+            !person.date_exclusion &&
+            person.status !== Status.EX_BRATCHYK &&
+            person.status !== Status.POSHANOVANYI);
+    }
 
     getPeople = async () => {
         return this.personRepository.getPeople();
@@ -32,6 +43,17 @@ export class PersonService {
         //TODO: think about dependant events
         return this.personRepository.deletePersonById(id);
     };
+
+    syncAllBirthdays = async () => {
+        await clearAllBirthdays();
+        const people = (await this.getPeople()).filter(this.addBirthdayToCalendar);
+        for (const person of people) {
+            await createBirthday(`${person.name} ${person.surname}`,
+                person.date_birth!.getDate(),
+                //TODO: there is bug and month returns as real-1
+                person.date_birth!.getMonth() + 1);
+        }
+    }
 
     checkAndFormatPersonData = async (personData: any) => {
         const faculty = await this.personRepository.getFaculty(personData.faculty_id);
@@ -93,6 +115,22 @@ export class PersonService {
                 return await this.personRepository.updatePersonStatusToExBratchyk(id, date);
         }
         throw ApiError.badRequest('Статус не може бути оновлено');
+    }
+
+    nearestBirthdays = async () => {
+        const people = (await this.getPeople()).filter(this.addBirthdayToCalendar);
+
+        const birthdays: PersonBirthday[] = people.map((person:Person) => {
+            return {
+                birthday: person.date_birth,
+                name: person.name,
+                parental: person.parental,
+                surname: person.surname,
+                email: person.email
+            }
+        });
+
+        return birthdays;
     }
 
     canBeParent = (parent: Person | undefined) => {
