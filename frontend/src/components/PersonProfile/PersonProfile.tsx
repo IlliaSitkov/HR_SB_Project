@@ -1,8 +1,15 @@
-import {FC} from "react";
-import {useParams} from "react-router-dom";
+import {FC} from 'react';
+import {Navigate, useParams} from 'react-router-dom';
 
 export const PersonProfile: FC = () => {
     const params = useParams();
 
-    return <div>Person id: {params.personId}</div>
+    return (
+        !localStorage.getItem('token') ? (
+                <Navigate to='/' />
+            ) :
+            (<div>
+                Person id: {params.personId}
+            </div>)
+    );
 }

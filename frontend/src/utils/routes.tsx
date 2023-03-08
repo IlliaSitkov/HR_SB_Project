@@ -4,11 +4,10 @@ import {
     HomePage
 } from '../pages'
 import {MainLayout} from '../components/layout';
-import {NonIndexRouteObject} from "react-router-dom";
-import AuthWrapper from "../components/auth/AuthWrapper";
-import {ItemManagerDemo} from "../ItemManagerDemo";
-import {PeopleManagerDemo} from "../PeopleManagerDemo";
-import {PersonProfile} from "../components/PersonProfile/PersonProfile";
+import {NonIndexRouteObject} from 'react-router-dom';
+import AuthWrapper from '../components/auth/AuthWrapper';
+//import {PeopleManagerDemo} from '../PeopleManagerDemo';
+//import {PersonProfile} from '../components/PersonProfile/PersonProfile';
 
 export const routes: NonIndexRouteObject[] = [
     {
@@ -19,21 +18,17 @@ export const routes: NonIndexRouteObject[] = [
             </AuthWrapper>,
         children: [
             {
-                path: "",
+                path: '',
                 element: <HomePage/>
-            },
-            {
-                path: "/items",
-                element: <ItemManagerDemo/>
-            },
+            }/*,
             {
                 path: '/people/:personId',
                 element: <PersonProfile/>
             },
             {
-                path: "/people",
+                path: '/people',
                 element: <PeopleManagerDemo/>
-            }
+            }*/
         ]
     }
 ]

@@ -1,5 +1,5 @@
-import {Person, StatusUpdateDto} from "../../api/person";
-import {ADD_PERSON, DELETE_PERSON, GET_PEOPLE, UPDATE_PERSON, UPDATE_PERSON_STATUS} from "./actionTypes";
+import {Person} from '../../api/person';
+import {ADD_PERSON, DELETE_PERSON, GET_PEOPLE, UPDATE_PERSON, UPDATE_PERSON_STATUS} from './actionTypes';
 
 export const personAdded = (person: Person) => ({
 	type: ADD_PERSON,

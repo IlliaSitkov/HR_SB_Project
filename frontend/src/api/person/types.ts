@@ -1,4 +1,4 @@
-import { Generation } from "../generation"
+import { Generation } from '../generation'
 
 export interface Faculty {
     id: number,
@@ -32,7 +32,7 @@ export interface Person {
     telegram?: string | null,
     facebook?: string | null,
 
-    status: string, //TODO: get from somewhere
+    status: string,
     role?: string | null, //TODO: get from somewhere
     parent?: Person | null,
     generation?: Generation | null,
@@ -45,7 +45,7 @@ export interface Person {
 }
 
 export const getFullName = (p: Person) => {
-    let parental = "";
-    if (p.parental) parental = " " + p.parental;
-    return p.surname + " " + p.name + parental;
+    let parental = '';
+    if (p.parental) parental = ' ' + p.parental;
+    return p.surname + ' ' + p.name + parental;
 }

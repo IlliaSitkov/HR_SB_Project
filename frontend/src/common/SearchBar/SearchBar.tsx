@@ -1,12 +1,12 @@
-import React, {FC} from "react";
+import React, {Dispatch, FC, SetStateAction} from 'react';
 
-export const SearchBar: FC<{searchText: string, setSearchText: any}> =
-    ({searchText, setSearchText}) => {
+export const SearchBar: FC<{searchText: string, setSearchText: Dispatch<SetStateAction<string>>, placeholder?: string}> =
+    ({searchText, setSearchText, placeholder= ''}) => {
         return (
-            <div className="m-2">
+            <div className='m-2'>
                 <input
                     type='text'
-                    placeholder='Шукати людину...'
+                    placeholder={placeholder}
                     onChange={(event) => {
                         setSearchText(event.target.value);
                     }}

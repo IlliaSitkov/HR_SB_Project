@@ -1,4 +1,5 @@
-import React, {useState} from "react";import {PeopleList} from "./components/PeopleList/PeopleList";
+import React, {useState} from 'react';
+import {PeopleList} from './components/PeopleList/PeopleList';
 
 export const PeopleManagerDemo = () => {
 

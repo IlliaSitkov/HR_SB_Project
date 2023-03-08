@@ -1,36 +1,36 @@
-import {AxiosInstance} from "axios";
-import {authHost} from "../../http";
-import {Person, StatusUpdateDto} from "./types";
+import {AxiosInstance} from 'axios';
+import {authHost} from '../../http';
+import {Person, StatusUpdateDto} from './types';
 
 const axios: AxiosInstance = authHost;
-const url: string = "http://localhost:8000/api/people"
+const url: string = 'http://localhost:8000/api/people'
 
 const urlById = (id: number): string => `${url}/${id}`;
 
-const tempData = [
+/*const tempData = [
     {
         id: 1,
-        name: "Ira",
-        surname: "Matviienko",
-        status: "BRATCHYK"
+        name: 'Ira',
+        surname: 'Matviienko',
+        status: 'BRATCHYK'
     },
     {
         id: 2,
-        name: "User",
-        surname: "User",
-        status: "MALIUK"
+        name: 'User',
+        surname: 'User',
+        status: 'MALIUK'
     },
     {
         id: 3,
-        name: "Someone",
-        surname: "Someone",
-        status: "POSHANOVANYI"
+        name: 'Someone',
+        surname: 'Someone',
+        status: 'POSHANOVANYI'
     }
-];
+];*/
 
 export const getAllPeople = async (): Promise<Person[]> => {
     const data = (await axios.get(url)).data;
-    console.log("Got people: ");
+    console.log('Got people: ');
     console.log(data);
     return data;
 };

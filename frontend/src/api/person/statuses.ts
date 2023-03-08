@@ -1,4 +1,4 @@
-export const statuses = {
+export const statusesColorful = {
     NEWCOMER: {
         ukr: 'Новенький',
         color: '#b8e4f9',
@@ -20,3 +20,26 @@ export const statuses = {
         color: '#fcb9d6',
     }
 }
+
+export const statusesForDropdown = [
+    {
+        name: 'NEWCOMER',
+        ukrMany: 'Новенькі'
+    },
+    {
+        name: 'MALIUK',
+        ukrMany: 'Малюки'
+    },
+    {
+        name: 'BRATCHYK',
+        ukrMany: 'Братчики'
+    },
+    {
+        name: 'POSHANOVANYI',
+        ukrMany: 'Пошановані'
+    },
+    {
+        name: 'EX_BRATCHYK',
+        ukrMany: 'Виключені братчики'
+    }
+]
