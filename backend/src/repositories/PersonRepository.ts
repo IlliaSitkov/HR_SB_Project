@@ -79,14 +79,14 @@ export class PersonRepository {
     };
 
     updatePersonStatusToMaliuk = async (id: number) => {
-        return await prisma.person.update({where: {id},
+        return prisma.person.update({where: {id},
             data: {
                 status: Status.MALIUK
             }});
     };
 
     updatePersonStatusToBratchyk = async (id: number, date_vysviata: Date) => {
-        return await prisma.person.update({where: {id},
+        return prisma.person.update({where: {id},
             data: {
                 status: Status.BRATCHYK,
                 date_vysviata
@@ -94,7 +94,7 @@ export class PersonRepository {
     };
 
     updatePersonStatusToPoshanovanyi = async (id: number, date_poshanuvannia: Date) => {
-        return await prisma.person.update({where: {id},
+        return prisma.person.update({where: {id},
             data: {
                 status: Status.POSHANOVANYI,
                 date_poshanuvannia
@@ -102,7 +102,7 @@ export class PersonRepository {
     };
 
     updatePersonStatusToExBratchyk = async (id: number, date_exclusion: Date) => {
-        return await prisma.person.update({where: {id},
+        return prisma.person.update({where: {id},
             data: {
                 status: Status.EX_BRATCHYK,
                 date_exclusion
@@ -142,6 +142,6 @@ export class PersonRepository {
     };
 
     findPeopleByGenerationId = async (generation_id: number) => {
-        return await prisma.person.findMany({where: {generation_id}});
+        return prisma.person.findMany({where: {generation_id}});
     };
 }

@@ -15,7 +15,7 @@ export const msalConfig = {
 };
 
 export const loginRequest = {
-    scopes: ["User.Read", "User.ReadBasic.All"]
+	scopes: ['User.Read', 'User.ReadBasic.All'],
 };
 
 export const logoutRequest = {};
@@ -43,24 +43,29 @@ export const logoutHandle = (instance = msalInstance) => {
 
 export const isAuthenticated = () => msalInstance.getAllAccounts().length !== 0;
 
-export const requestAccessToken = async (scopes: string[], instance = msalInstance) => {
-    const accounts = msalInstance.getAllAccounts();
+export const requestAccessToken = async (
+	scopes: string[],
+	instance = msalInstance
+) => {
+	const accounts = msalInstance.getAllAccounts();
 
-    const request = {
-        scopes: scopes,
-        account: accounts[0]
-    };
-    return (await instance.acquireTokenSilent(request)).accessToken;
+	const request = {
+		scopes: scopes,
+		account: accounts[0],
+	};
+	return (await instance.acquireTokenSilent(request)).accessToken;
 };
 
 export const graphConfig = {
-    graphPhotoEndpoint: "https://graph.microsoft.com/v1.0/"
-}
-
-export const getAccessToken = async () => {
-    return await requestAccessToken([process.env.REACT_APP_ACCESS_TOKEN_API as string]);
+	graphPhotoEndpoint: 'https://graph.microsoft.com/v1.0/',
 };
 
-export const getGraphApiAccessToken = async () =>{
-    return await requestAccessToken(['User.ReadBasic.All']);
-}
+export const getAccessToken = async () => {
+	return await requestAccessToken([
+		process.env.REACT_APP_ACCESS_TOKEN_API as string,
+	]);
+};
+
+export const getGraphApiAccessToken = async () => {
+	return await requestAccessToken(['User.ReadBasic.All']);
+};

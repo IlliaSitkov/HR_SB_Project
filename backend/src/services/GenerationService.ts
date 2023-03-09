@@ -20,7 +20,7 @@ export class GenerationService {
     };
 
     createGeneration = async (generation: GenerationDto) => {
-        return await this.generationRepository.createGeneration(generation);
+        return this.generationRepository.createGeneration(generation);
     };
 
     updateGeneration = async (id: number, generation: GenerationDto) => {

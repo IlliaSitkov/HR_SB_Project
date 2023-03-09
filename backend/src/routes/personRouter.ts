@@ -15,14 +15,14 @@ import {
     statusSchema,
     statusUpdateSchema,
     statusUpdateSchemaToMaliuk
-} from "../validators/personSchema";
-import {idSchema} from "../validators/idSchema";
-import authMiddleware from "../middleware/authMiddleware";
-import {container} from "../config/container";
-import {PersonService} from "../services/PersonService";
-import {personValidator} from "../middleware/personValidator";
-import {RoleEnum} from "../utils/enum/Role.enum";
-import StatusCode from "status-code-enum";
+} from '../validators/personSchema';
+import {idSchema} from '../validators/idSchema';
+import authMiddleware from '../middleware/authMiddleware';
+import {container} from '../config/container';
+import {PersonService} from '../services/PersonService';
+import {personValidator} from '../middleware/personValidator';
+import {RoleEnum} from '../utils/enum/Role.enum';
+import StatusCode from 'status-code-enum';
 
 
 const personRouter: Router = Router();
@@ -56,21 +56,21 @@ personRouter.route('/')
         })
     );
 
-personRouter.route("/sync-birthdays")
+personRouter.route('/sync-birthdays')
     .get(
         ...authMiddleware(RoleEnum.HR),
         asyncHandler(async (req: Request, res: Response) => {
             try {
                 await personService.syncAllBirthdays();
-                res.status(StatusCode.SuccessOK).send("Success");
+                res.status(StatusCode.SuccessOK).send('Success');
             } catch (e) {
                 console.log(e);
-                res.status(StatusCode.ServerErrorInternal).send("Error has happened");
+                res.status(StatusCode.ServerErrorInternal).send('Error has happened');
             }
         })
     );
 
-personRouter.route("/nearestBirthdays")
+personRouter.route('/nearestBirthdays')
     .get(
         ...authMiddleware(RoleEnum.HR),
         asyncHandler(async (req: Request, res: Response) => {
@@ -79,7 +79,7 @@ personRouter.route("/nearestBirthdays")
                 res.status(StatusCode.SuccessOK).json(nearestBirthdays);
             } catch (e){
                 console.log(e);
-                res.status(StatusCode.ServerErrorInternal).send("Error has happened");
+                res.status(StatusCode.ServerErrorInternal).send('Error has happened');
             }
         })
     );

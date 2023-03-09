@@ -1,7 +1,7 @@
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import { Modal } from 'react-bootstrap';
-import { Item } from './components/CategoryItem/Item';
-import { AddItem } from './components/AddCategory/AddItem';
+import { Item } from './components/Item/Item';
+import { AddItem } from './components/AddItem/AddItem';
 import { IItem } from '../../../../api/common/types';
 
 export const EditItemsModal: FC<{

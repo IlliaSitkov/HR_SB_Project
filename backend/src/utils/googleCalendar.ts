@@ -1,4 +1,4 @@
-import {google} from "googleapis";
+import {google} from 'googleapis';
 
 const jwtClient = new google.auth.JWT(
     process.env.GOOGLE_CLIENT_EMAIL,
@@ -9,7 +9,7 @@ const jwtClient = new google.auth.JWT(
 
 
 export const calendar = google.calendar({
-    version: "v3",
+    version: 'v3',
     auth: jwtClient
 });
 
@@ -25,7 +25,7 @@ export const clearAllBirthdays = async () => {
             eventId: id
         });
     }
-}
+};
 
 export const createBirthday = async (name: string, day: number, month: number) => {
     const currentDate = new Date();
@@ -49,10 +49,10 @@ export const createBirthday = async (name: string, day: number, month: number) =
         recurrence: ['RRULE:FREQ=YEARLY'],
         visibility: 'public',
         transparency: 'transparent'
-    }
-    return await calendar.events.insert({
+    };
+    return calendar.events.insert({
         calendarId: process.env.BIRTHDAY_CALENDAR_ID as string,
         requestBody: birthday
-    })
-}
+    });
+};
 

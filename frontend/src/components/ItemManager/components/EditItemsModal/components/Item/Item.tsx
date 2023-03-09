@@ -9,7 +9,7 @@ import {
 	penIcon,
 } from '../../../../../../common/icons/icons';
 
-import './CategoryItem.css';
+import './Item.css';
 import { ErrorMessage } from '../../../../../../common/ErrorMessage/ErrorMessage';
 import { IItem } from '../../../../../../api/common/types';
 

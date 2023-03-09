@@ -4,7 +4,7 @@ import {Person, PersonBirthday, PersonPatchDto, PersonPostDto} from '../models/P
 import {Status} from '@prisma/client';
 import {ApiError} from '../models/ApiError';
 import {GenerationService} from './GenerationService';
-import {clearAllBirthdays, createBirthday} from "../utils/googleCalendar";
+import {clearAllBirthdays, createBirthday} from '../utils/googleCalendar';
 
 @injectable()
 export class PersonService {
@@ -20,7 +20,7 @@ export class PersonService {
             !person.date_exclusion &&
             person.status !== Status.EX_BRATCHYK &&
             person.status !== Status.POSHANOVANYI);
-    }
+    };
 
     getPeople = async () => {
         return this.personRepository.getPeople();
@@ -53,7 +53,7 @@ export class PersonService {
                 //TODO: there is bug and month returns as real-1
                 person.date_birth!.getMonth() + 1);
         }
-    }
+    };
 
     checkAndFormatPersonData = async (personData: any) => {
         const faculty = await this.personRepository.getFaculty(personData.faculty_id);
@@ -102,17 +102,17 @@ export class PersonService {
             {return person;}
         //newcomer -> maliuk
         if (person.status === Status.NEWCOMER && status === Status.MALIUK)
-            {return await this.personRepository.updatePersonStatusToMaliuk(id);}
+            {return this.personRepository.updatePersonStatusToMaliuk(id);}
         //maliuk -> bratchyk (add date_vysviata)
         if (person.status === Status.MALIUK && status === Status.BRATCHYK)
-            {return await this.personRepository.updatePersonStatusToBratchyk(id, date);}
+            {return this.personRepository.updatePersonStatusToBratchyk(id, date);}
         if (person.status === Status.BRATCHYK) {
             // bratchyk -> poshanovanyi (add date_poshanuvannia)
             if (status === Status.POSHANOVANYI)
-                {return await this.personRepository.updatePersonStatusToPoshanovanyi(id, date);}
+                {return this.personRepository.updatePersonStatusToPoshanovanyi(id, date);}
             // bratchyk -> exBrathyk (add date_exclusion)
             if (status === Status.EX_BRATCHYK)
-                {return await this.personRepository.updatePersonStatusToExBratchyk(id, date);}
+                {return this.personRepository.updatePersonStatusToExBratchyk(id, date);}
         }
         throw ApiError.badRequest('Статус не може бути оновлено');
     };
@@ -127,11 +127,11 @@ export class PersonService {
                 parental: person.parental,
                 surname: person.surname,
                 email: person.email
-            }
+            };
         });
 
         return birthdays;
-    }
+    };
 
     canBeParent = (parent: Person | undefined) => {
         return parent && (parent.status === Status.BRATCHYK || parent.status === Status.POSHANOVANYI);
