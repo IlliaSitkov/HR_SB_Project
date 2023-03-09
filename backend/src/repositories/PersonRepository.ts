@@ -13,7 +13,7 @@ export class PersonRepository {
 
     getPeople = async () => {
         return prisma.person.findMany();
-    }
+    };
 
     personExists = async (id: number) => {
         const person = await prisma.person.findFirst({where: {id}});
@@ -27,7 +27,7 @@ export class PersonRepository {
         try {
             return await prisma.person.create({data: person});
         } catch (err: any) {
-            console.log("Err");
+            console.log('Err');
             console.log(err);
             if (this.errorUtil.isUniqueConstraintViolation(err)) {
                 throw ApiError.badRequest('Людина з такими контактами (поштою, телефоном, телеграмом чи фейсбуком) вже існує');
@@ -40,7 +40,7 @@ export class PersonRepository {
     updatePerson = async (id: number, person: PersonPatchDto) => {
         const p = await this.personExists(id);
         if (p.status !== person.status)
-            throw  ApiError.badRequest("Передано некоректний статус людини");
+            {throw  ApiError.badRequest('Передано некоректний статус людини');}
         try {
             return await prisma.person.update({where: {id},
                 data: {
@@ -79,35 +79,35 @@ export class PersonRepository {
     };
 
     updatePersonStatusToMaliuk = async (id: number) => {
-        return await prisma.person.update({where: {id},
+        return prisma.person.update({where: {id},
             data: {
                 status: Status.MALIUK
             }});
-    }
+    };
 
     updatePersonStatusToBratchyk = async (id: number, date_vysviata: Date) => {
-        return await prisma.person.update({where: {id},
+        return prisma.person.update({where: {id},
             data: {
                 status: Status.BRATCHYK,
-                date_vysviata: date_vysviata
+                date_vysviata
             }});
-    }
+    };
 
     updatePersonStatusToPoshanovanyi = async (id: number, date_poshanuvannia: Date) => {
-        return await prisma.person.update({where: {id},
+        return prisma.person.update({where: {id},
             data: {
                 status: Status.POSHANOVANYI,
-                date_poshanuvannia: date_poshanuvannia
+                date_poshanuvannia
             }});
-    }
+    };
 
     updatePersonStatusToExBratchyk = async (id: number, date_exclusion: Date) => {
-        return await prisma.person.update({where: {id},
+        return prisma.person.update({where: {id},
             data: {
                 status: Status.EX_BRATCHYK,
-                date_exclusion: date_exclusion
+                date_exclusion
             }});
-    }
+    };
 
     deletePersonById = async (id: number) => {
         try {
@@ -126,22 +126,22 @@ export class PersonRepository {
         if (id) {
             faculty = await prisma.faculty.findFirst({where: {id}});
             if (!faculty)
-                throw ApiError.notFound(`Факультет з id:${id} не знайдено`);
+                {throw ApiError.notFound(`Факультет з id:${id} не знайдено`);}
         }
         return faculty;
-    }
+    };
 
     getSpecialty = async (id: number | undefined) => {
         let specialty;
         if (id) {
             specialty = await prisma.specialty.findFirst({where: {id}});
             if (!specialty)
-                throw ApiError.notFound(`Спеціальність з id:${id} не знайдено`)
+                {throw ApiError.notFound(`Спеціальність з id:${id} не знайдено`);}
         }
         return specialty;
-    }
+    };
 
     findPeopleByGenerationId = async (generation_id: number) => {
-        return await prisma.person.findMany({where: {generation_id}});
-    }
+        return prisma.person.findMany({where: {generation_id}});
+    };
 }

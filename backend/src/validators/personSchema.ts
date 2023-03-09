@@ -68,7 +68,7 @@ const commonFieldsUpdate = {
 
     //Should not be added on front
     id: Joi.allow()
-}
+};
 
 const commonFieldsOfNewcomerAndMaliukCreate = {
     date_fill_form: Joi.date()
@@ -77,13 +77,13 @@ const commonFieldsOfNewcomerAndMaliukCreate = {
     about: Joi.string()
         .trim()
         .required()
-}
+};
 const commonFieldsOfNewcomerAndMaliukUpdate = {
     date_fill_form: Joi.date(),
 
     about: Joi.string()
         .trim()
-}
+};
 
 const commonFieldsOfNewcomerAndMaliukAndBratchykCreate = {
 
@@ -106,7 +106,7 @@ const commonFieldsOfNewcomerAndMaliukAndBratchykCreate = {
         .integer()
         .min(1990)
         .required()
-}
+};
 const commonFieldsOfNewcomerAndMaliukAndBratchykUpdate = {
 
     email: Joi.string()
@@ -123,7 +123,7 @@ const commonFieldsOfNewcomerAndMaliukAndBratchykUpdate = {
     year_enter: Joi.number()
         .integer()
         .min(1990)
-}
+};
 
 const commonFieldsOfNewcomerAndMaliukAndUpdateBratchykAndPoshanovanyiAndExBratchyk = {
     telephone: Joi.string()
@@ -133,15 +133,15 @@ const commonFieldsOfNewcomerAndMaliukAndUpdateBratchykAndPoshanovanyiAndExBratch
         .trim(),
 
     date_birth: Joi.date(),
-}
+};
 
 const commonFieldsOfMaliukAndUpdateBratchykAndPoshanovanyiAndUpdateExBratchyk = {
     parent_id: intId()
-}
+};
 
 const commonFieldsOfMaliukAndBratchykAndPoshanovanyiAndExBratchyk = {
     avatar: Joi.object() // ?????
-}
+};
 
 const commonFieldsOfBratchykAndPoshanovanyiAndExBratchyk = {
     about: Joi.string()
@@ -149,7 +149,7 @@ const commonFieldsOfBratchykAndPoshanovanyiAndExBratchyk = {
 
     //Should not be included on front !!!
     date_fill_form: Joi.date().allow(),
-}
+};
 
 const commonFieldsOfPoshanovanyiAndExBratchyk = {
 
@@ -173,7 +173,7 @@ const commonFieldsOfPoshanovanyiAndExBratchyk = {
 
     date_vysviata: Joi.date()
         .allow()
-}
+};
 
 export const newcomerCreateSchema = Joi.object({
     ...commonFieldsCreate,

@@ -1,13 +1,15 @@
-import React, {FC} from "react";
+import React, { FC } from 'react';
 
-export const ErrorMessage: FC<{message: string|undefined}> = ({message}) => {
+export const ErrorMessage: FC<{ message: string | undefined }> = ({
+	message,
+}) => {
+	if (!message) {
+		return null;
+	}
 
-    if (!message) {
-        return null;
-    }
-
-    return <div>
-        <small style={{fontSize: '0.9em', color: 'red'}}>{message}</small>
-    </div>;
-}
-
+	return (
+		<div>
+			<small style={{ fontSize: '0.9em', color: 'red' }}>{message}</small>
+		</div>
+	);
+};

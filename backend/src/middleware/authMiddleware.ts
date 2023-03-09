@@ -5,7 +5,6 @@ import {container} from '../config/container';
 import {ApiError} from '../models/ApiError';
 import {ITokenPayload} from 'passport-azure-ad';
 import StatusCode from 'status-code-enum';
-import {RoleEnum} from "../utils/enum/Role.enum";
 
 //Array is made to use 2 middlewares in one class
 //Return array should be destructured
@@ -17,12 +16,12 @@ export default (...roles: string[]) => {
         console.log(user);
         console.log(roles);
         if (!user || !roles.includes(user.role)) {
-            return res.status(StatusCode.ClientErrorUnauthorized).json({error: ApiError.notFound('Not Authorized')})
+            return res.status(StatusCode.ClientErrorUnauthorized).json({error: ApiError.notFound('Not Authorized')});
         }
 
         return next();
-    }
+    };
 
-    return [passport.authenticate('oauth-bearer', {session: false}), handler]
+    return [passport.authenticate('oauth-bearer', {session: false}), handler];
 
-}
+};
