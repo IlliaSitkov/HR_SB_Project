@@ -1,2 +1,4 @@
 # Exclude all the .idea folders.
 /**/.idea
+.env
+nginx_ec2.conf

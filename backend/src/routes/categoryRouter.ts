@@ -7,7 +7,7 @@ import {container} from '../config/container';
 import {CategoryService} from '../services/CategoryService';
 import {Category} from '../models/Category';
 import {RoleEnum} from '../utils/enum/Role.enum';
-import {idSchema} from "../validators/idSchema";
+import {idSchema} from '../validators/idSchema';
 
 export const categoryRouter = express.Router();
 
@@ -15,7 +15,7 @@ const categoryService: CategoryService = container.get<CategoryService>(Category
 
 categoryRouter.route('/')
     .get(
-        ...authMiddleware(RoleEnum.HR),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         asyncHandler(async (req: Request, res: Response) => {
             const categories: Category[] = await categoryService.getAll();
             res.json(categories);
@@ -41,7 +41,7 @@ categoryRouter.route('/:id')
         })
     )
     .get(
-        ...authMiddleware(RoleEnum.HR),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         requestValidator(idSchema, 'id'),
         asyncHandler(async (req: Request, res: Response) => {
             const category: Category = await categoryService.getById(Number(req.params.id));

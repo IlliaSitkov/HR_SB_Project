@@ -2,17 +2,18 @@ import express, {Express} from 'express';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import {prisma} from './datasource/connectDB';
-import router from './routes';
 import {BearerStrategy, IBearerStrategyOptionWithRequest, ITokenPayload} from 'passport-azure-ad';
 import passport from 'passport';
+
+dotenv.config();
+
+import {prisma} from './datasource/connectDB';
+import router from './routes';
 import {errorHandler} from './middleware/errorHandler';
 
 prisma.$connect().then(() => {
-    console.log('DB connected')
+    console.log('DB connected');
 });
-
-dotenv.config();
 
 const app: Express = express();
 app.use(cors());
@@ -29,7 +30,7 @@ const options: IBearerStrategyOptionWithRequest = {
     passReqToCallback: false,
     loggingLevel: 'error',
     scope: ['Usr.Read']
-}
+};
 const bearerStrategy = new BearerStrategy(options, (token: ITokenPayload, done: CallableFunction) => done(null, {}, token));
 passport.use(bearerStrategy);
 

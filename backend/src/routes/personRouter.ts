@@ -1,6 +1,6 @@
-import {Request, Response, Router} from "express";
-import asyncHandler from "express-async-handler";
-import {requestValidator} from "../middleware/requestMiddleware";
+import {Request, Response, Router} from 'express';
+import asyncHandler from 'express-async-handler';
+import {requestValidator} from '../middleware/requestMiddleware';
 import {
     bratchykCreateSchema,
     bratchykUpdateSchema,
@@ -10,19 +10,21 @@ import {
     maliukUpdateSchema,
     newcomerCreateSchema,
     newcomerUpdateSchema,
+    oldStatusSchema,
     poshanovanyiCreateSchema,
     poshanovanyiUpdateSchema,
     statusSchema,
     statusUpdateSchema,
     statusUpdateSchemaToMaliuk
-} from "../validators/personSchema";
-import {idSchema} from "../validators/idSchema";
-import authMiddleware from "../middleware/authMiddleware";
-import {container} from "../config/container";
-import {PersonService} from "../services/PersonService";
-import {personValidator} from "../middleware/personValidator";
-import {RoleEnum} from "../utils/enum/Role.enum";
-import StatusCode from "status-code-enum";
+} from '../validators/personSchema';
+import {idSchema} from '../validators/idSchema';
+import authMiddleware, {newcomerAccessMiddleware} from '../middleware/authMiddleware';
+import {container} from '../config/container';
+import {PersonService} from '../services/PersonService';
+import {oldStatusValidator, statusValidator} from '../middleware/personValidator';
+import {RoleEnum} from '../utils/enum/Role.enum';
+import StatusCode from 'status-code-enum';
+import {Role} from '@prisma/client';
 
 
 const personRouter: Router = Router();
@@ -30,18 +32,17 @@ const personRouter: Router = Router();
 const personService = container.get<PersonService>(PersonService);
 
 // @route GET api/people
-personRouter.route("/")
+personRouter.route('/')
     .get(
-        ...authMiddleware(),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         asyncHandler(async (req: Request, res: Response) => {
             const people = await personService.getPeople();
             res.json(people);
         })
     )
     .post(
-        /*authorize()*/
-        ...authMiddleware(),
-        personValidator({
+        ...authMiddleware(RoleEnum.HR),
+        statusValidator({
             statusSchema,
             NEWCOMER: newcomerCreateSchema,
             MALIUK: maliukCreateSchema,
@@ -56,36 +57,63 @@ personRouter.route("/")
         })
     );
 
-personRouter.route("/sync-birthdays")
+personRouter.route('/join')
+    .post(
+        ...authMiddleware(),
+        statusValidator({
+            statusSchema,
+            NEWCOMER: newcomerCreateSchema
+        }),
+        asyncHandler(async (req: Request, res: Response) => {
+            const personDTO = await personService.checkAndFormatPersonData(req.body);
+            const newPerson = await personService.createPerson(personDTO, RoleEnum.NEWCOMER);
+            res.json(newPerson);
+        })
+    );
+
+personRouter.route('/sync-birthdays')
     .get(
         ...authMiddleware(RoleEnum.HR),
         asyncHandler(async (req: Request, res: Response) => {
             try {
                 await personService.syncAllBirthdays();
-                res.status(StatusCode.SuccessOK).send("Success");
+                res.status(StatusCode.SuccessOK).send('Success');
+            } catch (e) {
+                console.log(e);
+                res.status(StatusCode.ServerErrorInternal).send('Error has happened');
+            }
+        })
+    );
+
+personRouter.route('/nearestBirthdays')
+    .get(
+        ...authMiddleware(RoleEnum.HR),
+        asyncHandler(async (req: Request, res: Response) => {
+            try {
+                const nearestBirthdays = await personService.nearestBirthdays();
+                res.status(StatusCode.SuccessOK).json(nearestBirthdays);
             } catch (e){
                 console.log(e);
-                res.status(StatusCode.ServerErrorInternal).send("Error has happened");
+                res.status(StatusCode.ServerErrorInternal).send('Error has happened');
             }
         })
     );
 
 // @route  GET api/people/:id
-personRouter.route("/:id")
+personRouter.route('/:id')
     .get(
-        /*authorize()*/
-        ...authMiddleware(),
-        requestValidator(idSchema, "params"),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER, RoleEnum.NEWCOMER),
+        requestValidator(idSchema, 'params'),
+        newcomerAccessMiddleware(true),
         asyncHandler(async (req: Request, res: Response) => {
             const person = await personService.getPersonById(Number(req.params.id));
             res.json(person);
         })
     )
     .patch(
-        /*authorize()*/
-        ...authMiddleware(),
-        requestValidator(idSchema, "params"),
-        personValidator({
+        ...authMiddleware(RoleEnum.HR),
+        requestValidator(idSchema, 'params'),
+        statusValidator({
             statusSchema,
             NEWCOMER: newcomerUpdateSchema,
             MALIUK: maliukUpdateSchema,
@@ -100,9 +128,8 @@ personRouter.route("/:id")
         })
     )
     .delete(
-        /*authorize()*/
-        ...authMiddleware(),
-        requestValidator(idSchema, "params"),
+        ...authMiddleware(RoleEnum.HR),
+        requestValidator(idSchema, 'params'),
         asyncHandler(async (req: Request, res: Response) => {
             const person = await personService.deletePersonById(Number(req.params.id));
             res.json(person);
@@ -110,23 +137,35 @@ personRouter.route("/:id")
     );
 
 // @route  GET api/people/:id/status
-personRouter.route("/:id/status")
+personRouter.route('/:id/status')
     .put(
-        /*authorize()*/
-        ...authMiddleware(),
-        requestValidator(idSchema, "params"),
-        personValidator({
-            statusSchema,
+        ...authMiddleware(RoleEnum.HR),
+        requestValidator(idSchema, 'params'),
+        oldStatusValidator({
+            oldStatusSchema,
             NEWCOMER: statusUpdateSchemaToMaliuk,
-            MALIUK: statusUpdateSchemaToMaliuk,
+            MALIUK: statusUpdateSchema,
             BRATCHYK: statusUpdateSchema,
             POSHANOVANYI: statusUpdateSchema,
             EX_BRATCHYK: statusUpdateSchema
         }),
         asyncHandler(async (req: Request, res: Response) => {
             const {id} = req.params;
-            const updatedPerson = await personService.updateStatus(Number(id), req.body.status, req.body.date);
+            const updatedPerson = await personService.updateStatus(Number(id), req.body.newStatus, req.body.date);
             res.json(updatedPerson);
+        })
+    );
+
+// @route  GET api/people/roles
+personRouter.route('/roles')
+    .get(
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
+        asyncHandler(async (req: Request, res: Response) => {
+            const roles = Object.keys(Role).filter((role) => {
+                return isNaN(Number(role));
+            });
+            console.log(roles);
+            res.json(roles);
         })
     );
 

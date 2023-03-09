@@ -4,12 +4,15 @@
   "description": "",
   "main": "src/index.js",
   "engines": {
-    "node": "19.x"
+    "node": "16.x"
   },
   "scripts": {
     "build": "npx tsc",
-    "start": "node dist/index.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
+    "start": "npx ts-node src/index.ts",
+    "start:prod": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "eslint": "eslint --ext .js --ext .jsx src",
+    "eslint:fix": "eslint --fix --ext .ts --ext .tsx src"
   },
   "keywords": [],
   "author": "",
@@ -30,8 +33,7 @@
     "prisma": "^4.5.0",
     "reflect-metadata": "^0.1.13",
     "status-code-enum": "^1.0.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.8.4"
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
@@ -40,6 +42,13 @@
     "@types/morgan": "^1.9.3",
     "@types/node": "^16.18.3",
     "@types/passport-azure-ad": "^4.3.1",
-    "ts-node-dev": "^2.0.0"
+    "@typescript-eslint/eslint-plugin": "^5.43.0",
+    "eslint": "^8.27.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.5.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.9.3"
   }
 }

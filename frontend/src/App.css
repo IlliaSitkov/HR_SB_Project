@@ -1,1 +1,68 @@
 
+body * {
+    font-family: 'Playfair Display SC', serif;
+    /*font-weight: bolder;*/
+}
+
+:root {
+    --bin-hover: #af0303;
+    --pen-hover: #0101b4;
+    --check-hover: #046c04;
+}
+
+button.empty {
+    border: none;
+    background-color: transparent;
+}
+
+.link-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    color: #069;
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+/*==============================================*/
+button.bin:hover svg {
+    fill: var(--bin-hover);
+}
+
+button.pen:hover svg {
+    fill: var(--pen-hover);
+}
+
+button.check:hover svg {
+    fill: var(--check-hover);
+}
+
+.show-on-hover .visible-on-hover {
+    /*display: none !important;*/
+    visibility: hidden !important;
+}
+
+.show-on-hover:hover .visible-on-hover {
+    /*display: flex !important;*/
+    visibility: visible !important;
+}
+
+.item-card {
+    padding: 4px 8px 4px 4px;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+}
+
+.item-card input {
+    border: none;
+    background-color: transparent !important;
+}
+
+.show-on-hover .display-none {
+    display: none!important;
+    /*visibility: hidden !important;*/
+}
+
+/*================================================*/

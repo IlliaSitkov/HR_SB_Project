@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import {inject, injectable} from 'inversify';
 import {UserRepository} from '../repositories/UserRepository';
-import {UserAdd, UserOptionalUpdate} from '../models/User';
+import {UserAdd, UserOptionalUpdate, UserUpdateByPersonId} from '../models/User';
 
 @injectable()
 export class UserService {
@@ -26,6 +26,10 @@ export class UserService {
 
     async update(user: UserOptionalUpdate) {
         return this.userRepository.updateUser(user);
+    }
+
+    async updateByPersonId(user: UserUpdateByPersonId) {
+        return this.userRepository.updateUserByPersonId(user);
     }
 
     async deleteById(id: number) {

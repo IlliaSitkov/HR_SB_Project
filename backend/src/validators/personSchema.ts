@@ -2,24 +2,31 @@ import Joi from 'joi';
 import {intId} from './idSchema';
 import {Role, Status} from '@prisma/client';
 
-const statusField = {
-    status: Joi.string()
-        .valid(Status.NEWCOMER, Status.MALIUK, Status.BRATCHYK, Status.POSHANOVANYI, Status.EX_BRATCHYK)
-        .required()
-};
+const statusField = () => Joi.string()
+    .valid(Status.NEWCOMER, Status.MALIUK, Status.BRATCHYK, Status.POSHANOVANYI, Status.EX_BRATCHYK).required();
 
 export const statusSchema = Joi.object({
-    ...statusField
+    status: statusField()
 });
 
+export const oldStatusSchema = Joi.object({
+    oldStatus: statusField()
+});
+
+const statusSchemaTwoFields = {
+    oldStatus: statusField(),
+
+    newStatus: statusField()
+};
+
 export const statusUpdateSchema = Joi.object({
-    ...statusField,
+    ...statusSchemaTwoFields,
 
     date: Joi.date().required()
 });
 
 export const statusUpdateSchemaToMaliuk = Joi.object({
-    ...statusField
+    ...statusSchemaTwoFields
 });
 
 //---------------------------
@@ -30,7 +37,7 @@ export const statusUpdateSchemaToMaliuk = Joi.object({
 //date_fill_form, date_vysviata, date_poshanuvannia, date_exclusion
 
 const commonFieldsCreate = {
-    ...statusField,
+    status: statusField(),
 
     name: Joi.string()
         .trim()
@@ -44,31 +51,23 @@ const commonFieldsCreate = {
         .required()
 };
 const commonFieldsUpdate = {
-    ...statusField,
+    status: statusField(),
 
     name: Joi.string()
         .trim(),
 
-    parental: Joi.string()
-        .trim(),
+    parental: Joi.alternatives([Joi.string().trim(), '']),
 
     surname: Joi.string()
         .trim(),
 
-    telephone: Joi.string()
-        .trim(),
+    telephone: Joi.alternatives([Joi.string().trim(), '']),
 
-    facebook: Joi.string()
-        .trim(),
-
-    //Should not be added on front, have to be updated by separate request
-    status: Joi.string()
-        .valid(Status.NEWCOMER, Status.MALIUK, Status.BRATCHYK, Status.POSHANOVANYI, Status.EX_BRATCHYK)
-        .allow(),
+    facebook: Joi.alternatives([Joi.string().trim(), '']),
 
     //Should not be added on front
     id: Joi.allow()
-}
+};
 
 const commonFieldsOfNewcomerAndMaliukCreate = {
     date_fill_form: Joi.date()
@@ -77,13 +76,13 @@ const commonFieldsOfNewcomerAndMaliukCreate = {
     about: Joi.string()
         .trim()
         .required()
-}
+};
 const commonFieldsOfNewcomerAndMaliukUpdate = {
-    date_fill_form: Joi.date(),
+    date_fill_form: Joi.alternatives([Joi.date(), null]),
 
     about: Joi.string()
         .trim()
-}
+};
 
 const commonFieldsOfNewcomerAndMaliukAndBratchykCreate = {
 
@@ -106,65 +105,54 @@ const commonFieldsOfNewcomerAndMaliukAndBratchykCreate = {
         .integer()
         .min(1990)
         .required()
-}
+};
 const commonFieldsOfNewcomerAndMaliukAndBratchykUpdate = {
 
-    email: Joi.string()
-        .trim()
-        .email(),
+    email: Joi.alternatives([Joi.string().trim().email(), '']),
 
-    telegram: Joi.string()
-        .trim(),
+    telegram: Joi.alternatives([Joi.string().trim(), '']),
 
-    faculty_id: intId(),
+    faculty_id: Joi.alternatives([intId(), null]),
 
-    specialty_id: intId(),
+    specialty_id: Joi.alternatives([intId(), null]),
 
-    year_enter: Joi.number()
-        .integer()
-        .min(1990)
-}
+    year_enter: Joi.alternatives([Joi.number().integer().min(1990), null]),
+};
 
 const commonFieldsOfNewcomerAndMaliukAndUpdateBratchykAndPoshanovanyiAndExBratchyk = {
-    telephone: Joi.string()
-        .trim(),
+    telephone: Joi.alternatives([Joi.string().trim(), '']),
 
-    facebook: Joi.string()
-        .trim(),
+    facebook: Joi.alternatives([Joi.string().trim(), '']),
 
-    date_birth: Joi.date(),
-}
+    date_birth: Joi.alternatives([Joi.date(), null]),
+};
 
 const commonFieldsOfMaliukAndUpdateBratchykAndPoshanovanyiAndUpdateExBratchyk = {
-    parent_id: intId()
-}
+    parent_id: Joi.alternatives([intId(), null])
+};
 
 const commonFieldsOfMaliukAndBratchykAndPoshanovanyiAndExBratchyk = {
-    avatar: Joi.object() // ?????
-}
+    avatar: Joi.alternatives([Joi.string().trim(), '']),
+};
 
 const commonFieldsOfBratchykAndPoshanovanyiAndExBratchyk = {
-    about: Joi.string()
-        .trim(),
+    about: Joi.alternatives([Joi.string().trim(), '']),
 
     //Should not be included on front !!!
     date_fill_form: Joi.date().allow(),
-}
+};
 
 const commonFieldsOfPoshanovanyiAndExBratchyk = {
 
-    email: Joi.string()
-        .trim()
-        .email(),
+    email: Joi.alternatives([Joi.string().trim().email(), '']),
 
-    telegram: Joi.string()
-        .trim(),
+    telegram: Joi.alternatives([Joi.string().trim(), '']),
 
-    faculty_id: intId(),
+    faculty_id: Joi.alternatives([intId(), null]),
 
-    specialty_id: intId(),
+    specialty_id: Joi.alternatives([intId(), null]),
 
-    generation_id: intId(),
+    generation_id: Joi.alternatives([intId(), null]),
 
     //Should not be included on front !!!
     year_enter: Joi.number()
@@ -173,7 +161,7 @@ const commonFieldsOfPoshanovanyiAndExBratchyk = {
 
     date_vysviata: Joi.date()
         .allow()
-}
+};
 
 export const newcomerCreateSchema = Joi.object({
     ...commonFieldsCreate,
@@ -239,8 +227,7 @@ export const bratchykCreateSchema = Joi.object({
         .trim()
         .required(),
 
-    facebook: Joi.string()
-        .trim(),
+    facebook: Joi.alternatives([Joi.string().trim(), '']),
 
     date_birth: Joi.date()
         .required(),
@@ -248,9 +235,8 @@ export const bratchykCreateSchema = Joi.object({
     parent_id: intId()
         .required(),
 
-    role: Joi.string()
-        .valid(Role.BRATCHYK, Role.HOLOVA, Role.HR_HEAD, Role.PYSAR, Role.KOMIRNYK, Role.RAK_MEMBER, Role.RECHNYK, Role.SKARBNYK)
-        .required(),
+    role: Joi.alternatives([Joi.string()
+        .valid(Role.HOLOVA, Role.HR_HEAD, Role.PYSAR, Role.KOMIRNYK, Role.RAK_MEMBER, Role.RECHNYK, Role.SKARBNYK, Role.PR_HEAD, Role.KIS), null]),
 
     date_vysviata: Joi.date()
         .required()
@@ -268,10 +254,10 @@ export const bratchykUpdateSchema = Joi.object({
 
     ...commonFieldsOfMaliukAndUpdateBratchykAndPoshanovanyiAndUpdateExBratchyk,
 
-    role: Joi.string()
-        .valid(Role.BRATCHYK, Role.HOLOVA, Role.HR_HEAD, Role.PYSAR, Role.KOMIRNYK, Role.RAK_MEMBER, Role.RECHNYK, Role.SKARBNYK),
+    role: Joi.alternatives([Joi.string()
+        .valid(Role.HOLOVA, Role.HR_HEAD, Role.PYSAR, Role.KOMIRNYK, Role.RAK_MEMBER, Role.RECHNYK, Role.SKARBNYK, Role.PR_HEAD, Role.KIS), null]),
 
-    date_vysviata: Joi.date()
+    date_vysviata: Joi.alternatives([Joi.date(), null])
 });
 
 export const poshanovanyiCreateSchema = Joi.object({
@@ -287,7 +273,7 @@ export const poshanovanyiCreateSchema = Joi.object({
 
     ...commonFieldsOfNewcomerAndMaliukAndUpdateBratchykAndPoshanovanyiAndExBratchyk,
 
-    date_poshanuvannia: Joi.date()
+    date_poshanuvannia: Joi.alternatives([Joi.date(), null])
 
 });
 export const poshanovanyiUpdateSchema = Joi.object({
@@ -303,7 +289,7 @@ export const poshanovanyiUpdateSchema = Joi.object({
 
     ...commonFieldsOfNewcomerAndMaliukAndUpdateBratchykAndPoshanovanyiAndExBratchyk,
 
-    date_poshanuvannia: Joi.date()
+    date_poshanuvannia: Joi.alternatives([Joi.date(), null])
 });
 
 export const exBratchykCreateSchema = Joi.object({
@@ -336,5 +322,5 @@ export const exBratchykUpdateSchema = Joi.object({
 
     ...commonFieldsOfNewcomerAndMaliukAndUpdateBratchykAndPoshanovanyiAndExBratchyk,
 
-    date_exclusion: Joi.date()
+    date_exclusion: Joi.alternatives([Joi.date(), null])
 });

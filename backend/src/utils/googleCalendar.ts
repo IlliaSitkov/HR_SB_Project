@@ -1,4 +1,4 @@
-import {google} from "googleapis";
+import {google} from 'googleapis';
 
 const jwtClient = new google.auth.JWT(
     process.env.GOOGLE_CLIENT_EMAIL,
@@ -9,7 +9,7 @@ const jwtClient = new google.auth.JWT(
 
 
 export const calendar = google.calendar({
-    version: "v3",
+    version: 'v3',
     auth: jwtClient
 });
 
@@ -18,14 +18,14 @@ export const clearAllBirthdays = async () => {
         calendarId: process.env.BIRTHDAY_CALENDAR_ID as string,
     });
 
-    const allBirthdayId = result.data.items!.map((item:any) => item.id);
+    const allBirthdayId = result.data.items!.map((item: any) => item.id);
     for (const id of allBirthdayId) {
         await calendar.events.delete({
             calendarId: process.env.BIRTHDAY_CALENDAR_ID as string,
             eventId: id
         });
     }
-}
+};
 
 export const createBirthday = async (name: string, day: number, month: number) => {
     const currentDate = new Date();
@@ -39,20 +39,20 @@ export const createBirthday = async (name: string, day: number, month: number) =
     const birthday = {
         summary: `${name} birthday`,
         start: {
-            dateTime: `${closestBirthday.getFullYear()}-${closestBirthday.getMonth()}-${closestBirthday.getDate()}T09:00:00`,
+            date: `${closestBirthday.getFullYear()}-${closestBirthday.getMonth()}-${closestBirthday.getDate()}`,
             timeZone: 'Europe/Kyiv'
         },
         end: {
-            dateTime: `${closestBirthday.getFullYear()}-${closestBirthday.getMonth()}-${closestBirthday.getDate()}T21:00:00`,
+            date: `${closestBirthday.getFullYear()}-${closestBirthday.getMonth()}-${closestBirthday.getDate()}`,
             timeZone: 'Europe/Kyiv'
         },
         recurrence: ['RRULE:FREQ=YEARLY'],
         visibility: 'public',
         transparency: 'transparent'
-    }
-    return await calendar.events.insert({
+    };
+    return calendar.events.insert({
         calendarId: process.env.BIRTHDAY_CALENDAR_ID as string,
         requestBody: birthday
-    })
-}
+    });
+};
 
