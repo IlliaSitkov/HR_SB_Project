@@ -1,6 +1,6 @@
-import {Request, Response, Router} from "express";
-import asyncHandler from "express-async-handler";
-import {requestValidator} from "../middleware/requestMiddleware";
+import {Request, Response, Router} from 'express';
+import asyncHandler from 'express-async-handler';
+import {requestValidator} from '../middleware/requestMiddleware';
 import {
     bratchykCreateSchema,
     bratchykUpdateSchema,
@@ -30,7 +30,7 @@ const personRouter: Router = Router();
 const personService = container.get<PersonService>(PersonService);
 
 // @route GET api/people
-personRouter.route("/")
+personRouter.route('/')
     .get(
         ...authMiddleware(),
         asyncHandler(async (req: Request, res: Response) => {
@@ -85,11 +85,11 @@ personRouter.route("/nearestBirthdays")
     );
 
 // @route  GET api/people/:id
-personRouter.route("/:id")
+personRouter.route('/:id')
     .get(
         /*authorize()*/
         ...authMiddleware(),
-        requestValidator(idSchema, "params"),
+        requestValidator(idSchema, 'params'),
         asyncHandler(async (req: Request, res: Response) => {
             const person = await personService.getPersonById(Number(req.params.id));
             res.json(person);
@@ -98,7 +98,7 @@ personRouter.route("/:id")
     .patch(
         /*authorize()*/
         ...authMiddleware(),
-        requestValidator(idSchema, "params"),
+        requestValidator(idSchema, 'params'),
         personValidator({
             statusSchema,
             NEWCOMER: newcomerUpdateSchema,
@@ -116,7 +116,7 @@ personRouter.route("/:id")
     .delete(
         /*authorize()*/
         ...authMiddleware(),
-        requestValidator(idSchema, "params"),
+        requestValidator(idSchema, 'params'),
         asyncHandler(async (req: Request, res: Response) => {
             const person = await personService.deletePersonById(Number(req.params.id));
             res.json(person);
@@ -124,11 +124,11 @@ personRouter.route("/:id")
     );
 
 // @route  GET api/people/:id/status
-personRouter.route("/:id/status")
+personRouter.route('/:id/status')
     .put(
         /*authorize()*/
         ...authMiddleware(),
-        requestValidator(idSchema, "params"),
+        requestValidator(idSchema, 'params'),
         personValidator({
             statusSchema,
             NEWCOMER: statusUpdateSchemaToMaliuk,

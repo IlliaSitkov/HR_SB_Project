@@ -17,12 +17,12 @@ export default (...roles: string[]) => {
         console.log(user);
         console.log(roles);
         if (!user || !roles.includes(user.role)) {
-            return res.status(StatusCode.ClientErrorUnauthorized).json({error: ApiError.notFound('Not Authorized')})
+            return res.status(StatusCode.ClientErrorUnauthorized).json({error: ApiError.notFound('Not Authorized')});
         }
 
         return next();
-    }
+    };
 
-    return [passport.authenticate('oauth-bearer', {session: false}), handler]
+    return [passport.authenticate('oauth-bearer', {session: false}), handler];
 
-}
+};

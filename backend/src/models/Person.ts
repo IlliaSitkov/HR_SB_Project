@@ -1,4 +1,4 @@
-import {Status, Role} from '@prisma/client'
+import {Status, Role} from '@prisma/client';
 
 export interface Person {
     id?: number,

@@ -7,7 +7,7 @@ import {container} from '../config/container';
 import {CategoryService} from '../services/CategoryService';
 import {Category} from '../models/Category';
 import {RoleEnum} from '../utils/enum/Role.enum';
-import {idSchema} from "../validators/idSchema";
+import {idSchema} from '../validators/idSchema';
 
 export const categoryRouter = express.Router();
 

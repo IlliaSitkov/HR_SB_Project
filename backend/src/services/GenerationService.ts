@@ -45,7 +45,7 @@ export class GenerationService {
     checkAndFormatGenerationData = (generationData: any) => {
         const generation: Generation = {
             name: generationData.name
-        }
+        };
         return generation;
     };
 

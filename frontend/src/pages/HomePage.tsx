@@ -1,5 +1,8 @@
-import {Button} from "react-bootstrap";
-import {AuthenticatedTemplate, UnauthenticatedTemplate} from "@azure/msal-react";
+import { Button } from 'react-bootstrap';
+import {
+	AuthenticatedTemplate,
+	UnauthenticatedTemplate,
+} from '@azure/msal-react';
 
 import {loginHandle, logoutHandle} from "../utils/authConfig";
 import {authHost} from "../http";
@@ -40,6 +43,6 @@ const HomePage = () => {
             </AuthenticatedTemplate>
         </>
     )
-}
+};
 
 export default HomePage;
