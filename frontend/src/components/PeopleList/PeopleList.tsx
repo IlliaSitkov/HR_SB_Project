@@ -205,14 +205,14 @@ export const PeopleList: FC = () => {
 						isShown={isPersonAddShown}
 						onHide={() => setIsPersonAddShown(false)}
 					/>
-					<Button
-						variant='primary'
-						onClick={addPerson}
-						id='addPerson'
-						className='ms-4 m-2 align-self-start'
-					>
-						Додати людину
-					</Button>
+					{/*<Button*/}
+					{/*	variant='primary'*/}
+					{/*	onClick={addPerson}*/}
+					{/*	id='addPerson'*/}
+					{/*	className='ms-4 m-2 align-self-start'*/}
+					{/*>*/}
+					{/*	Додати людину*/}
+					{/*</Button>*/}
 				</>
 			) : null}
 			<SearchBar

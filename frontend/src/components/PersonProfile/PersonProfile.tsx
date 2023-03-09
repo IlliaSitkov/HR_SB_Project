@@ -898,102 +898,102 @@ export const PersonProfile: FC = () => {
 			</div>
 			{userRole === UserRole.HR ? (
 				<>
-					<div>
-						<Button
-							variant='primary'
-							onClick={updatePerson}
-							id='updatePerson'
-							className='m-2'
-						>
-							{'Оновити'}
-						</Button>
-						{isHR === 0 && status !== Statuses.NEWCOMER ? (
-							<Button
-								variant='info'
-								onClick={makePersonToBeHR}
-								id='addUser'
-								className='m-2'
-							>
-								{'Зробити HR-ом'}
-							</Button>
-						) : null}
-						{isHR === 1 ? (
-							<Button
-								variant='info'
-								onClick={deletePersonFromHRs}
-								id='deleteUser'
-								className='m-2'
-							>
-								{'Видалити з HR-ів'}
-							</Button>
-						) : null}
-						<Button
-							variant='danger'
-							onClick={() => setShowConfirmDeleteModal(!showConfirmDeleteModal)}
-							id='deletePerson'
-							className='m-2'
-						>
-							{'Видалити'}
-						</Button>
-					</div>
-					<div>
-						{status === Statuses.NEWCOMER ? (
-							<Button
-								variant='primary'
-								onClick={() =>
-									setShowConfirmUpdateStatusToMaliukModal(
-										!showConfirmUpdateStatusToMaliukModal
-									)
-								}
-								id='updateStatus'
-								className='m-2'
-							>
-								{'Новенький -> Малюк'}
-							</Button>
-						) : null}
-						{status === Statuses.MALIUK ? (
-							<Button
-								variant='primary'
-								onClick={() =>
-									setShowConfirmUpdateStatusToBratchykModal(
-										!showConfirmUpdateStatusToBratchykModal
-									)
-								}
-								id='updateStatus'
-								className='m-2'
-							>
-								{'Малюк -> Братчик'}
-							</Button>
-						) : null}
-						{status === Statuses.BRATCHYK ? (
-							<Button
-								variant='primary'
-								onClick={() =>
-									setShowConfirmUpdateStatusToPoshanovanyiModal(
-										!showConfirmUpdateStatusToPoshanovanyiModal
-									)
-								}
-								id='updateStatus'
-								className='m-2'
-							>
-								{'Братчик -> Пошанований'}
-							</Button>
-						) : null}
-						{status === Statuses.BRATCHYK ? (
-							<Button
-								variant='primary'
-								onClick={() =>
-									setShowConfirmUpdateStatusToExBratchykModal(
-										!showConfirmUpdateStatusToExBratchykModal
-									)
-								}
-								id='updateStatus'
-								className='m-2'
-							>
-								{'Братчик -> Виключений братчик'}
-							</Button>
-						) : null}
-					</div>
+					{/*<div>*/}
+					{/*	<Button*/}
+					{/*		variant='primary'*/}
+					{/*		onClick={updatePerson}*/}
+					{/*		id='updatePerson'*/}
+					{/*		className='m-2'*/}
+					{/*	>*/}
+					{/*		{'Оновити'}*/}
+					{/*	</Button>*/}
+					{/*	{isHR === 0 && status !== Statuses.NEWCOMER ? (*/}
+					{/*		<Button*/}
+					{/*			variant='info'*/}
+					{/*			onClick={makePersonToBeHR}*/}
+					{/*			id='addUser'*/}
+					{/*			className='m-2'*/}
+					{/*		>*/}
+					{/*			{'Зробити HR-ом'}*/}
+					{/*		</Button>*/}
+					{/*	) : null}*/}
+					{/*	{isHR === 1 ? (*/}
+					{/*		<Button*/}
+					{/*			variant='info'*/}
+					{/*			onClick={deletePersonFromHRs}*/}
+					{/*			id='deleteUser'*/}
+					{/*			className='m-2'*/}
+					{/*		>*/}
+					{/*			{'Видалити з HR-ів'}*/}
+					{/*		</Button>*/}
+					{/*	) : null}*/}
+					{/*	<Button*/}
+					{/*		variant='danger'*/}
+					{/*		onClick={() => setShowConfirmDeleteModal(!showConfirmDeleteModal)}*/}
+					{/*		id='deletePerson'*/}
+					{/*		className='m-2'*/}
+					{/*	>*/}
+					{/*		{'Видалити'}*/}
+					{/*	</Button>*/}
+					{/*</div>*/}
+					{/*<div>*/}
+					{/*	{status === Statuses.NEWCOMER ? (*/}
+					{/*		<Button*/}
+					{/*			variant='primary'*/}
+					{/*			onClick={() =>*/}
+					{/*				setShowConfirmUpdateStatusToMaliukModal(*/}
+					{/*					!showConfirmUpdateStatusToMaliukModal*/}
+					{/*				)*/}
+					{/*			}*/}
+					{/*			id='updateStatus'*/}
+					{/*			className='m-2'*/}
+					{/*		>*/}
+					{/*			{'Новенький -> Малюк'}*/}
+					{/*		</Button>*/}
+					{/*	) : null}*/}
+					{/*	{status === Statuses.MALIUK ? (*/}
+					{/*		<Button*/}
+					{/*			variant='primary'*/}
+					{/*			onClick={() =>*/}
+					{/*				setShowConfirmUpdateStatusToBratchykModal(*/}
+					{/*					!showConfirmUpdateStatusToBratchykModal*/}
+					{/*				)*/}
+					{/*			}*/}
+					{/*			id='updateStatus'*/}
+					{/*			className='m-2'*/}
+					{/*		>*/}
+					{/*			{'Малюк -> Братчик'}*/}
+					{/*		</Button>*/}
+					{/*	) : null}*/}
+					{/*	{status === Statuses.BRATCHYK ? (*/}
+					{/*		<Button*/}
+					{/*			variant='primary'*/}
+					{/*			onClick={() =>*/}
+					{/*				setShowConfirmUpdateStatusToPoshanovanyiModal(*/}
+					{/*					!showConfirmUpdateStatusToPoshanovanyiModal*/}
+					{/*				)*/}
+					{/*			}*/}
+					{/*			id='updateStatus'*/}
+					{/*			className='m-2'*/}
+					{/*		>*/}
+					{/*			{'Братчик -> Пошанований'}*/}
+					{/*		</Button>*/}
+					{/*	) : null}*/}
+					{/*	{status === Statuses.BRATCHYK ? (*/}
+					{/*		<Button*/}
+					{/*			variant='primary'*/}
+					{/*			onClick={() =>*/}
+					{/*				setShowConfirmUpdateStatusToExBratchykModal(*/}
+					{/*					!showConfirmUpdateStatusToExBratchykModal*/}
+					{/*				)*/}
+					{/*			}*/}
+					{/*			id='updateStatus'*/}
+					{/*			className='m-2'*/}
+					{/*		>*/}
+					{/*			{'Братчик -> Виключений братчик'}*/}
+					{/*		</Button>*/}
+					{/*	) : null}*/}
+					{/*</div>*/}
 
 					<ConfirmationModal
 						question={
@@ -1048,7 +1048,7 @@ export const PersonProfile: FC = () => {
 				</>
 			) : null}
 
-			<UserActivities personId={Number(memberId)} />
+			{/*<UserActivities personId={Number(memberId)} />*/}
 		</>
 	);
 };

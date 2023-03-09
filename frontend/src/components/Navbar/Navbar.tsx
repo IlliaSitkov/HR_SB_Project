@@ -42,21 +42,21 @@ export const Navbar = () => {
 			path: '/birthdays',
 			roles: [UserRole.HR],
 		},
-		{
-			name: 'Події',
-			path: '/events',
-			roles: [UserRole.HR, UserRole.USER],
-		},
-		{
-			name: 'Профіль',
-			path: '/profile',
-			roles: [UserRole.HR, UserRole.USER, UserRole.NEWCOMER],
-		},
-		{
-			name: 'Приєднатись до СО "Спудейське Братство НаУКМА"',
-			path: '/join',
-			roles: [UserRole.ANONYMOUS],
-		},
+		// {
+		// 	name: 'Події',
+		// 	path: '/events',
+		// 	roles: [UserRole.HR, UserRole.USER],
+		// },
+		// {
+		// 	name: 'Профіль',
+		// 	path: '/profile',
+		// 	roles: [UserRole.HR, UserRole.USER, UserRole.NEWCOMER],
+		// },
+		// {
+		// 	name: 'Приєднатись до СО "Спудейське Братство НаУКМА"',
+		// 	path: '/join',
+		// 	roles: [UserRole.ANONYMOUS],
+		// },
 	];
 
 	return (

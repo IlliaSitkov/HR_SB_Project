@@ -20,7 +20,7 @@ function App() {
 				<Provider store={store}>
 					<Navbar />
 					<AppRouter />
-					<Footer />
+					{/*<Footer />*/}
 				</Provider>
 			</BrowserRouter>
 		</AuthWrapper>
