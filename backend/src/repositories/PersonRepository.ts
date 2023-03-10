@@ -116,7 +116,7 @@ export class PersonRepository {
         return prisma.person.update({where: {id},
             data: {
                 status: Status.BRATCHYK,
-                date_vysviata: date_vysviata
+                date_vysviata
             }, include: {
                 parent: true,
                 faculty: true,
@@ -129,7 +129,7 @@ export class PersonRepository {
         return prisma.person.update({where: {id},
             data: {
                 status: Status.POSHANOVANYI,
-                date_poshanuvannia: date_poshanuvannia
+                date_poshanuvannia
             }, include: {
                 parent: true,
                 faculty: true,
@@ -142,7 +142,7 @@ export class PersonRepository {
         return prisma.person.update({where: {id},
             data: {
                 status: Status.EX_BRATCHYK,
-                date_exclusion: date_exclusion
+                date_exclusion
             }, include: {
                 parent: true,
                 faculty: true,
@@ -195,5 +195,5 @@ export class PersonRepository {
                 specialty: true,
                 generation: true,
             }});
-    }
+    };
 }

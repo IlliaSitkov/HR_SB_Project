@@ -1,5 +1,17 @@
-import { personAdded, personDeleted, personUpdated, personUpdatedStatus } from './actionCreators';
-import {createPerson, updatePerson, updatePersonStatus, deletePerson, Person, StatusUpdateDto} from '../../api/person';
+import {
+	personAdded,
+	personDeleted,
+	personUpdated,
+	personUpdatedStatus,
+} from './actionCreators';
+import {
+	createPerson,
+	updatePerson,
+	updatePersonStatus,
+	deletePerson,
+	Person,
+	StatusUpdateDto,
+} from '../../api/person';
 
 export function saveNewPerson(person: Person) {
 	return async function saveNewPersonThunk(dispatch: any, getState: any) {

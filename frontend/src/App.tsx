@@ -9,9 +9,9 @@ import { AppRouter } from './components';
 function App() {
 	return (
 		<BrowserRouter>
-            <Provider store={store}>
-                <AppRouter />
-            </Provider>
+			<Provider store={store}>
+				<AppRouter />
+			</Provider>
 		</BrowserRouter>
 	);
 }

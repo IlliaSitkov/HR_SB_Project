@@ -12,9 +12,8 @@ export class EventRepository {
     }
 
     getAllEvents = (): Promise<Event[]> => {
-        prisma.event
         return prisma.event.findMany();
-    }
+    };
 
     createEvent = async (name: string, date_start: Date, date_end: Date, description: string, category_id: number, photo: Buffer): Promise<Event> => {
         try {
@@ -28,7 +27,7 @@ export class EventRepository {
                 throw ApiError.internal('Failed to update the event');
             }
         }
-    }
+    };
 
     updateEvent = async (id: number, name: string, date_start: Date, date_end: Date, description: string, category_id: number, photo: Buffer): Promise<Event> => {
         const event: Event = await this.getEventById(id);
@@ -44,7 +43,7 @@ export class EventRepository {
                 throw ApiError.internal('Failed to update the event');
             }
         }
-    }
+    };
 
     getEventById = async (id: number): Promise<Event> => {
         try {
@@ -56,7 +55,7 @@ export class EventRepository {
                 throw ApiError.internal('Failed to update the event');
             }
         }
-    }
+    };
 
     deleteEventById = async (id: number): Promise<Event> => {
         try {
@@ -68,6 +67,6 @@ export class EventRepository {
                 throw ApiError.internal('Failed to delete the event');
             }
         }
-    }
+    };
 
 }
