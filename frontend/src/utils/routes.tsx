@@ -4,6 +4,8 @@ import { HomePage } from '../pages';
 import { MainLayout } from '../components/layout';
 import { NonIndexRouteObject } from 'react-router-dom';
 import AuthWrapper from '../components/auth/AuthWrapper';
+//import {PeopleManagerDemo} from '../PeopleManagerDemo';
+//import {PersonProfile} from '../components/PersonProfile/PersonProfile';
 
 export const routes: NonIndexRouteObject[] = [
 	{
@@ -17,7 +19,15 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '',
 				element: <HomePage />,
-			},
+			} /*,
+            {
+                path: '/people/:personId',
+                element: <PersonProfile/>
+            },
+            {
+                path: '/people',
+                element: <PeopleManagerDemo/>
+            }*/,
 		],
 	},
 ];
