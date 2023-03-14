@@ -31,6 +31,7 @@ export const Input: FC<{
 		if (refCallback) {
 			refCallback(inputRef);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [inputRef]);
 
 	return (

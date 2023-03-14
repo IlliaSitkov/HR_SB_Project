@@ -35,6 +35,7 @@ export const Item: FC<{ item: IItem }> = ({ item }) => {
 		if (edit && inputRef?.current) {
 			(inputRef.current as HTMLInputElement).focus();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [edit]);
 
 	const updateObj = async () => {
