@@ -36,7 +36,7 @@ export function updateAPersonStatus(id: number, status: StatusUpdateDto) {
 
 export function deleteAPerson(id: number) {
 	return async function deletePersonThunk(dispatch: any, getState: any) {
-		const response = await deletePerson(id);
+		await deletePerson(id);
 		dispatch(personDeleted(id));
 	};
 }
