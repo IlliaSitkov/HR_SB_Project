@@ -1,6 +1,6 @@
-import {Request, Response, Router} from 'express';
-import asyncHandler from 'express-async-handler';
-import {requestValidator} from '../middleware/requestMiddleware';
+import {Request, Response, Router} from "express";
+import asyncHandler from "express-async-handler";
+import {requestValidator} from "../middleware/requestMiddleware";
 import {
     bratchykCreateSchema,
     bratchykUpdateSchema,
@@ -13,18 +13,16 @@ import {
     poshanovanyiCreateSchema,
     poshanovanyiUpdateSchema,
     statusSchema,
-    oldStatusSchema,
     statusUpdateSchema,
     statusUpdateSchemaToMaliuk
-} from '../validators/personSchema';
-import {idSchema} from '../validators/idSchema';
-import authMiddleware from '../middleware/authMiddleware';
-import {container} from '../config/container';
-import {PersonService} from '../services/PersonService';
-import {personValidator} from '../middleware/personValidator';
-import {RoleEnum} from '../utils/enum/Role.enum';
-import StatusCode from 'status-code-enum';
-import {Role} from "@prisma/client";
+} from "../validators/personSchema";
+import {idSchema} from "../validators/idSchema";
+import authMiddleware from "../middleware/authMiddleware";
+import {container} from "../config/container";
+import {PersonService} from "../services/PersonService";
+import {personValidator} from "../middleware/personValidator";
+import {RoleEnum} from "../utils/enum/Role.enum";
+import StatusCode from "status-code-enum";
 
 
 const personRouter: Router = Router();
@@ -32,9 +30,9 @@ const personRouter: Router = Router();
 const personService = container.get<PersonService>(PersonService);
 
 // @route GET api/people
-personRouter.route('/')
+personRouter.route("/")
     .get(
-        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
+        ...authMiddleware(),
         asyncHandler(async (req: Request, res: Response) => {
             const people = await personService.getPeople();
             res.json(people);
@@ -42,7 +40,7 @@ personRouter.route('/')
     )
     .post(
         /*authorize()*/
-        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
+        ...authMiddleware(),
         personValidator({
             statusSchema,
             NEWCOMER: newcomerCreateSchema,
@@ -58,40 +56,26 @@ personRouter.route('/')
         })
     );
 
-personRouter.route('/sync-birthdays')
+personRouter.route("/sync-birthdays")
     .get(
         ...authMiddleware(RoleEnum.HR),
         asyncHandler(async (req: Request, res: Response) => {
             try {
                 await personService.syncAllBirthdays();
-                res.status(StatusCode.SuccessOK).send('Success');
-            } catch (e) {
-                console.log(e);
-                res.status(StatusCode.ServerErrorInternal).send('Error has happened');
-            }
-        })
-    );
-
-personRouter.route('/nearestBirthdays')
-    .get(
-        ...authMiddleware(RoleEnum.HR),
-        asyncHandler(async (req: Request, res: Response) => {
-            try {
-                const nearestBirthdays = await personService.nearestBirthdays();
-                res.status(StatusCode.SuccessOK).json(nearestBirthdays);
+                res.status(StatusCode.SuccessOK).send("Success");
             } catch (e){
                 console.log(e);
-                res.status(StatusCode.ServerErrorInternal).send('Error has happened');
+                res.status(StatusCode.ServerErrorInternal).send("Error has happened");
             }
         })
     );
 
 // @route  GET api/people/:id
-personRouter.route('/:id')
+personRouter.route("/:id")
     .get(
         /*authorize()*/
-        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
-        requestValidator(idSchema, 'params'),
+        ...authMiddleware(),
+        requestValidator(idSchema, "params"),
         asyncHandler(async (req: Request, res: Response) => {
             const person = await personService.getPersonById(Number(req.params.id));
             res.json(person);
@@ -99,8 +83,8 @@ personRouter.route('/:id')
     )
     .patch(
         /*authorize()*/
-        ...authMiddleware(RoleEnum.HR),
-        requestValidator(idSchema, 'params'),
+        ...authMiddleware(),
+        requestValidator(idSchema, "params"),
         personValidator({
             statusSchema,
             NEWCOMER: newcomerUpdateSchema,
@@ -117,8 +101,8 @@ personRouter.route('/:id')
     )
     .delete(
         /*authorize()*/
-        ...authMiddleware(RoleEnum.HR),
-        requestValidator(idSchema, 'params'),
+        ...authMiddleware(),
+        requestValidator(idSchema, "params"),
         asyncHandler(async (req: Request, res: Response) => {
             const person = await personService.deletePersonById(Number(req.params.id));
             res.json(person);
@@ -126,13 +110,13 @@ personRouter.route('/:id')
     );
 
 // @route  GET api/people/:id/status
-personRouter.route('/:id/status')
+personRouter.route("/:id/status")
     .put(
         /*authorize()*/
-        ...authMiddleware(RoleEnum.HR),
-        requestValidator(idSchema, 'params'),
+        ...authMiddleware(),
+        requestValidator(idSchema, "params"),
         personValidator({
-            statusSchemaTwoFields: oldStatusSchema,
+            statusSchema,
             NEWCOMER: statusUpdateSchemaToMaliuk,
             MALIUK: statusUpdateSchemaToMaliuk,
             BRATCHYK: statusUpdateSchema,
@@ -141,21 +125,8 @@ personRouter.route('/:id/status')
         }),
         asyncHandler(async (req: Request, res: Response) => {
             const {id} = req.params;
-            const updatedPerson = await personService.updateStatus(Number(id), req.body.newStatus, req.body.date);
+            const updatedPerson = await personService.updateStatus(Number(id), req.body.status, req.body.date);
             res.json(updatedPerson);
-        })
-    );
-
-// @route  GET api/people/roles
-personRouter.route('/roles')
-    .get(
-        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
-        asyncHandler(async (req: Request, res: Response) => {
-            const roles = Object.keys(Role).filter((role) => {
-                return isNaN(Number(role));
-            });
-            console.log(roles);
-            res.json(roles);
         })
     );
 

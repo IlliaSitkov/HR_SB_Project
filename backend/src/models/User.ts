@@ -12,4 +12,4 @@ export interface UserOptionalUpdate {
     role?: RoleEnum
 }
 
-export type UserAdd = Pick<User, 'personId' | 'role'>;
+export type UserAdd = Pick<User, 'personId' | 'role'>

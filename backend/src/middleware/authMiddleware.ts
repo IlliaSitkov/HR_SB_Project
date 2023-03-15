@@ -14,14 +14,13 @@ export default (...roles: string[]) => {
     const handler = async ({authInfo}: { authInfo: ITokenPayload }, res: Response, next: NextFunction) => {
         const user = await userService.getUserByEmail(authInfo.preferred_username!);
         console.log(user);
-        console.log(roles);
         if (!user || !roles.includes(user.role)) {
-            return res.status(StatusCode.ClientErrorUnauthorized).json({error: ApiError.notFound('Not Authorized')});
+            return res.status(StatusCode.ClientErrorUnauthorized).json({error: ApiError.notFound('Not Authorized')})
         }
 
         return next();
-    };
+    }
 
-    return [passport.authenticate('oauth-bearer', {session: false}), handler];
+    return [passport.authenticate('oauth-bearer', {session: false}), handler]
 
-};
+}
