@@ -2,7 +2,7 @@ import { HOME_ROUTE } from './routesNames';
 import { HomePage } from '../pages';
 import { MainLayout } from '../components/layout';
 import { NonIndexRouteObject } from 'react-router-dom';
-import AuthWrapper from '../components/auth/AuthWrapper';
+// import AuthWrapper from '../components/auth/AuthWrapper';
 import { UserActivities } from '../components/UserActivities/UserActivities';
 //import {PeopleManagerDemo} from '../PeopleManagerDemo';
 //import {PersonProfile} from '../components/PersonProfile/PersonProfile';
@@ -10,11 +10,7 @@ import { UserActivities } from '../components/UserActivities/UserActivities';
 export const routes: NonIndexRouteObject[] = [
 	{
 		path: HOME_ROUTE,
-		element: (
-			<AuthWrapper>
-				<MainLayout />
-			</AuthWrapper>
-		),
+		element: <MainLayout />,
 		children: [
 			{
 				path: '',

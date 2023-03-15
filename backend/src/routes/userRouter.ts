@@ -9,10 +9,21 @@ import {requestValidator} from '../middleware/requestMiddleware';
 import {addUserSchema, updateUserSchema} from '../validators/userSchema';
 import {User} from '../models/User';
 import {idSchema} from '../validators/idSchema';
+import {ITokenPayload} from 'passport-azure-ad';
 
 const userRouter: Router = Router();
 
 const userService = container.get<UserService>(UserService);
+
+userRouter.route('/me')
+    //Get all users
+    .get(
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
+        asyncHandler(async (req: Request, res: Response) => {
+            const user = await userService.getUserByEmail((req.authInfo as ITokenPayload).preferred_username!);
+            res.status(StatusCode.SuccessOK).json(user);
+        })
+    );
 
 userRouter.route('/')
     //Get all users
