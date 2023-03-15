@@ -23,6 +23,7 @@ import {PersonService} from '../services/PersonService';
 import {personValidator} from '../middleware/personValidator';
 import {RoleEnum} from '../utils/enum/Role.enum';
 import StatusCode from 'status-code-enum';
+import {Role} from "@prisma/client";
 
 
 const personRouter: Router = Router();
@@ -32,7 +33,7 @@ const personService = container.get<PersonService>(PersonService);
 // @route GET api/people
 personRouter.route('/')
     .get(
-        ...authMiddleware(),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         asyncHandler(async (req: Request, res: Response) => {
             const people = await personService.getPeople();
             res.json(people);
@@ -40,7 +41,7 @@ personRouter.route('/')
     )
     .post(
         /*authorize()*/
-        ...authMiddleware(),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         personValidator({
             statusSchema,
             NEWCOMER: newcomerCreateSchema,
@@ -88,7 +89,7 @@ personRouter.route('/nearestBirthdays')
 personRouter.route('/:id')
     .get(
         /*authorize()*/
-        ...authMiddleware(),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         requestValidator(idSchema, 'params'),
         asyncHandler(async (req: Request, res: Response) => {
             const person = await personService.getPersonById(Number(req.params.id));
@@ -97,7 +98,7 @@ personRouter.route('/:id')
     )
     .patch(
         /*authorize()*/
-        ...authMiddleware(),
+        ...authMiddleware(RoleEnum.HR),
         requestValidator(idSchema, 'params'),
         personValidator({
             statusSchema,
@@ -115,7 +116,7 @@ personRouter.route('/:id')
     )
     .delete(
         /*authorize()*/
-        ...authMiddleware(),
+        ...authMiddleware(RoleEnum.HR),
         requestValidator(idSchema, 'params'),
         asyncHandler(async (req: Request, res: Response) => {
             const person = await personService.deletePersonById(Number(req.params.id));
@@ -127,7 +128,7 @@ personRouter.route('/:id')
 personRouter.route('/:id/status')
     .put(
         /*authorize()*/
-        ...authMiddleware(),
+        ...authMiddleware(RoleEnum.HR),
         requestValidator(idSchema, 'params'),
         personValidator({
             statusSchema,
@@ -141,6 +142,19 @@ personRouter.route('/:id/status')
             const {id} = req.params;
             const updatedPerson = await personService.updateStatus(Number(id), req.body.status, req.body.date);
             res.json(updatedPerson);
+        })
+    );
+
+// @route  GET api/people/roles
+personRouter.route('/roles')
+    .get(
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
+        asyncHandler(async (req: Request, res: Response) => {
+            const roles = Object.keys(Role).filter((role) => {
+                return isNaN(Number(role));
+            });
+            console.log(roles);
+            res.json(roles);
         })
     );
 

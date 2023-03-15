@@ -13,6 +13,8 @@ import { PersonItem } from './components/PersonItem/PersonItem';
 import { Button, Col, Row } from 'react-bootstrap';
 import { Generation, undefinedGeneration } from '../../api/generation';
 import { DropdownWithCheckboxes } from '../../common/DropdownWithCheckboxes/DropdownWithCheckboxes';
+import { getAllFaculties } from '../../api/faculty';
+import { getAllGenerations } from '../../api/generation/generation.service';
 
 const getValuesOfChosenCheckboxes = (name: string) => {
 	const checkboxes: NodeListOf<any> = document.getElementsByName(name);
@@ -73,8 +75,9 @@ export const PeopleList: FC<{
 
 		if (filterHasParent.length === 0 || filterHasParent.length === 2)
 			suitable = true;
-		else if (filterHasParent.includes('Немає') && person.parent) return false;
-		else if (filterHasParent.includes('Є') && !person.parent) return false;
+		else if (filterHasParent.includes('Немає') && person.parent_id)
+			return false;
+		else if (filterHasParent.includes('Є') && !person.parent_id) return false;
 
 		if (
 			filterGenerations.length === 0 ||
@@ -82,13 +85,13 @@ export const PeopleList: FC<{
 		)
 			suitable = true;
 		else if (
-			!person.generation &&
+			!person.generation_id &&
 			filterGenerations.includes(undefinedGeneration)
 		)
 			suitable = true;
 		else if (
-			!person.generation ||
-			!filterGenerations.includes(person.generation)
+			!person.generation_id ||
+			!filterGenerations.find((g) => g.id === person.generation_id)
 		)
 			return false;
 
@@ -111,10 +114,14 @@ export const PeopleList: FC<{
 			if (peopleRes) {
 				setGotData(3);
 				dispatch(peopleGet(peopleRes));
+
+				const generationsCopy = [undefinedGeneration];
+				let generations = await getAllGenerations();
+				generations = generationsCopy.concat(generations);
+				setPossibleGenerations(generations);
+
 				const yearsCopy: Array<string> = [];
 				yearsCopy.push('Не встановлено');
-				const generationsCopy: Array<Generation> = [];
-				generationsCopy.push(undefinedGeneration);
 				peopleRes.forEach((person) => {
 					if (
 						person.year_enter &&
@@ -122,15 +129,8 @@ export const PeopleList: FC<{
 					) {
 						yearsCopy.push(person.year_enter.toString());
 					}
-					if (
-						person.generation &&
-						!generationsCopy.includes(person.generation)
-					) {
-						generationsCopy.push(person.generation);
-					}
 				});
 				setPossibleYears(yearsCopy);
-				setPossibleGenerations(generationsCopy);
 			} else {
 				alert('Помилка при завантаженні людей!');
 				setGotData(2);
@@ -140,7 +140,6 @@ export const PeopleList: FC<{
 			setGotData(1);
 			fetchData();
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const addPerson = () => {

@@ -5,11 +5,15 @@ import {Status} from '@prisma/client';
 import {ApiError} from '../models/ApiError';
 import {GenerationService} from './GenerationService';
 import {clearAllBirthdays, createBirthday} from '../utils/googleCalendar';
+import {FacultyRepository} from "../repositories/FacultyRepository";
+import {SpecialtyRepository} from "../repositories/SpecialtyRepository";
 
 @injectable()
 export class PersonService {
 
     public constructor(@inject(PersonRepository) private personRepository: PersonRepository,
+                       @inject(FacultyRepository) private facultyRepository: FacultyRepository,
+                       @inject(SpecialtyRepository) private specialtyRepository: SpecialtyRepository,
                        @inject(GenerationService) private generationService: GenerationService) {
     }
 
@@ -56,8 +60,8 @@ export class PersonService {
     };
 
     checkAndFormatPersonData = async (personData: any) => {
-        const faculty = await this.personRepository.getFaculty(personData.faculty_id);
-        const specialty = await this.personRepository.getSpecialty(personData.specialty_id);
+        const faculty = await this.facultyRepository.getFaculty(personData.faculty_id);
+        const specialty = await this.specialtyRepository.getSpecialty(personData.specialty_id);
         const parent = personData.parent_id ?
             await this.getPersonById(personData.parent_id) : undefined;
         if (parent && !this.canBeParent(parent))

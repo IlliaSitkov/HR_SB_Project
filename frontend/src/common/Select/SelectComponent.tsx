@@ -30,7 +30,7 @@ export const Select: FC<{
 				name={id}
 				className='form-select'
 			>
-				{noneSelectedOption && <option value={-1}>Не обрано</option>}
+				{noneSelectedOption && <option value={-1}>Не встановлено</option>}
 				{data.map((d) => {
 					const optId = idSelector(d);
 					return (

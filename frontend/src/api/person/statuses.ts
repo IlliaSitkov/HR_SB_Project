@@ -1,3 +1,11 @@
+export enum Statuses {
+	NEWCOMER = 'NEWCOMER',
+	MALIUK = 'MALIUK',
+	BRATCHYK = 'BRATCHYK',
+	POSHANOVANYI = 'POSHANOVANYI',
+	EX_BRATCHYK = 'EX_BRATCHYK',
+}
+
 export const statusesColorful = {
 	NEWCOMER: {
 		ukr: 'Новенький',

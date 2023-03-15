@@ -168,26 +168,6 @@ export class PersonRepository {
         }
     };
 
-    getFaculty = async (id: number | undefined) => {
-        let faculty;
-        if (id) {
-            faculty = await prisma.faculty.findFirst({where: {id}});
-            if (!faculty)
-                {throw ApiError.notFound(`Факультет з id:${id} не знайдено`);}
-        }
-        return faculty;
-    };
-
-    getSpecialty = async (id: number | undefined) => {
-        let specialty;
-        if (id) {
-            specialty = await prisma.specialty.findFirst({where: {id}});
-            if (!specialty)
-                {throw ApiError.notFound(`Спеціальність з id:${id} не знайдено`);}
-        }
-        return specialty;
-    };
-
     findPeopleByGenerationId = async (generation_id: number) => {
         return prisma.person.findMany({where: {generation_id}, include: {
                 parent: true,

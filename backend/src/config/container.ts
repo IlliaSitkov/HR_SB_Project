@@ -9,6 +9,10 @@ import {UserService} from '../services/UserService';
 import {UserRepository} from '../repositories/UserRepository';
 import {PersonRepository} from '../repositories/PersonRepository';
 import {PersonService} from '../services/PersonService';
+import {FacultyRepository} from "../repositories/FacultyRepository";
+import {FacultyService} from "../services/FacultyService";
+import {SpecialtyRepository} from "../repositories/SpecialtyRepository";
+import {SpecialtyService} from "../services/SpecialtyService";
 
 const container = new Container();
 
@@ -24,5 +28,11 @@ container.bind<UserService>(UserService).to(UserService);
 
 container.bind<PersonRepository>(PersonRepository).to(PersonRepository);
 container.bind<PersonService>(PersonService).to(PersonService);
+
+container.bind<FacultyRepository>(FacultyRepository).to(FacultyRepository);
+container.bind<FacultyService>(FacultyService).to(FacultyService);
+
+container.bind<SpecialtyRepository>(SpecialtyRepository).to(SpecialtyRepository);
+container.bind<SpecialtyService>(SpecialtyService).to(SpecialtyService);
 
 export { container };
