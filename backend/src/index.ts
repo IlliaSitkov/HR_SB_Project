@@ -9,7 +9,7 @@ import passport from 'passport';
 import {errorHandler} from './middleware/errorHandler';
 
 prisma.$connect().then(() => {
-    console.log('DB connected');
+    console.log('DB connected')
 });
 
 dotenv.config();
@@ -29,7 +29,7 @@ const options: IBearerStrategyOptionWithRequest = {
     passReqToCallback: false,
     loggingLevel: 'error',
     scope: ['Usr.Read']
-};
+}
 const bearerStrategy = new BearerStrategy(options, (token: ITokenPayload, done: CallableFunction) => done(null, {}, token));
 passport.use(bearerStrategy);
 

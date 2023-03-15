@@ -20,7 +20,7 @@ export class GenerationService {
     };
 
     createGeneration = async (generation: GenerationDto) => {
-        return this.generationRepository.createGeneration(generation);
+        return await this.generationRepository.createGeneration(generation);
     };
 
     updateGeneration = async (id: number, generation: GenerationDto) => {
@@ -45,7 +45,7 @@ export class GenerationService {
     checkAndFormatGenerationData = (generationData: any) => {
         const generation: Generation = {
             name: generationData.name
-        };
+        }
         return generation;
     };
 

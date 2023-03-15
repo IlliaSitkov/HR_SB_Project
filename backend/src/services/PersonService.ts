@@ -1,30 +1,17 @@
 import {inject, injectable} from 'inversify';
 import {PersonRepository} from '../repositories/PersonRepository';
-import {Person, PersonBirthday, PersonPatchDto, PersonPostDto} from '../models/Person';
+import {Person, PersonPatchDto, PersonPostDto} from '../models/Person';
 import {Status} from '@prisma/client';
 import {ApiError} from '../models/ApiError';
 import {GenerationService} from './GenerationService';
-import {clearAllBirthdays, createBirthday} from '../utils/googleCalendar';
-import {FacultyRepository} from "../repositories/FacultyRepository";
-import {SpecialtyRepository} from "../repositories/SpecialtyRepository";
+import {clearAllBirthdays, createBirthday} from "../utils/googleCalendar";
 
 @injectable()
 export class PersonService {
 
     public constructor(@inject(PersonRepository) private personRepository: PersonRepository,
-                       @inject(FacultyRepository) private facultyRepository: FacultyRepository,
-                       @inject(SpecialtyRepository) private specialtyRepository: SpecialtyRepository,
                        @inject(GenerationService) private generationService: GenerationService) {
     }
-
-    private addBirthdayToCalendar = (person: Person) => {
-        //There is birthday and person is in organization
-        return <boolean>(person.date_birth &&
-            !person.date_poshanuvannia &&
-            !person.date_exclusion &&
-            person.status !== Status.EX_BRATCHYK &&
-            person.status !== Status.POSHANOVANYI);
-    };
 
     getPeople = async () => {
         return this.personRepository.getPeople();
@@ -50,22 +37,29 @@ export class PersonService {
 
     syncAllBirthdays = async () => {
         await clearAllBirthdays();
-        const people = (await this.getPeople()).filter(this.addBirthdayToCalendar);
-        for (const person of people) {
+        const people = (await this.getPeople()).filter(person => {
+            //There is birthday and person is in organization
+            return person.date_birth &&
+                !person.date_poshanuvannia &&
+                !person.date_exclusion &&
+                person.status !== Status.EX_BRATCHYK &&
+                person.status !== Status.POSHANOVANYI
+        });
+        for(const person of people){
             await createBirthday(`${person.name} ${person.surname}`,
                 person.date_birth!.getDate(),
                 //TODO: there is bug and month returns as real-1
                 person.date_birth!.getMonth() + 1);
         }
-    };
+    }
 
     checkAndFormatPersonData = async (personData: any) => {
-        const faculty = await this.facultyRepository.getFaculty(personData.faculty_id);
-        const specialty = await this.specialtyRepository.getSpecialty(personData.specialty_id);
+        const faculty = await this.personRepository.getFaculty(personData.faculty_id);
+        const specialty = await this.personRepository.getSpecialty(personData.specialty_id);
         const parent = personData.parent_id ?
             await this.getPersonById(personData.parent_id) : undefined;
         if (parent && !this.canBeParent(parent))
-            {throw ApiError.badRequest('Ця людина не може бути патроном. Вона має бути братчиком або пошанованим');}
+            throw ApiError.badRequest('Ця людина не може бути патроном. Вона має бути братчиком або пошанованим');
         const generation = personData.generation_id ?
             await this.generationService.getGenerationById(personData.generation_id) : undefined;
         const role = personData.role && personData.status === Status.BRATCHYK ? personData.role : undefined;
@@ -87,7 +81,7 @@ export class PersonService {
             facebook: personData.facebook,
 
             status: personData.status,
-            role,
+            role: role,
             parent_id: parent ? parent.id : null,
             generation_id: generation ? generation.id : null,
             about: personData.about,
@@ -96,48 +90,32 @@ export class PersonService {
             date_vysviata: personData.date_vysviata,
             date_poshanuvannia: personData.date_poshanuvannia,
             date_exclusion: personData.date_exclusion
-        };
+        }
         return person;
     };
 
-    updateStatus = async (id: number, newStatus: Status, date: Date) => {
+    updateStatus = async (id: number, status: Status, date: Date) => {
         const person = await this.getPersonById(id);
-        if (newStatus === person.status)
-            {return person;}
+        if (status === person.status)
+            return person;
         //newcomer -> maliuk
-        if (person.status === Status.NEWCOMER && newStatus === Status.MALIUK)
-            {return this.personRepository.updatePersonStatusToMaliuk(id);}
+        if (person.status === Status.NEWCOMER && status === Status.MALIUK)
+            return await this.personRepository.updatePersonStatusToMaliuk(id);
         //maliuk -> bratchyk (add date_vysviata)
-        if (person.status === Status.MALIUK && newStatus === Status.BRATCHYK)
-            {return this.personRepository.updatePersonStatusToBratchyk(id, date);}
+        if (person.status === Status.MALIUK && status === Status.BRATCHYK)
+            return await this.personRepository.updatePersonStatusToBratchyk(id, date);
         if (person.status === Status.BRATCHYK) {
             // bratchyk -> poshanovanyi (add date_poshanuvannia)
-            if (newStatus === Status.POSHANOVANYI)
-                {return this.personRepository.updatePersonStatusToPoshanovanyi(id, date);}
+            if (status === Status.POSHANOVANYI)
+                return await this.personRepository.updatePersonStatusToPoshanovanyi(id, date);
             // bratchyk -> exBrathyk (add date_exclusion)
-            if (newStatus === Status.EX_BRATCHYK)
-                {return this.personRepository.updatePersonStatusToExBratchyk(id, date);}
+            if (status === Status.EX_BRATCHYK)
+                return await this.personRepository.updatePersonStatusToExBratchyk(id, date);
         }
         throw ApiError.badRequest('Статус не може бути оновлено');
-    };
-
-    nearestBirthdays = async () => {
-        const people = (await this.getPeople()).filter(this.addBirthdayToCalendar);
-
-        const birthdays: PersonBirthday[] = people.map((person:Person) => {
-            return {
-                birthday: person.date_birth,
-                name: person.name,
-                parental: person.parental,
-                surname: person.surname,
-                email: person.email
-            };
-        });
-
-        return birthdays;
-    };
+    }
 
     canBeParent = (parent: Person | undefined) => {
         return parent && (parent.status === Status.BRATCHYK || parent.status === Status.POSHANOVANYI);
-    };
+    }
 }
