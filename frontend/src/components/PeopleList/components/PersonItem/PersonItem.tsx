@@ -9,7 +9,7 @@ export const PersonItem: FC<{ person: Person }> = ({ person }) => {
 	const navigate = useNavigate();
 
 	const showPersonDetails = () => {
-		navigate(`/people/${person.id}`, { replace: true });
+		navigate(`/members/${person.id}`, { replace: true });
 	};
 
 	return (

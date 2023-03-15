@@ -145,7 +145,7 @@ export const PeopleList: FC<{
 
 	const addPerson = () => {
 		//OR open popup
-		navigate('/people/add', { replace: true });
+		navigate('/members/add', { replace: true });
 	};
 
 	const updateFilters = (param: string) => {

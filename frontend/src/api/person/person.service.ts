@@ -29,11 +29,11 @@ const tempData = [
 ];
 
 export const getAllPeople = async (): Promise<Person[]> => {
-	/*const data = (await axios.get(url)).data;
+	const data = (await axios.get(url)).data;
 	console.log('Got people: ');
 	console.log(data);
-	return data;*/
-	return tempData;
+	return data;
+	//return tempData;
 };
 
 export const createPerson = async (person: Person): Promise<Person> => {

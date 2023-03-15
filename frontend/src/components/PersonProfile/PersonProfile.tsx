@@ -32,13 +32,19 @@ import {
 import { peopleGet } from '../../store/people/actionCreators';
 import { dateToString } from '../../utils/dates';
 import { ErrorMessageBig } from '../../common/ErrorMessage/ErrorMessageBig';
+import {
+	createUser,
+	deleteUser,
+	getUserByEmail,
+} from '../../api/user/user.service';
+import { UserRole } from '../../api/common/types';
 
 export const PersonProfile: FC = () => {
 	const people = useSelector(getPeople);
 	const possibleParents = useSelector(getPeoplePossibleParents);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const { personId } = useParams();
+	const { memberId } = useParams();
 	const [person, setPerson] = useState<Person | null>(null);
 
 	const [surname, setSurname] = useState<string>('');
@@ -71,10 +77,16 @@ export const PersonProfile: FC = () => {
 	const [specialties, setSpecialties] = useState<Specialty[]>([]);
 	const [yearsEnter, setYearsEnter] = useState<number[]>([]);
 
+	//-1 - not fetched yet or person does not have email
+	//0 - fetched, no user
+	//1 - fetched, user exists
+	const [isUser, setIsUser] = useState<number>(-1);
+	const [userId, setUserId] = useState<number>(-1);
+
 	const [error, setError] = useState('');
 
 	const goBack = () => {
-		navigate('/people', { replace: true });
+		navigate('/members', { replace: true });
 	};
 
 	const resetError = () => setError('');
@@ -92,7 +104,7 @@ export const PersonProfile: FC = () => {
 		}
 
 		const p: Person = people.find(
-			(person: Person) => person.id === Number(personId)
+			(person: Person) => person.id === Number(memberId)
 		);
 		if (p) {
 			console.log('Start person: ');
@@ -143,6 +155,14 @@ export const PersonProfile: FC = () => {
 
 			const specialties = await getAllSpecialties();
 			setSpecialties(specialties);
+
+			if (p.email) {
+				const user = await getUserByEmail(p.email);
+				if (user) {
+					setIsUser(1);
+					setUserId(user.id);
+				} else setIsUser(0);
+			}
 		}
 	};
 
@@ -205,7 +225,7 @@ export const PersonProfile: FC = () => {
 		//resetError();
 		// @ts-ignore
 		dispatch(deleteAPerson(person.id));
-		navigate('/people', { replace: true });
+		navigate('/members', { replace: true });
 	};
 
 	const updatePerson = () => {
@@ -309,7 +329,9 @@ export const PersonProfile: FC = () => {
 		field: any,
 		fieldName: string
 	): void => {
-		if (doesFieldNeedUpdate(field, fieldName)) person[fieldName] = field;
+		if (doesFieldNeedUpdate(field, fieldName)) {
+			person[fieldName] = field;
+		}
 	};
 
 	const addFieldFromSelectIfNeeded = (
@@ -339,6 +361,30 @@ export const PersonProfile: FC = () => {
 		} else return false;
 	};
 
+	const addPersonUser = async () => {
+		try {
+			resetError();
+			const user = await createUser({
+				personId: Number(memberId),
+				role: UserRole.HR,
+			});
+			setIsUser(1);
+			setUserId(user.id!);
+		} catch (e) {
+			setError((e as any).response.data.message);
+		}
+	};
+
+	const deletePersonUser = async () => {
+		try {
+			resetError();
+			await deleteUser(userId);
+			setIsUser(0);
+		} catch (e) {
+			setError((e as any).response.data.message);
+		}
+	};
+
 	const getStatusUkr = () => {
 		// @ts-ignore
 		const s = statusesColorful[status];
@@ -356,7 +402,6 @@ export const PersonProfile: FC = () => {
 		<Navigate to='/' />
 	) : (
 		<>
-			<ErrorMessageBig message={error} />
 			<Button
 				id='backPerson'
 				onClick={goBack}
@@ -366,7 +411,7 @@ export const PersonProfile: FC = () => {
 				Назад
 			</Button>
 			<div className='w-100'>
-				<h3 className='text-center'>Профіль</h3>
+				<h3 className='text-center'>Профіль учасника</h3>
 				<Row xs={1} sm={1} md={2} lg={2} className='m-2'>
 					<Col className='d-flex'>
 						<div className='m-2 flex-fill'>
@@ -643,6 +688,29 @@ export const PersonProfile: FC = () => {
 				) : null}
 			</div>
 			<div>
+				<ErrorMessageBig message={error} />
+			</div>
+			<div>
+				{isUser === 0 ? (
+					<Button
+						variant='info'
+						onClick={addPersonUser}
+						id='addUser'
+						className='m-2'
+					>
+						{'Зробити користувачем (HR-ом)'}
+					</Button>
+				) : null}
+				{isUser === 1 ? (
+					<Button
+						variant='info'
+						onClick={deletePersonUser}
+						id='deleteUser'
+						className='m-2'
+					>
+						{'Видалити з користувачів (HR-ів)'}
+					</Button>
+				) : null}
 				<Button
 					variant='primary'
 					onClick={updatePerson}
@@ -660,7 +728,7 @@ export const PersonProfile: FC = () => {
 					{'Видалити'}
 				</Button>
 			</div>
-			<UserActivities personId={Number(personId)} />
+			<UserActivities personId={Number(memberId)} />
 		</>
 	);
 };
