@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display+SC&display=swap');
+a:link {
+    text-decoration: none;
+}
+
+.tab-name {
+    font-size: 1.2em;
+    color: rgb(32,60,114);
+}
+
+.tab-name:hover {
+    color: rgb(57, 143, 186);
+}
+
+.tab-selected > .tab-name {
+    color: rgb(255, 145, 0);
+}
+
+.menu-bar {
+    font-family: 'Playfair Display SC', serif;
+    background-color: rgb(217, 237, 248);
+    /*background-color: rgb(170,211,234);*/
+    box-shadow: 0 4px 4px rgb(34, 62, 100, .2);
+    padding: 12px 64px;
+}
+
+.btn-bordered {
+    background-color: transparent;
+    border-radius: 64px;
+    padding: 8px 16px;
+    font-size: 0.9em;
+    border: 1px solid rgb(32,60,114);
+}
+
+.btn-bordered:hover {
+    background-color: rgb(179, 224, 248);
+}
+
+.btn-bordered:active {
+    background-color: rgb(32,60,114);
+    color: rgb(213, 237, 250);
+}
