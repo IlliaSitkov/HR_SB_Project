@@ -13,6 +13,7 @@ import {
     poshanovanyiCreateSchema,
     poshanovanyiUpdateSchema,
     statusSchema,
+    oldStatusSchema,
     statusUpdateSchema,
     statusUpdateSchemaToMaliuk
 } from '../validators/personSchema';
@@ -131,7 +132,7 @@ personRouter.route('/:id/status')
         ...authMiddleware(RoleEnum.HR),
         requestValidator(idSchema, 'params'),
         personValidator({
-            statusSchema,
+            statusSchemaTwoFields: oldStatusSchema,
             NEWCOMER: statusUpdateSchemaToMaliuk,
             MALIUK: statusUpdateSchemaToMaliuk,
             BRATCHYK: statusUpdateSchema,
@@ -140,7 +141,7 @@ personRouter.route('/:id/status')
         }),
         asyncHandler(async (req: Request, res: Response) => {
             const {id} = req.params;
-            const updatedPerson = await personService.updateStatus(Number(id), req.body.status, req.body.date);
+            const updatedPerson = await personService.updateStatus(Number(id), req.body.newStatus, req.body.date);
             res.json(updatedPerson);
         })
     );

@@ -1,10 +1,7 @@
-import { Generation } from '../generation';
-import { Faculty } from '../faculty';
-import { Specialty } from '../specialty';
-
 export interface StatusUpdateDto {
-	status: string;
-	date?: Date;
+	oldStatus: string;
+	newStatus: string;
+	date?: Date | null;
 }
 
 export interface Person {

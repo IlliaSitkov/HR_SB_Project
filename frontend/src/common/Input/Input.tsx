@@ -49,7 +49,7 @@ export const Input: FC<{
 				onChange={onChange}
 				required={required}
 				placeholder={placeholder}
-				min={type === 'date' ? '01-01-1960' : 0}
+				min={type === 'date' ? '1960-01-01' : 0}
 				autoComplete='off'
 			/>
 		</div>

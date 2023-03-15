@@ -100,22 +100,22 @@ export class PersonService {
         return person;
     };
 
-    updateStatus = async (id: number, status: Status, date: Date) => {
+    updateStatus = async (id: number, newStatus: Status, date: Date) => {
         const person = await this.getPersonById(id);
-        if (status === person.status)
+        if (newStatus === person.status)
             {return person;}
         //newcomer -> maliuk
-        if (person.status === Status.NEWCOMER && status === Status.MALIUK)
+        if (person.status === Status.NEWCOMER && newStatus === Status.MALIUK)
             {return this.personRepository.updatePersonStatusToMaliuk(id);}
         //maliuk -> bratchyk (add date_vysviata)
-        if (person.status === Status.MALIUK && status === Status.BRATCHYK)
+        if (person.status === Status.MALIUK && newStatus === Status.BRATCHYK)
             {return this.personRepository.updatePersonStatusToBratchyk(id, date);}
         if (person.status === Status.BRATCHYK) {
             // bratchyk -> poshanovanyi (add date_poshanuvannia)
-            if (status === Status.POSHANOVANYI)
+            if (newStatus === Status.POSHANOVANYI)
                 {return this.personRepository.updatePersonStatusToPoshanovanyi(id, date);}
             // bratchyk -> exBrathyk (add date_exclusion)
-            if (status === Status.EX_BRATCHYK)
+            if (newStatus === Status.EX_BRATCHYK)
                 {return this.personRepository.updatePersonStatusToExBratchyk(id, date);}
         }
         throw ApiError.badRequest('Статус не може бути оновлено');

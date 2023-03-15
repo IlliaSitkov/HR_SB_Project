@@ -3,6 +3,7 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPeople, getPeoplePossibleParents } from '../../store/selectors';
 import {
+	getAllPeople,
 	getFullName,
 	Person,
 	roles,
@@ -12,8 +13,7 @@ import {
 import { UserActivities } from '../UserActivities/UserActivities';
 import { changeHandler } from '../../shared';
 import { Input } from '../../common/Input/Input';
-import { Button, Card } from 'react-bootstrap';
-import { ErrorMessage } from '../../common/ErrorMessage/ErrorMessage';
+import { Button, Col, Row } from 'react-bootstrap';
 import { ItemManager } from '../ItemManager/ItemManager';
 import {
 	createGeneration,
@@ -29,6 +29,9 @@ import {
 	updateAPerson,
 	updateAPersonStatus,
 } from '../../store/people/thunk';
+import { peopleGet } from '../../store/people/actionCreators';
+import { dateToString } from '../../utils/dates';
+import { ErrorMessageBig } from '../../common/ErrorMessage/ErrorMessageBig';
 
 export const PersonProfile: FC = () => {
 	const people = useSelector(getPeople);
@@ -41,12 +44,12 @@ export const PersonProfile: FC = () => {
 	const [surname, setSurname] = useState<string>('');
 	const [name, setName] = useState<string>('');
 	const [parental, setParental] = useState<string>('');
-	const [dateBirth, setDateBirth] = useState<Date | null>(null);
+	const [date_birth, setDate_birth] = useState<string>('');
 	const [avatar, setAvatar] = useState<Buffer | null>(null);
 
-	const [facultyId, setFacultyId] = useState<number>(-1);
-	const [specialtyId, setSpecialtyId] = useState<number>(-1);
-	const [yearEnter, setYearEnter] = useState<number>(-1);
+	const [faculty_id, setFaculty_id] = useState<number>(-1);
+	const [specialty_id, setSpecialty_id] = useState<number>(-1);
+	const [year_enter, setYear_enter] = useState<number>(-1);
 
 	const [email, setEmail] = useState<string>('');
 	const [telephone, setTelephone] = useState<string>('');
@@ -55,14 +58,14 @@ export const PersonProfile: FC = () => {
 
 	const [status, setStatus] = useState<string>('');
 	const [roleId, setRoleId] = useState<number>(-1);
-	const [parentId, setParentId] = useState<number>(-1);
-	const [generationId, setGenerationId] = useState<number>(-1);
+	const [parent_id, setParent_id] = useState<number>(-1);
+	const [generation_id, setGeneration_id] = useState<number>(-1);
 	const [about, setAbout] = useState<string>('');
 
-	const [dateFillForm, setDateFillForm] = useState<Date | null>(null);
-	const [dateVysviata, setDateVysviata] = useState<Date | null>(null);
-	const [datePoshanuvannia, setDatePoshanuvannia] = useState<Date | null>(null);
-	const [dateExclusion, setDateExclusion] = useState<Date | null>(null);
+	const [date_fill_form, setDate_fill_form] = useState<string>('');
+	const [date_vysviata, setDate_vysviata] = useState<string>('');
+	const [date_poshanuvannia, setDate_poshanuvannia] = useState<string>('');
+	const [date_exclusion, setDate_exclusion] = useState<string>('');
 
 	const [faculties, setFaculties] = useState<Faculty[]>([]);
 	const [specialties, setSpecialties] = useState<Specialty[]>([]);
@@ -77,274 +80,283 @@ export const PersonProfile: FC = () => {
 	const resetError = () => setError('');
 
 	useEffect(() => {
+		fetchData();
+	}, [people]);
+
+	const fetchData = async () => {
+		if (people.length === 0) {
+			const peopleRes = await getAllPeople();
+			if (peopleRes) {
+				dispatch(peopleGet(peopleRes));
+			}
+		}
+
 		const p: Person = people.find(
 			(person: Person) => person.id === Number(personId)
 		);
-		setPerson(p);
+		if (p) {
+			console.log('Start person: ');
+			console.log(p);
+			setPerson(p);
 
-		setSurname(p.surname);
-		setName(p.name);
-		if (p.parental) setParental(p.parental);
-		if (p.date_birth) setDateBirth(p.date_birth);
-		if (p.avatar) setAvatar(p.avatar);
+			setSurname(p.surname);
+			setName(p.name);
+			if (p.parental) setParental(p.parental);
 
-		if (p.faculty_id) setFacultyId(p.faculty_id);
-		if (p.specialty_id) setSpecialtyId(p.specialty_id);
-		if (p.year_enter) setYearEnter(p.year_enter);
+			if (p.date_birth) setDate_birth(dateToString(new Date(p.date_birth)));
+			if (p.avatar) setAvatar(p.avatar);
 
-		if (p.email) setEmail(p.email);
-		if (p.telephone) setTelephone(p.telephone);
-		if (p.telegram) setTelegram(p.telegram);
-		if (p.facebook) setFacebook(p.facebook);
+			if (p.faculty_id) setFaculty_id(p.faculty_id);
+			if (p.specialty_id) setSpecialty_id(p.specialty_id);
+			if (p.year_enter) setYear_enter(p.year_enter);
 
-		setStatus(p.status);
-		if (p.role) {
-			const role = roles.find((r) => r.name === p.role);
-			if (role) setRoleId(role.id);
+			if (p.email) setEmail(p.email);
+			if (p.telephone) setTelephone(p.telephone);
+			if (p.telegram) setTelegram(p.telegram);
+			if (p.facebook) setFacebook(p.facebook);
+
+			setStatus(p.status);
+			if (p.role) {
+				const role = roles.find((r) => r.name === p.role);
+				if (role) setRoleId(role.id);
+			}
+			if (p.parent_id) setParent_id(p.parent_id);
+			if (p.generation_id) setGeneration_id(p.generation_id);
+			if (p.about) setAbout(p.about);
+
+			if (p.date_fill_form)
+				setDate_fill_form(dateToString(new Date(p.date_fill_form)));
+			if (p.date_vysviata)
+				setDate_vysviata(dateToString(new Date(p.date_vysviata)));
+			if (p.date_poshanuvannia)
+				setDate_poshanuvannia(dateToString(new Date(p.date_poshanuvannia)));
+			if (p.date_exclusion)
+				setDate_exclusion(dateToString(new Date(p.date_exclusion)));
+
+			const yearsEnter = [];
+			const currentYear = new Date().getFullYear();
+			for (let i = 1992; i <= currentYear; i++) yearsEnter.push(i);
+			setYearsEnter(yearsEnter);
+
+			const faculties = await getAllFaculties();
+			setFaculties(faculties);
+
+			const specialties = await getAllSpecialties();
+			setSpecialties(specialties);
 		}
-		if (p.parent_id) setParentId(p.parent_id);
-		if (p.generation_id) setGenerationId(p.generation_id);
-		if (p.about) setAbout(p.about);
-
-		if (p.date_fill_form) setDateFillForm(p.date_fill_form);
-		if (p.date_vysviata) setDateVysviata(p.date_vysviata);
-		if (p.date_poshanuvannia) setDatePoshanuvannia(p.date_poshanuvannia);
-		if (p.date_exclusion) setDateExclusion(p.date_exclusion);
-
-		const yearsEnter = [];
-		const currentYear = new Date().getFullYear();
-		for (let i = 1992; i <= currentYear; i++) yearsEnter.push(i);
-		setYearsEnter(yearsEnter);
-		fetchData();
-	}, []);
-
-	const fetchData = async () => {
-		const faculties = await getAllFaculties();
-		setFaculties(faculties);
-
-		const specialties = await getAllSpecialties();
-		setSpecialties(specialties);
 	};
 
 	const updateStatusToMaliuk = () => {
 		if (person && person.id) {
-			resetError();
-			try {
+			//resetError();
+			dispatch(
 				// @ts-ignore
-				dispatch(updateAPersonStatus(person.id, { status: Statuses.MALIUK }));
-			} catch (e) {
-				setError((e as any).response.data.message);
-			}
+				updateAPersonStatus(person.id, {
+					oldStatus: Statuses.NEWCOMER,
+					newStatus: Statuses.MALIUK,
+				})
+			);
 		}
 	};
 
 	const updateStatusToBratchyk = () => {
 		if (person && person.id) {
-			resetError();
-			try {
-				dispatch(
-					// @ts-ignore
-					updateAPersonStatus(person.id, {
-						status: Statuses.BRATCHYK,
-						date: dateVysviata ? dateVysviata : new Date(),
-					})
-				);
-			} catch (e) {
-				setError((e as any).response.data.message);
-			}
+			//resetError();
+			dispatch(
+				// @ts-ignore
+				updateAPersonStatus(person.id, {
+					oldStatus: Statuses.MALIUK,
+					newStatus: Statuses.BRATCHYK,
+					date: date_vysviata === '' ? null : new Date(date_vysviata),
+				})
+			);
 		}
 	};
 
 	const updateStatusToPoshanovanyi = () => {
 		if (person && person.id) {
-			resetError();
-			try {
-				dispatch(
-					// @ts-ignore
-					updateAPersonStatus(person.id, {
-						status: Statuses.POSHANOVANYI,
-						date: datePoshanuvannia ? datePoshanuvannia : new Date(),
-					})
-				);
-			} catch (e) {
-				setError((e as any).response.data.message);
-			}
+			//resetError();
+			dispatch(
+				// @ts-ignore
+				updateAPersonStatus(person.id, {
+					oldStatus: Statuses.BRATCHYK,
+					newStatus: Statuses.POSHANOVANYI,
+					date: date_poshanuvannia === '' ? null : new Date(date_poshanuvannia),
+				})
+			);
 		}
 	};
 
 	const updateStatusToExBratchyk = () => {
 		if (person && person.id) {
-			resetError();
-			try {
-				dispatch(
-					// @ts-ignore
-					updateAPersonStatus(person.id, {
-						status: Statuses.EX_BRATCHYK,
-						date: dateExclusion ? dateExclusion : new Date(),
-					})
-				);
-			} catch (e) {
-				setError((e as any).response.data.message);
-			}
-		}
-	};
-
-	const updatePerson = () => {
-		resetError();
-		let p: Person | null = null;
-		if (status === Statuses.NEWCOMER) p = getNewcomerToUpdate();
-		else if (status === Statuses.MALIUK) p = getMaliukToUpdate();
-		else if (status === Statuses.BRATCHYK) p = getBratchykToUpdate();
-		else if (status === Statuses.POSHANOVANYI) p = getPoshanovanyiToUpdate();
-		else if (status === Statuses.EX_BRATCHYK) p = getExBratchykToUpdate();
-		try {
-			// @ts-ignore
-			dispatch(updateAPerson(person.id, p));
-		} catch (e) {
-			setError((e as any).response.data.message);
+			//resetError();
+			dispatch(
+				// @ts-ignore
+				updateAPersonStatus(person.id, {
+					oldStatus: Statuses.BRATCHYK,
+					newStatus: Statuses.EX_BRATCHYK,
+					date: date_exclusion === '' ? null : new Date(date_exclusion),
+				})
+			);
 		}
 	};
 
 	const deletePerson = () => {
+		//resetError();
+		// @ts-ignore
+		dispatch(deleteAPerson(person.id));
+		navigate('/people', { replace: true });
+	};
+
+	const updatePerson = () => {
 		resetError();
-		try {
+		let p: any = {};
+		addCommonFieldsToUpdate(p);
+		if (status === Statuses.NEWCOMER) formNewcomerToUpdate(p);
+		else if (status === Statuses.MALIUK) formMaliukToUpdate(p);
+		else if (status === Statuses.BRATCHYK) formBratchykToUpdate(p);
+		else if (status === Statuses.POSHANOVANYI) formPoshanovanyiToUpdate(p);
+		else if (status === Statuses.EX_BRATCHYK) formExBratchykToUpdate(p);
+		console.log('Person to update: ');
+		console.log(p);
+		// @ts-ignore
+		dispatch(updateAPerson(person.id, p));
+	};
+
+	const addCommonFieldsToUpdate = (p: any): void => {
+		p.status = status;
+		addFieldIfNeeded(p, name, 'name');
+		addFieldIfNeeded(p, surname, 'surname');
+		addFieldIfNeeded(p, parental, 'parental');
+		addFieldIfNeeded(
+			p,
+			date_birth === '' ? null : new Date(date_birth),
+			'date_birth'
+		);
+
+		addFieldFromSelectIfNeeded(p, faculty_id, 'faculty_id');
+		addFieldFromSelectIfNeeded(p, specialty_id, 'specialty_id');
+
+		addFieldIfNeeded(p, email, 'email');
+		addFieldIfNeeded(p, telephone, 'telephone');
+		addFieldIfNeeded(p, telegram, 'telegram');
+		addFieldIfNeeded(p, facebook, 'facebook');
+
+		addFieldIfNeeded(p, about, 'about');
+	};
+
+	const formNewcomerToUpdate = (p: any): void => {
+		addFieldFromSelectIfNeeded(p, year_enter, 'year_enter');
+		addFieldIfNeeded(
+			p,
+			date_fill_form === '' ? null : new Date(date_fill_form),
+			'date_fill_form'
+		);
+	};
+
+	const formMaliukToUpdate = (p: any): void => {
+		addFieldIfNeeded(p, avatar, 'avatar');
+		addFieldFromSelectIfNeeded(p, year_enter, 'year_enter');
+		addFieldFromSelectIfNeeded(p, parent_id, 'parent_id');
+		addFieldIfNeeded(
+			p,
+			date_fill_form === '' ? null : new Date(date_fill_form),
+			'date_fill_form'
+		);
+	};
+
+	const formBratchykToUpdate = (p: any): void => {
+		addFieldIfNeeded(p, avatar, 'avatar');
+		addFieldFromSelectIfNeeded(p, year_enter, 'year_enter');
+		addFieldFromSelectIfNeeded(p, parent_id, 'parent_id');
+		const role =
+			Number(roleId) >= 0
+				? // @ts-ignore
+				  roles.find((r) => r.id === Number(roleId)).name
+				: null;
+		addFieldIfNeeded(p, role, 'role');
+		addFieldIfNeeded(
+			p,
+			date_fill_form === '' ? null : new Date(date_vysviata),
+			'date_vysviata'
+		);
+	};
+
+	const formPoshanovanyiToUpdate = (p: any): void => {
+		addFieldIfNeeded(p, avatar, 'avatar');
+		addFieldFromSelectIfNeeded(p, parent_id, 'parent_id');
+		addFieldFromSelectIfNeeded(p, generation_id, 'generation_id');
+		addFieldIfNeeded(
+			p,
+			date_poshanuvannia === '' ? null : new Date(date_poshanuvannia),
+			'date_poshanuvannia'
+		);
+	};
+
+	const formExBratchykToUpdate = (p: any): void => {
+		addFieldIfNeeded(p, avatar, 'avatar');
+		addFieldFromSelectIfNeeded(p, parent_id, 'parent_id');
+		addFieldFromSelectIfNeeded(p, generation_id, 'generation_id');
+		addFieldIfNeeded(
+			p,
+			date_exclusion === '' ? null : new Date(date_exclusion),
+			'date_exclusion'
+		);
+	};
+
+	const addFieldIfNeeded = (
+		person: any,
+		field: any,
+		fieldName: string
+	): void => {
+		if (doesFieldNeedUpdate(field, fieldName)) person[fieldName] = field;
+	};
+
+	const addFieldFromSelectIfNeeded = (
+		person: any,
+		field: any,
+		fieldName: string
+	): void => {
+		let fieldNumber: number | null = Number(field);
+		if (fieldNumber && fieldNumber < 0) fieldNumber = null;
+		if (doesFieldNeedUpdate(fieldNumber, fieldName))
+			person[fieldName] = fieldNumber;
+	};
+
+	const doesFieldNeedUpdate = (field: any, fieldName: string): boolean => {
+		if (person) {
 			// @ts-ignore
-			dispatch(deleteAPerson(person.id));
-			navigate('/people', { replace: true });
-		} catch (e) {
-			setError((e as any).response.data.message);
-		}
+			const value = person[fieldName];
+			if (!value || value === '') {
+				if (!field || field.toString().trim() === '') return false;
+				else return true;
+			} else if (
+				value === field ||
+				(field && value.toString().trim() === field.toString().trim())
+			)
+				return false;
+			else return true;
+		} else return false;
 	};
 
-	const getNewcomerToUpdate = (): Person => {
-		return {
-			name,
-			surname,
-			parental,
-			date_birth: dateBirth,
-
-			faculty_id: facultyId >= 0 ? facultyId : null,
-			specialty_id: specialtyId >= 0 ? specialtyId : null,
-			year_enter: yearEnter > 0 ? yearEnter : null,
-
-			email,
-			telephone,
-			telegram,
-			facebook,
-
-			status,
-			about,
-
-			date_fill_form: dateFillForm,
-		};
+	const getStatusUkr = () => {
+		// @ts-ignore
+		const s = statusesColorful[status];
+		return s ? s.ukr : 'Статус невідомий';
 	};
 
-	const getMaliukToUpdate = (): Person => {
-		return {
-			name,
-			surname,
-			parental,
-			date_birth: dateBirth,
-			avatar,
-
-			faculty_id: facultyId >= 0 ? facultyId : null,
-			specialty_id: specialtyId >= 0 ? specialtyId : null,
-			year_enter: yearEnter > 0 ? yearEnter : null,
-
-			email,
-			telephone,
-			telegram,
-			facebook,
-
-			status,
-			parent_id: parentId >= 0 ? parentId : null,
-			about,
-
-			date_fill_form: dateFillForm,
-		};
-	};
-
-	const getBratchykToUpdate = (): Person => {
-		return {
-			name,
-			surname,
-			parental,
-			date_birth: dateBirth,
-			avatar,
-
-			faculty_id: facultyId >= 0 ? facultyId : null,
-			specialty_id: specialtyId >= 0 ? specialtyId : null,
-			year_enter: yearEnter > 0 ? yearEnter : null,
-
-			email,
-			telephone,
-			telegram,
-			facebook,
-
-			status,
-			// @ts-ignore
-			role: roleId >= 0 ? roles.find((r) => r.id === roleId).name : null,
-			parent_id: parentId >= 0 ? parentId : null,
-			about,
-
-			date_vysviata: dateVysviata,
-		};
-	};
-
-	const getPoshanovanyiToUpdate = (): Person => {
-		return {
-			name,
-			surname,
-			parental,
-			date_birth: dateBirth,
-			avatar,
-
-			faculty_id: facultyId >= 0 ? facultyId : null,
-			specialty_id: specialtyId >= 0 ? specialtyId : null,
-
-			email,
-			telephone,
-			telegram,
-			facebook,
-
-			status,
-			parent_id: parentId >= 0 ? parentId : null,
-			generation_id: generationId >= 0 ? generationId : null,
-			about,
-
-			date_poshanuvannia: datePoshanuvannia,
-		};
-	};
-
-	const getExBratchykToUpdate = (): Person => {
-		return {
-			name,
-			surname,
-			parental,
-			date_birth: dateBirth,
-			avatar,
-
-			faculty_id: facultyId >= 0 ? facultyId : null,
-			specialty_id: specialtyId >= 0 ? specialtyId : null,
-
-			email,
-			telephone,
-			telegram,
-			facebook,
-
-			status,
-			parent_id: parentId >= 0 ? parentId : null,
-			generation_id: generationId >= 0 ? generationId : null,
-			about,
-
-			date_exclusion: dateExclusion,
-		};
+	const getStatusStyle = () => {
+		// @ts-ignore
+		const s = statusesColorful[status];
+		const color = s ? s.color : 'white';
+		return { background: color };
 	};
 
 	return !localStorage.getItem('token') ? (
 		<Navigate to='/' />
 	) : (
 		<>
+			<ErrorMessageBig message={error} />
 			<Button
 				id='backPerson'
 				onClick={goBack}
@@ -353,202 +365,242 @@ export const PersonProfile: FC = () => {
 			>
 				Назад
 			</Button>
-			<div className='mb-5'>
-				{status !== Statuses.NEWCOMER ? (
-					<Card.Img
-						src='https://kvitkay.com.ua/image/catalog/IMG_9625.JPG'
-						className='rounded'
-						style={{ maxWidth: '40%' }}
-					/>
-				) : null}
-				<Input
-					id='surname'
-					placeholder={'Введіть прізвище...'}
-					type='text'
-					onChange={changeHandler(setSurname, resetError)}
-					value={surname}
-					label='Прізвище'
-					required={true}
-				/>
-				<Input
-					id='name'
-					placeholder={'Введіть ім`я...'}
-					type='text'
-					onChange={changeHandler(setName, resetError)}
-					value={name}
-					label='Ім`я'
-					required={true}
-				/>
-				<Input
-					id='parental'
-					placeholder={'Введіть по батькові...'}
-					type='text'
-					onChange={changeHandler(setParental, resetError)}
-					value={parental}
-					label='По батькові'
-				/>
-				{status !== Statuses.NEWCOMER ? (
-					<Input
-						id='dateBirth'
-						type='date'
-						onChange={changeHandler(setDateBirth, resetError)}
-						value={dateBirth ? dateBirth.toString() : ''}
-						label='Дата народження'
-					/>
-				) : null}
+			<div className='w-100'>
+				<h3 className='text-center'>Профіль</h3>
+				<Row xs={1} sm={1} md={2} lg={2} className='m-2'>
+					<Col className='d-flex'>
+						<div className='m-2 flex-fill'>
+							{status !== Statuses.NEWCOMER ? (
+								<img
+									src='https://kvitkay.com.ua/image/catalog/IMG_9625.JPG'
+									className='rounded'
+									style={{
+										maxWidth: '350px',
+										maxHeight: '350px',
+									}}
+									alt='Аватар'
+								/>
+							) : null}
+							<h5
+								style={getStatusStyle()}
+								className='rounded mt-2 p-1 text-center'
+							>
+								{getStatusUkr()}
+							</h5>
+						</div>
+					</Col>
+					<Col className='d-flex'>
+						<div className='border-secondary border border-1 p-2 rounded m-2 flex-fill'>
+							<h6 className='text-center'>Загальні дані</h6>
+							<Input
+								id='surname'
+								placeholder={'Введіть прізвище...'}
+								type='text'
+								onChange={changeHandler(setSurname, resetError)}
+								value={surname}
+								label='Прізвище'
+								required={true}
+							/>
+							<Input
+								id='name'
+								placeholder={'Введіть ім`я...'}
+								type='text'
+								onChange={changeHandler(setName, resetError)}
+								value={name}
+								label='Ім`я'
+								required={true}
+							/>
+							<Input
+								id='parental'
+								placeholder={'Введіть по батькові...'}
+								type='text'
+								onChange={changeHandler(setParental, resetError)}
+								value={parental}
+								label='По батькові'
+							/>
+							{status !== Statuses.NEWCOMER ? (
+								<Input
+									id='dateBirth'
+									type='date'
+									onChange={changeHandler(setDate_birth, resetError)}
+									value={date_birth}
+									label='Дата народження'
+								/>
+							) : null}
+						</div>
+					</Col>
+				</Row>
 
-				<Select
-					id='select'
-					noneSelectedOption={true}
-					value={facultyId}
-					label='Факультет'
-					onChange={changeHandler(setFacultyId)}
-					data={faculties}
-					idSelector={(f) => f.id}
-					nameSelector={(f) => f.name}
-				/>
-				<Select
-					id='select'
-					noneSelectedOption={true}
-					value={specialtyId}
-					label='Спеціальність'
-					onChange={changeHandler(setSpecialtyId)}
-					data={specialties}
-					idSelector={(s) => s.id}
-					nameSelector={(s) => s.name}
-				/>
-				{status !== Statuses.POSHANOVANYI && status !== Statuses.EX_BRATCHYK ? (
-					<Select
-						id='select'
-						noneSelectedOption={true}
-						value={yearEnter}
-						label='Рік вступу в КМА'
-						onChange={changeHandler(setYearEnter)}
-						data={yearsEnter}
-						idSelector={(y) => y}
-						nameSelector={(y) => y}
-					/>
-				) : null}
+				<Row xs={1} sm={1} md={2} lg={3} className='m-2'>
+					<Col className='d-flex'>
+						<div className='border-secondary border border-1 p-2 rounded m-2 flex-fill'>
+							<h6 className='text-center'>Навчання в КМА</h6>
+							<Select
+								id='select'
+								noneSelectedOption={true}
+								value={faculty_id}
+								label='Факультет'
+								onChange={changeHandler(setFaculty_id)}
+								data={faculties}
+								idSelector={(f) => f.id}
+								nameSelector={(f) => f.name}
+							/>
+							<Select
+								id='select'
+								noneSelectedOption={true}
+								value={specialty_id}
+								label='Спеціальність'
+								onChange={changeHandler(setSpecialty_id)}
+								data={specialties}
+								idSelector={(s) => s.id}
+								nameSelector={(s) => s.name}
+							/>
+							{status !== Statuses.POSHANOVANYI &&
+							status !== Statuses.EX_BRATCHYK ? (
+								<Select
+									id='select'
+									noneSelectedOption={true}
+									value={year_enter}
+									label='Рік вступу в КМА'
+									onChange={changeHandler(setYear_enter)}
+									data={yearsEnter}
+									idSelector={(y) => y}
+									nameSelector={(y) => y}
+								/>
+							) : null}
+						</div>
+					</Col>
+					<Col className='d-flex'>
+						<div className='border-secondary border border-1 p-2 rounded m-2 flex-fill'>
+							<h6 className='text-center'>Контакти</h6>
+							<Input
+								id='email'
+								placeholder={'Введіть email...'}
+								type='text'
+								onChange={changeHandler(setEmail, resetError)}
+								value={email}
+								label='Email'
+							/>
+							<Input
+								id='telephone'
+								placeholder={'Введіть телефон...'}
+								type='text'
+								onChange={changeHandler(setTelephone, resetError)}
+								value={telephone}
+								label='Телефон'
+							/>
+							<Input
+								id='telegram'
+								placeholder={'Введіть телеграм...'}
+								type='text'
+								onChange={changeHandler(setTelegram, resetError)}
+								value={telegram}
+								label='Телеграм'
+							/>
+							<Input
+								id='facebook'
+								placeholder={'Введіть фейсбук...'}
+								type='text'
+								onChange={changeHandler(setFacebook, resetError)}
+								value={facebook}
+								label='Фейсбук'
+							/>
+						</div>
+					</Col>
+					<Col className='d-flex'>
+						<div className='border-secondary border border-1 p-2 rounded m-2 flex-fill'>
+							<h6 className='text-center'>Дані в СБ</h6>
+							<Input
+								id='about'
+								placeholder={'Введіть опис...'}
+								type='text'
+								onChange={changeHandler(setAbout, resetError)}
+								value={about}
+								label='Опис'
+							/>
+							{status !== Statuses.NEWCOMER ? (
+								<Select
+									id='select'
+									noneSelectedOption={true}
+									value={parent_id}
+									label='Патрон'
+									onChange={changeHandler(setParent_id)}
+									data={possibleParents}
+									idSelector={(p) => p.id}
+									nameSelector={(p) =>
+										//@ts-ignore
+										`${getFullName(p)} (${statusesColorful[p.status].ukr})`
+									}
+								/>
+							) : null}
+							{status === Statuses.BRATCHYK ? (
+								<Select
+									id='select'
+									noneSelectedOption={true}
+									value={roleId}
+									label='Посада'
+									onChange={changeHandler(setRoleId)}
+									data={roles}
+									idSelector={(r) => r.id}
+									nameSelector={(r) => r.ukr}
+								/>
+							) : null}
+							{status === Statuses.POSHANOVANYI ||
+							status === Statuses.EX_BRATCHYK ? (
+								<ItemManager
+									selectedItem={generation_id}
+									setSelectedItem={setGeneration_id}
+									getAllFunc={getAllGenerations}
+									updateFunc={updateGeneration}
+									deleteFunc={deleteGeneration}
+									createFunc={createGeneration}
+									selectTitle='Покоління'
+									modalTitle='Усі покоління'
+									placeholder='Нове покоління'
+								/>
+							) : null}
 
-				<Input
-					id='email'
-					placeholder={'Введіть email...'}
-					type='text'
-					onChange={changeHandler(setEmail, resetError)}
-					value={email}
-					label='Email'
-				/>
-				<Input
-					id='telephone'
-					placeholder={'Введіть телефон...'}
-					type='text'
-					onChange={changeHandler(setTelephone, resetError)}
-					value={telephone}
-					label='Телефон'
-				/>
-				<Input
-					id='telegram'
-					placeholder={'Введіть телеграм...'}
-					type='text'
-					onChange={changeHandler(setTelegram, resetError)}
-					value={telegram}
-					label='Телеграм'
-				/>
-				<Input
-					id='facebook'
-					placeholder={'Введіть фейсбук...'}
-					type='text'
-					onChange={changeHandler(setFacebook, resetError)}
-					value={facebook}
-					label='Фейсбук'
-				/>
-
-				{status === Statuses.BRATCHYK ? (
-					<Select
-						id='select'
-						noneSelectedOption={true}
-						value={roleId}
-						label='Посада'
-						onChange={changeHandler(setRoleId)}
-						data={roles}
-						idSelector={(r) => r.id}
-						nameSelector={(r) => r.ukr}
-					/>
-				) : null}
-				{status !== Statuses.NEWCOMER ? (
-					<Select
-						id='select'
-						noneSelectedOption={true}
-						value={parentId}
-						label='Патрон'
-						onChange={changeHandler(setParentId)}
-						data={possibleParents}
-						idSelector={(p) => p.id}
-						nameSelector={(p) =>
-							//@ts-ignore
-							`${getFullName(p)} (${statusesColorful[p.status].ukr})`
-						}
-					/>
-				) : null}
-				{status === Statuses.POSHANOVANYI || status === Statuses.EX_BRATCHYK ? (
-					<ItemManager
-						selectedItem={generationId}
-						setSelectedItem={setGenerationId}
-						getAllFunc={getAllGenerations}
-						updateFunc={updateGeneration}
-						deleteFunc={deleteGeneration}
-						createFunc={createGeneration}
-						selectTitle='Покоління'
-						modalTitle='Усі покоління'
-						placeholder='Нове покоління'
-					/>
-				) : null}
-				<Input
-					id='about'
-					placeholder={'Введіть опис...'}
-					type='text'
-					onChange={changeHandler(setAbout, resetError)}
-					value={about}
-					label='Опис'
-				/>
-
-				{status === Statuses.NEWCOMER || status === Statuses.MALIUK ? (
-					<Input
-						id='dateFillForm'
-						type='date'
-						onChange={changeHandler(setDateFillForm, resetError)}
-						value={dateFillForm ? dateFillForm.toString() : ''}
-						label='Дата заповнення форми для приєднання'
-					/>
-				) : null}
-				{status === Statuses.BRATCHYK ? (
-					<Input
-						id='dateVysviata'
-						type='date'
-						onChange={changeHandler(setDateVysviata, resetError)}
-						value={dateVysviata ? dateVysviata.toString() : ''}
-						label='Дата висвяти'
-					/>
-				) : null}
-				{status === Statuses.POSHANOVANYI ? (
-					<Input
-						id='datePoshanuvannia'
-						type='date'
-						onChange={changeHandler(setDatePoshanuvannia, resetError)}
-						value={datePoshanuvannia ? datePoshanuvannia.toString() : ''}
-						label='Дата пошанування'
-					/>
-				) : null}
-				{status === Statuses.EX_BRATCHYK ? (
-					<Input
-						id='dateExclusion'
-						type='date'
-						onChange={changeHandler(setDateExclusion, resetError)}
-						value={dateExclusion ? dateExclusion.toString() : ''}
-						label='Дата виключення'
-					/>
-				) : null}
-
+							{status === Statuses.NEWCOMER || status === Statuses.MALIUK ? (
+								<Input
+									id='dateFillForm'
+									type='date'
+									onChange={changeHandler(setDate_fill_form, resetError)}
+									value={date_fill_form}
+									label='Дата заповнення форми для приєднання'
+								/>
+							) : null}
+							{status === Statuses.BRATCHYK ? (
+								<Input
+									id='dateVysviata'
+									type='date'
+									onChange={changeHandler(setDate_vysviata, resetError)}
+									value={date_vysviata}
+									label='Дата висвяти'
+								/>
+							) : null}
+							{status === Statuses.POSHANOVANYI ? (
+								<Input
+									id='datePoshanuvannia'
+									type='date'
+									onChange={changeHandler(setDate_poshanuvannia, resetError)}
+									value={date_poshanuvannia}
+									label='Дата пошанування'
+								/>
+							) : null}
+							{status === Statuses.EX_BRATCHYK ? (
+								<Input
+									id='dateExclusion'
+									type='date'
+									onChange={changeHandler(setDate_exclusion, resetError)}
+									value={date_exclusion}
+									label='Дата виключення'
+								/>
+							) : null}
+						</div>
+					</Col>
+				</Row>
+			</div>
+			<div>
 				{status === Statuses.NEWCOMER ? (
 					<Button
 						variant='primary'
@@ -609,7 +661,6 @@ export const PersonProfile: FC = () => {
 				</Button>
 			</div>
 			<UserActivities personId={Number(personId)} />
-			<ErrorMessage message={error} />
 		</>
 	);
 };

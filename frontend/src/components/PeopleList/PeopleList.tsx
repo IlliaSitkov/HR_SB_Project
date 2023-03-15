@@ -13,14 +13,12 @@ import { PersonItem } from './components/PersonItem/PersonItem';
 import { Button, Col, Row } from 'react-bootstrap';
 import { Generation, undefinedGeneration } from '../../api/generation';
 import { DropdownWithCheckboxes } from '../../common/DropdownWithCheckboxes/DropdownWithCheckboxes';
-import { getAllFaculties } from '../../api/faculty';
 import { getAllGenerations } from '../../api/generation/generation.service';
 
 const getValuesOfChosenCheckboxes = (name: string) => {
 	const checkboxes: NodeListOf<any> = document.getElementsByName(name);
 	const res = [];
 	for (let i = 0; i < checkboxes.length; i += 1) {
-		console.log(typeof checkboxes[i]);
 		if (checkboxes[i].checked) {
 			res.push(checkboxes[i].getAttribute('value'));
 		}
@@ -108,7 +106,10 @@ export const PeopleList: FC<{
 	const dispatch = useDispatch();
 
 	useEffect(() => {
+		//console.log(gotData + ' P in useEffect: ');
+		//console.log(people);
 		async function fetchData() {
+			//console.log('fetch');
 			setGotData(1);
 			const peopleRes = await getAllPeople();
 			if (peopleRes) {
