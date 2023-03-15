@@ -1,18 +1,7 @@
-import { Generation } from '../generation';
-
-export interface Faculty {
-	id: number;
-	name: string;
-}
-
-export interface Specialty {
-	id: number;
-	name: string;
-}
-
 export interface StatusUpdateDto {
-	status: string;
-	date?: Date;
+	oldStatus: string;
+	newStatus: string;
+	date?: Date | null;
 }
 
 export interface Person {
@@ -23,8 +12,8 @@ export interface Person {
 	date_birth?: Date | null;
 	avatar?: Buffer | null;
 
-	faculty?: Faculty | null;
-	specialty?: Specialty | null;
+	faculty_id?: number | null;
+	specialty_id?: number | null;
 	year_enter?: number | null;
 
 	email?: string | null;
@@ -33,9 +22,9 @@ export interface Person {
 	facebook?: string | null;
 
 	status: string;
-	role?: string | null; //TODO: get from somewhere
-	parent?: Person | null;
-	generation?: Generation | null;
+	role?: string | null;
+	parent_id?: number | null;
+	generation_id?: number | null;
 	about?: string | null;
 
 	date_fill_form?: Date | null;

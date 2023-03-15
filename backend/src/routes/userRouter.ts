@@ -10,6 +10,7 @@ import {addUserSchema, updateUserSchema} from '../validators/userSchema';
 import {User} from '../models/User';
 import {idSchema} from '../validators/idSchema';
 import {ITokenPayload} from 'passport-azure-ad';
+import {emailSchema} from "../validators/emailSchema";
 
 const userRouter: Router = Router();
 
@@ -77,5 +78,15 @@ userRouter.route('/:id')
             res.status(StatusCode.SuccessOK).json(user);
         })
     );
+
+userRouter.route('/by_email/:email')
+    .get(
+        ...authMiddleware(RoleEnum.HR),
+        requestValidator(emailSchema, 'params'),
+        asyncHandler(async (req: Request, res: Response) => {
+            const user = await userService.getUserByEmail(req.params.email);
+            res.status(StatusCode.SuccessOK).json(user);
+        })
+    )
 
 export default userRouter;

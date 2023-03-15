@@ -7,32 +7,33 @@ const url: string = 'http://localhost:8000/api/people';
 
 const urlById = (id: number): string => `${url}/${id}`;
 
-/*const tempData = [
-    {
-        id: 1,
-        name: 'Ira',
-        surname: 'Matviienko',
-        status: 'BRATCHYK'
-    },
-    {
-        id: 2,
-        name: 'User',
-        surname: 'User',
-        status: 'MALIUK'
-    },
-    {
-        id: 3,
-        name: 'Someone',
-        surname: 'Someone',
-        status: 'POSHANOVANYI'
-    }
-];*/
+const tempData = [
+	{
+		id: 1,
+		name: 'Ira',
+		surname: 'Matviienko',
+		status: 'BRATCHYK',
+	},
+	{
+		id: 2,
+		name: 'User',
+		surname: 'User',
+		status: 'MALIUK',
+	},
+	{
+		id: 3,
+		name: 'Someone',
+		surname: 'Someone',
+		status: 'POSHANOVANYI',
+	},
+];
 
 export const getAllPeople = async (): Promise<Person[]> => {
 	const data = (await axios.get(url)).data;
 	console.log('Got people: ');
 	console.log(data);
 	return data;
+	//return tempData;
 };
 
 export const createPerson = async (person: Person): Promise<Person> => {
@@ -56,3 +57,10 @@ export const updatePersonStatus = async (
 ): Promise<Person> => {
 	return (await axios.patch(urlById(id), status)).data;
 };
+
+/*export const getAllRoles = async (): Promise<string[]> => {
+	const data = (await axios.get(url + '/roles')).data;
+	console.log('Got roles: ');
+	console.log(data);
+	return data;
+};*/

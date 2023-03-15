@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import store from './store/store';
 import { useDispatch } from 'react-redux';
 
 import './App.css';
@@ -14,8 +16,10 @@ function App() {
 	return (
 		<AuthWrapper>
 			<BrowserRouter>
-				<Navbar />
-				<AppRouter />
+				<Provider store={store}>
+					<Navbar />
+					<AppRouter />
+				</Provider>
 			</BrowserRouter>
 		</AuthWrapper>
 	);

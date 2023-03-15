@@ -16,7 +16,9 @@ export default function peopleReducer(state = peopleInitialState, action: any) {
 			return [...state, action.payload];
 		}
 		case DELETE_PERSON: {
-			return state.filter((person) => person.id !== action.payload);
+			return state.filter((person) => {
+				return person.id !== action.payload;
+			});
 		}
 		case UPDATE_PERSON: {
 			const { id } = action.payload;
@@ -29,7 +31,6 @@ export default function peopleReducer(state = peopleInitialState, action: any) {
 				return action.payload;
 			});
 		}
-		//???
 		case UPDATE_PERSON_STATUS: {
 			const { id } = action.payload;
 			return state.map((person) => {
