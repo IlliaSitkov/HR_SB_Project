@@ -59,7 +59,7 @@ export class PersonRepository {
                     telegram: person.telegram ? person.telegram : p.telegram,
                     facebook: person.facebook ? person.facebook : p.facebook,
 
-                    role: person.role && p.status === Status.BRATCHYK ? person.role : p.role,
+                    role: (person.role || person.role === null) ? person.role : p.role,
                     parent_id: person.parent_id ? person.parent_id : p.parent_id,
                     generation_id: person.generation_id ? person.generation_id : p.generation_id,
                     about: person.about ? person.about : p.about,

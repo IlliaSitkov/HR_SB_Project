@@ -248,9 +248,8 @@ export const bratchykCreateSchema = Joi.object({
     parent_id: intId()
         .required(),
 
-    role: Joi.string()
-        .valid(Role.BRATCHYK, Role.HOLOVA, Role.HR_HEAD, Role.PYSAR, Role.KOMIRNYK, Role.RAK_MEMBER, Role.RECHNYK, Role.SKARBNYK)
-        .required(),
+    role: Joi.alternatives([Joi.string()
+        .valid(Role.HOLOVA, Role.HR_HEAD, Role.PYSAR, Role.KOMIRNYK, Role.RAK_MEMBER, Role.RECHNYK, Role.SKARBNYK, Role.PR_HEAD, Role.KIS), null]),
 
     date_vysviata: Joi.date()
         .required()
@@ -268,8 +267,8 @@ export const bratchykUpdateSchema = Joi.object({
 
     ...commonFieldsOfMaliukAndUpdateBratchykAndPoshanovanyiAndUpdateExBratchyk,
 
-    role: Joi.string()
-        .valid(Role.BRATCHYK, Role.HOLOVA, Role.HR_HEAD, Role.PYSAR, Role.KOMIRNYK, Role.RAK_MEMBER, Role.RECHNYK, Role.SKARBNYK),
+    role: Joi.alternatives([Joi.string()
+        .valid(Role.HOLOVA, Role.HR_HEAD, Role.PYSAR, Role.KOMIRNYK, Role.RAK_MEMBER, Role.RECHNYK, Role.SKARBNYK, Role.PR_HEAD, Role.KIS), null]),
 
     date_vysviata: Joi.date()
 });

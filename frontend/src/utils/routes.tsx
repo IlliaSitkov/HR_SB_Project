@@ -6,6 +6,7 @@ import { NonIndexRouteObject } from 'react-router-dom';
 import { UserActivities } from '../components/UserActivities/UserActivities';
 import { PeopleManagerDemo } from '../PeopleManagerDemo';
 import { PersonProfile } from '../components/PersonProfile/PersonProfile';
+import { MyProfile } from '../components/MyProfile/MyProfile';
 
 export const routes: NonIndexRouteObject[] = [
 	{
@@ -27,6 +28,10 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '/members',
 				element: <PeopleManagerDemo />,
+			},
+			{
+				path: '/profile',
+				element: <MyProfile />,
 			},
 		],
 	},

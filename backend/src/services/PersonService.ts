@@ -62,7 +62,7 @@ export class PersonService {
             throw ApiError.badRequest('Ця людина не може бути патроном. Вона має бути братчиком або пошанованим');
         const generation = personData.generation_id ?
             await this.generationService.getGenerationById(personData.generation_id) : undefined;
-        const role = personData.role && personData.status === Status.BRATCHYK ? personData.role : undefined;
+        const role = (personData.role && personData.status === Status.BRATCHYK) ? personData.role : null;
 
         const person: Person = {
             name: personData.name,

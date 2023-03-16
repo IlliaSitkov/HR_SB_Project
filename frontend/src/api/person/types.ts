@@ -1,3 +1,7 @@
+import { Faculty } from '../faculty';
+import { Specialty } from '../specialty';
+import { Generation } from '../generation';
+
 export interface StatusUpdateDto {
 	oldStatus: string;
 	newStatus: string;
@@ -13,7 +17,9 @@ export interface Person {
 	avatar?: Buffer | null;
 
 	faculty_id?: number | null;
+	faculty?: Faculty | null;
 	specialty_id?: number | null;
+	specialty?: Specialty | null;
 	year_enter?: number | null;
 
 	email?: string | null;
@@ -24,7 +30,9 @@ export interface Person {
 	status: string;
 	role?: string | null;
 	parent_id?: number | null;
+	parent?: Person | null;
 	generation_id?: number | null;
+	generation?: Generation | null;
 	about?: string | null;
 
 	date_fill_form?: Date | null;

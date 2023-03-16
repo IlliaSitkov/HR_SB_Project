@@ -11,6 +11,7 @@ export const Input: FC<{
 	disabled?: boolean;
 	step?: number;
 	style?: object;
+	inputStyle?: object;
 	refCallback?: Function;
 }> = ({
 	type,
@@ -23,6 +24,7 @@ export const Input: FC<{
 	disabled,
 	step,
 	style,
+    inputStyle,
 	refCallback,
 }) => {
 	const inputRef = useRef(null);
@@ -51,6 +53,7 @@ export const Input: FC<{
 				placeholder={placeholder}
 				min={type === 'date' ? '1960-01-01' : 0}
 				autoComplete='off'
+				style={inputStyle}
 			/>
 		</div>
 	);

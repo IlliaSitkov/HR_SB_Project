@@ -19,32 +19,29 @@ export const roles = [
 		name: 'HR_HEAD',
 		ukr: 'Голова HR-відділу',
 	},
-	/*{
-        name: 'PR_HEAD',
-        ukr: 'Голова PR-відділу',
-    },
-    {
-        name: 'KIS',
-        ukr: 'КІС',
-    },
-     */
 	{
 		id: 4,
+		name: 'PR_HEAD',
+		ukr: 'Голова PR-відділу',
+	},
+	{
+		id: 5,
 		name: 'RAK_MEMBER',
 		ukr: 'Член РАК',
 	},
 	{
-		id: 5,
+		id: 6,
 		name: 'RECHNYK',
 		ukr: 'Речник',
 	},
 	{
-		id: 6,
+		id: 7,
 		name: 'KOMIRNYK',
 		ukr: 'Комірник',
 	},
-	/*{
-        name: 'BRATCHYK',
-        ukr: 'Братчик',
-    },*/
+	{
+		id: 8,
+		name: 'KIS',
+		ukr: 'КІС',
+	},
 ];

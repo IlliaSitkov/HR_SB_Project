@@ -27,7 +27,7 @@ export const Navbar = () => {
 
 	const tabs = [
 		{
-			name: 'Учасники',
+			name: 'Люди',
 			path: '/members',
 			roles: [UserRole.HR],
 		},

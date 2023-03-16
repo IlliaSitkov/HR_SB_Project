@@ -1,5 +1,5 @@
 import { Person } from '../api/person';
-import { UserRole } from '../api/common/types';
+import { User, UserRole } from '../api/common/types';
 
 export const getPeople = (state: any) => state.people;
 export const getPeoplePossibleParents = (state: any) =>
@@ -10,3 +10,5 @@ export const getPeoplePossibleParents = (state: any) =>
 			p.status === 'EX_BRATCHYK'
 	);
 export const getUserRole = (state: any): UserRole | null => state.user?.role;
+export const getCurrentUserPersonId = (state: any): number | null =>
+	state.user?.personId;

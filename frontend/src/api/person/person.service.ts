@@ -36,6 +36,10 @@ export const getAllPeople = async (): Promise<Person[]> => {
 	//return tempData;
 };
 
+export const getPerson = async (id: number): Promise<Person> => {
+	return (await axios.get(urlById(id))).data;
+};
+
 export const createPerson = async (person: Person): Promise<Person> => {
 	return (await axios.post(url, person)).data;
 };

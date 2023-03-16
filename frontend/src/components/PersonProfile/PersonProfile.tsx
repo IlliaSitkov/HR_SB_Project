@@ -1,10 +1,16 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPeople, getPeoplePossibleParents } from '../../store/selectors';
+import {
+	getPeople,
+	getPeoplePossibleParents,
+	getUserRole,
+} from '../../store/selectors';
 import {
 	getAllPeople,
 	getFullName,
+	getStatusStyle,
+	getStatusUkr,
 	Person,
 	roles,
 	Statuses,
@@ -40,6 +46,8 @@ import {
 import { UserRole } from '../../api/common/types';
 
 export const PersonProfile: FC = () => {
+	const userRole = useSelector<UserRole>(getUserRole);
+
 	const people = useSelector(getPeople);
 	const possibleParents = useSelector(getPeoplePossibleParents);
 	const navigate = useNavigate();
@@ -385,20 +393,7 @@ export const PersonProfile: FC = () => {
 		}
 	};
 
-	const getStatusUkr = () => {
-		// @ts-ignore
-		const s = statusesColorful[status];
-		return s ? s.ukr : 'Статус невідомий';
-	};
-
-	const getStatusStyle = () => {
-		// @ts-ignore
-		const s = statusesColorful[status];
-		const color = s ? s.color : 'white';
-		return { background: color };
-	};
-
-	return !localStorage.getItem('token') ? (
+	return userRole !== UserRole.HR && userRole !== UserRole.USER ? (
 		<Navigate to='/' />
 	) : (
 		<>
@@ -411,10 +406,10 @@ export const PersonProfile: FC = () => {
 				Назад
 			</Button>
 			<div className='w-100'>
-				<h3 className='text-center'>Профіль учасника</h3>
+				<h3 className='text-center'>Профіль людини</h3>
 				<Row xs={1} sm={1} md={2} lg={2} className='m-2'>
-					<Col className='d-flex'>
-						<div className='m-2 flex-fill'>
+					<Col>
+						<div className='m-2 justify-content-center d-flex'>
 							{status !== Statuses.NEWCOMER ? (
 								<img
 									src='https://kvitkay.com.ua/image/catalog/IMG_9625.JPG'
@@ -426,13 +421,13 @@ export const PersonProfile: FC = () => {
 									alt='Аватар'
 								/>
 							) : null}
-							<h5
-								style={getStatusStyle()}
-								className='rounded mt-2 p-1 text-center'
-							>
-								{getStatusUkr()}
-							</h5>
 						</div>
+						<h5
+							style={getStatusStyle(status)}
+							className='rounded mt-2 p-1 text-center ms-5 me-5'
+						>
+							{getStatusUkr(status)}
+						</h5>
 					</Col>
 					<Col className='d-flex'>
 						<div className='border-secondary border border-1 p-2 rounded m-2 flex-fill'>
@@ -481,7 +476,7 @@ export const PersonProfile: FC = () => {
 						<div className='border-secondary border border-1 p-2 rounded m-2 flex-fill'>
 							<h6 className='text-center'>Навчання в КМА</h6>
 							<Select
-								id='select'
+								id='selectFaculty'
 								noneSelectedOption={true}
 								value={faculty_id}
 								label='Факультет'
@@ -491,7 +486,7 @@ export const PersonProfile: FC = () => {
 								nameSelector={(f) => f.name}
 							/>
 							<Select
-								id='select'
+								id='selectSpecialty'
 								noneSelectedOption={true}
 								value={specialty_id}
 								label='Спеціальність'
@@ -503,7 +498,7 @@ export const PersonProfile: FC = () => {
 							{status !== Statuses.POSHANOVANYI &&
 							status !== Statuses.EX_BRATCHYK ? (
 								<Select
-									id='select'
+									id='selectYearEnter'
 									noneSelectedOption={true}
 									value={year_enter}
 									label='Рік вступу в КМА'
@@ -565,7 +560,7 @@ export const PersonProfile: FC = () => {
 							/>
 							{status !== Statuses.NEWCOMER ? (
 								<Select
-									id='select'
+									id='selectParent'
 									noneSelectedOption={true}
 									value={parent_id}
 									label='Патрон'
@@ -574,13 +569,13 @@ export const PersonProfile: FC = () => {
 									idSelector={(p) => p.id}
 									nameSelector={(p) =>
 										//@ts-ignore
-										`${getFullName(p)} (${statusesColorful[p.status].ukr})`
+										`${getFullName(p)} (${getStatusUkr(p.status)})`
 									}
 								/>
 							) : null}
 							{status === Statuses.BRATCHYK ? (
 								<Select
-									id='select'
+									id='selectRole'
 									noneSelectedOption={true}
 									value={roleId}
 									label='Посада'

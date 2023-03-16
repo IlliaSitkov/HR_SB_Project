@@ -51,3 +51,16 @@ export const statusesForDropdown = [
 		ukrMany: 'Виключені братчики',
 	},
 ];
+
+export const getStatusUkr = (status: string | null = null) => {
+	// @ts-ignore
+	const s = statusesColorful[status];
+	return s ? s.ukr : 'Статус невідомий';
+};
+
+export const getStatusStyle = (status: string | null = null) => {
+	// @ts-ignore
+	const s = statusesColorful[status];
+	const color = s ? s.color : 'white';
+	return { background: color };
+};
