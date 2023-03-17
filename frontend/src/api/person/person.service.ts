@@ -36,6 +36,10 @@ export const getAllPeople = async (): Promise<Person[]> => {
 	//return tempData;
 };
 
+export const getPerson = async (id: number): Promise<Person> => {
+	return (await axios.get(urlById(id))).data;
+};
+
 export const createPerson = async (person: Person): Promise<Person> => {
 	return (await axios.post(url, person)).data;
 };
@@ -55,7 +59,7 @@ export const updatePersonStatus = async (
 	id: number,
 	status: StatusUpdateDto
 ): Promise<Person> => {
-	return (await axios.patch(urlById(id), status)).data;
+	return (await axios.put(urlById(id) + '/status', status)).data;
 };
 
 /*export const getAllRoles = async (): Promise<string[]> => {

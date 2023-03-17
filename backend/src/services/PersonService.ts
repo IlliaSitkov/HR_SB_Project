@@ -5,12 +5,19 @@ import {Status} from '@prisma/client';
 import {ApiError} from '../models/ApiError';
 import {GenerationService} from './GenerationService';
 import {clearAllBirthdays, createBirthday} from "../utils/googleCalendar";
+import {FacultyRepository} from "../repositories/FacultyRepository";
+import {SpecialtyRepository} from "../repositories/SpecialtyRepository";
+import {RoleEnum} from "../utils/enum/Role.enum";
+import {UserService} from "./UserService";
 
 @injectable()
 export class PersonService {
 
     public constructor(@inject(PersonRepository) private personRepository: PersonRepository,
-                       @inject(GenerationService) private generationService: GenerationService) {
+                       @inject(FacultyRepository) private facultyRepository: FacultyRepository,
+                       @inject(SpecialtyRepository) private specialtyRepository: SpecialtyRepository,
+                       @inject(GenerationService) private generationService: GenerationService,
+                       @inject(UserService) private userService: UserService) {
     }
 
     getPeople = async () => {
@@ -22,17 +29,31 @@ export class PersonService {
     };
 
     createPerson = async (person: PersonPostDto) => {
-        return this.personRepository.createPerson(person);
+        const p = await this.personRepository.createPerson(person);
+        await this.userService.add({personId: p.id, role: RoleEnum.USER});
+        return p;
     };
 
     updatePerson = async (id: number, person: PersonPatchDto) => {
-        return this.personRepository.updatePerson(id, person);
+        const p = await this.personRepository.updatePerson(id, person);
+        if (p.email) {
+            const user = await this.userService.getUserByEmail(p.email);
+            if (!user)
+                await this.userService.add({personId: p.id, role: RoleEnum.USER});
+        }
+        return p;
     };
 
     deletePersonById = async (id: number) => {
         //await this.getPersonById(id);
         //TODO: think about dependant events
-        return this.personRepository.deletePersonById(id);
+        const p = await this.personRepository.deletePersonById(id);
+        if (p.email) {
+            const user = await this.userService.getUserByEmail(p.email);
+            if (user)
+                await this.userService.deleteById(user.id);
+        }
+        return p;
     };
 
     syncAllBirthdays = async () => {
@@ -62,7 +83,7 @@ export class PersonService {
             throw ApiError.badRequest('Ця людина не може бути патроном. Вона має бути братчиком або пошанованим');
         const generation = personData.generation_id ?
             await this.generationService.getGenerationById(personData.generation_id) : undefined;
-        const role = personData.role && personData.status === Status.BRATCHYK ? personData.role : undefined;
+        const role = (personData.role && personData.status === Status.BRATCHYK) ? personData.role : null;
 
         const person: Person = {
             name: personData.name,

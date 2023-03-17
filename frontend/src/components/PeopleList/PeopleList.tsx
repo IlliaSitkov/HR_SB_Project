@@ -14,6 +14,11 @@ import { Button, Col, Row } from 'react-bootstrap';
 import { Generation, undefinedGeneration } from '../../api/generation';
 import { DropdownWithCheckboxes } from '../../common/DropdownWithCheckboxes/DropdownWithCheckboxes';
 import { getAllGenerations } from '../../api/generation/generation.service';
+import { VALUE_NOT_SET } from '../../utils/constants';
+import { UserRole } from '../../api/common/types';
+import { getGotData, getUserRole } from '../../store/selectors';
+import { gotDataSet } from '../../store/gotData/actionCreators';
+import NearestBirthdays from '../NearestBritdays/NearestBirthdays';
 
 const getValuesOfChosenCheckboxes = (name: string) => {
 	const checkboxes: NodeListOf<any> = document.getElementsByName(name);
@@ -26,10 +31,10 @@ const getValuesOfChosenCheckboxes = (name: string) => {
 	return res;
 };
 
-export const PeopleList: FC<{
-	gotData: number;
-	setGotData: Dispatch<SetStateAction<number>>;
-}> = ({ gotData, setGotData }) => {
+export const PeopleList: FC = () => {
+	const userRole = useSelector<UserRole>(getUserRole);
+	const gotData = useSelector<number>(getGotData);
+
 	const [searchText, setSearchText] = useState('');
 	const [filterStatuses, setFilterStatuses] = useState<Array<string>>([]);
 	const [filterYears, setFilterYears] = useState<Array<string>>([]);
@@ -63,7 +68,7 @@ export const PeopleList: FC<{
 
 		if (filterYears.length === 0 || filterYears.length === possibleYears.length)
 			suitable = true;
-		else if (!person.year_enter && filterYears.includes('Не встановлено'))
+		else if (!person.year_enter && filterYears.includes(VALUE_NOT_SET))
 			suitable = true;
 		else if (
 			!person.year_enter ||
@@ -110,10 +115,9 @@ export const PeopleList: FC<{
 		//console.log(people);
 		async function fetchData() {
 			//console.log('fetch');
-			setGotData(1);
 			const peopleRes = await getAllPeople();
 			if (peopleRes) {
-				setGotData(3);
+				dispatch(gotDataSet(3));
 				dispatch(peopleGet(peopleRes));
 
 				const generationsCopy = [undefinedGeneration];
@@ -122,7 +126,7 @@ export const PeopleList: FC<{
 				setPossibleGenerations(generations);
 
 				const yearsCopy: Array<string> = [];
-				yearsCopy.push('Не встановлено');
+				yearsCopy.push(VALUE_NOT_SET);
 				peopleRes.forEach((person) => {
 					if (
 						person.year_enter &&
@@ -134,11 +138,11 @@ export const PeopleList: FC<{
 				setPossibleYears(yearsCopy);
 			} else {
 				alert('Помилка при завантаженні людей!');
-				setGotData(2);
+				dispatch(gotDataSet(2));
 			}
 		}
 		if (gotData === 0 || gotData === 2) {
-			setGotData(1);
+			dispatch(gotDataSet(1));
 			fetchData();
 		}
 	}, []);
@@ -176,7 +180,7 @@ export const PeopleList: FC<{
 		}
 	};
 
-	return !localStorage.getItem('token') ? (
+	return userRole !== UserRole.HR ? (
 		<Navigate to='/' />
 	) : (
 		<>
@@ -232,9 +236,9 @@ export const PeopleList: FC<{
 					/>
 				</Col>
 			</Row>
-			<Row xs={1} sm={2} md={4} lg={6} className='m-2'>
+			<Row xs={1} sm={2} md={4} lg={5} className='m-2'>
 				{people.map((person: Person) => (
-					<Col className='d-flex' style={{ minWidth: '210px' }} key={person.id}>
+					<Col className='d-flex' style={{ minWidth: '280px' }} key={person.id}>
 						<PersonItem person={person} />
 					</Col>
 				))}

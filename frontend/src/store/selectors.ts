@@ -10,3 +10,7 @@ export const getPeoplePossibleParents = (state: any) =>
 			p.status === 'EX_BRATCHYK'
 	);
 export const getUserRole = (state: any): UserRole | null => state.user?.role;
+export const getCurrentUserPersonId = (state: any): number | null =>
+	state.user?.personId;
+export const getErrorMessage = (state: any) => state.errorMessage;
+export const getGotData = (state: any) => state.gotData;
