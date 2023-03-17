@@ -59,7 +59,7 @@ export const updatePersonStatus = async (
 	id: number,
 	status: StatusUpdateDto
 ): Promise<Person> => {
-	return (await axios.patch(urlById(id), status)).data;
+	return (await axios.put(urlById(id) + '/status', status)).data;
 };
 
 /*export const getAllRoles = async (): Promise<string[]> => {

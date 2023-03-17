@@ -6,7 +6,7 @@ export interface Person {
     parental?: string | null,
     surname: string,
     date_birth?: Date | null,
-    avatar?: Buffer | null,
+    avatar?: string | null,
 
     faculty_id?: number | null,
     specialty_id?: number | null,

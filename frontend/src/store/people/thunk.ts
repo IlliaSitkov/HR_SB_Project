@@ -12,31 +12,49 @@ import {
 	Person,
 	StatusUpdateDto,
 } from '../../api/person';
+import { errorMessageSet } from '../errorMessage/actionCreators';
+import { errorToString } from '../../utils/errorHandling';
 
 export function saveNewPerson(person: Person) {
 	return async function saveNewPersonThunk(dispatch: any, getState: any) {
-		const response = await createPerson(person);
-		dispatch(personAdded(response));
+		try {
+			const response = await createPerson(person);
+			dispatch(personAdded(response));
+		} catch (e) {
+			dispatch(errorMessageSet(errorToString(e)));
+		}
 	};
 }
 
 export function updateAPerson(id: number, person: Person) {
 	return async function updatePersonThunk(dispatch: any, getState: any) {
-		const response = await updatePerson(id, person);
-		dispatch(personUpdated(response));
+		try {
+			const response = await updatePerson(id, person);
+			dispatch(personUpdated(response));
+		} catch (e) {
+			dispatch(errorMessageSet(errorToString(e)));
+		}
 	};
 }
 
 export function updateAPersonStatus(id: number, status: StatusUpdateDto) {
 	return async function updatePersonStatusThunk(dispatch: any, getState: any) {
-		const response = await updatePersonStatus(id, status);
-		dispatch(personUpdatedStatus(response));
+		try {
+			const response = await updatePersonStatus(id, status);
+			dispatch(personUpdatedStatus(response));
+		} catch (e) {
+			dispatch(errorMessageSet(errorToString(e)));
+		}
 	};
 }
 
 export function deleteAPerson(id: number) {
 	return async function deletePersonThunk(dispatch: any, getState: any) {
-		await deletePerson(id);
-		dispatch(personDeleted(id));
+		try {
+			await deletePerson(id);
+			dispatch(personDeleted(id));
+		} catch (e) {
+			dispatch(errorMessageSet(errorToString(e)));
+		}
 	};
 }

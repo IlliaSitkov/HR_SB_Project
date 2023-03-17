@@ -140,7 +140,7 @@ const commonFieldsOfMaliukAndUpdateBratchykAndPoshanovanyiAndUpdateExBratchyk = 
 }
 
 const commonFieldsOfMaliukAndBratchykAndPoshanovanyiAndExBratchyk = {
-    avatar: Joi.object() // ?????
+    avatar: Joi.alternatives([Joi.string().trim(), '']),
 }
 
 const commonFieldsOfBratchykAndPoshanovanyiAndExBratchyk = {

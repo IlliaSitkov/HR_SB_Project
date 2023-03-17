@@ -48,7 +48,7 @@ export class PersonRepository {
                     parental: person.parental ? person.parental : p.parental,
                     surname: person.surname ? person.surname : p.surname,
                     date_birth: person.date_birth ? person.date_birth : p.date_birth,
-                    avatar: person.avatar ? person.avatar : p.avatar,
+                    avatar: (person.avatar || person.avatar === '') ? person.avatar : p.avatar,
 
                     faculty_id: person.faculty_id ? person.faculty_id : p.faculty_id, // ???
                     specialty_id: person.specialty_id ? person.specialty_id : p.specialty_id,

@@ -32,6 +32,11 @@ export const Navbar = () => {
 			roles: [UserRole.HR],
 		},
 		{
+			name: 'Дні народження',
+			path: '/birthdays',
+			roles: [UserRole.HR],
+		},
+		{
 			name: 'Події',
 			path: '/events',
 			roles: [UserRole.HR],

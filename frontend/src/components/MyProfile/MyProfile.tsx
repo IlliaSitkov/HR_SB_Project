@@ -14,7 +14,7 @@ import { getCurrentUserPersonId, getUserRole } from '../../store/selectors';
 import { TextField } from '../../common/TextField/TextField';
 import { Col, Row } from 'react-bootstrap';
 import { UserActivities } from '../UserActivities/UserActivities';
-import { VALUE_NOT_SET } from '../../utils/constants';
+import { DEFAULT_AVATAR_URL, VALUE_NOT_SET } from '../../utils/constants';
 import { UserRole } from '../../api/common/types';
 
 export const MyProfile: FC = () => {
@@ -72,7 +72,7 @@ export const MyProfile: FC = () => {
                         <div className='m-2 justify-content-center d-flex'>
                             {person && person.status !== Statuses.NEWCOMER ? (
                                 <img
-                                    src='https://kvitkay.com.ua/image/catalog/IMG_9625.JPG'
+                                    src={person.avatar ? person.avatar : DEFAULT_AVATAR_URL}
                                     className='rounded'
                                     style={{
                                         maxWidth: '350px',

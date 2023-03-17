@@ -2,6 +2,8 @@ import React, { FC, useEffect, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+	getErrorMessage,
+	getGotData,
 	getPeople,
 	getPeoplePossibleParents,
 	getUserRole,
@@ -14,7 +16,6 @@ import {
 	Person,
 	roles,
 	Statuses,
-	statusesColorful,
 } from '../../api/person';
 import { UserActivities } from '../UserActivities/UserActivities';
 import { changeHandler } from '../../shared';
@@ -40,13 +41,19 @@ import { dateToString } from '../../utils/dates';
 import { ErrorMessageBig } from '../../common/ErrorMessage/ErrorMessageBig';
 import {
 	createUser,
-	deleteUser,
 	getUserByEmail,
+	updateUser,
 } from '../../api/user/user.service';
 import { UserRole } from '../../api/common/types';
+import { gotDataSet } from '../../store/gotData/actionCreators';
+import { errorMessageSet } from '../../store/errorMessage/actionCreators';
+import { DEFAULT_AVATAR_URL } from '../../utils/constants';
+import { EditAvatarUrlModal } from './components/EditAvatarUrlModal';
 
 export const PersonProfile: FC = () => {
 	const userRole = useSelector<UserRole>(getUserRole);
+	const gotData = useSelector<number>(getGotData);
+	const errorMessage = useSelector<string>(getErrorMessage);
 
 	const people = useSelector(getPeople);
 	const possibleParents = useSelector(getPeoplePossibleParents);
@@ -59,7 +66,7 @@ export const PersonProfile: FC = () => {
 	const [name, setName] = useState<string>('');
 	const [parental, setParental] = useState<string>('');
 	const [date_birth, setDate_birth] = useState<string>('');
-	const [avatar, setAvatar] = useState<Buffer | null>(null);
+	const [avatar, setAvatar] = useState<string>('');
 
 	const [faculty_id, setFaculty_id] = useState<number>(-1);
 	const [specialty_id, setSpecialty_id] = useState<number>(-1);
@@ -84,31 +91,41 @@ export const PersonProfile: FC = () => {
 	const [faculties, setFaculties] = useState<Faculty[]>([]);
 	const [specialties, setSpecialties] = useState<Specialty[]>([]);
 	const [yearsEnter, setYearsEnter] = useState<number[]>([]);
+	const [showModal, setShowModal] = useState<boolean>(false);
 
 	//-1 - not fetched yet or person does not have email
-	//0 - fetched, no user
-	//1 - fetched, user exists
-	const [isUser, setIsUser] = useState<number>(-1);
+	//0 - fetched, user is not HR
+	//1 - fetched, user is HR
+	const [isHR, setIsHR] = useState<number>(-1);
 	const [userId, setUserId] = useState<number>(-1);
 
-	const [error, setError] = useState('');
 
 	const goBack = () => {
+		resetError();
 		navigate('/members', { replace: true });
 	};
 
-	const resetError = () => setError('');
+	const resetError = () => dispatch(errorMessageSet(''));
 
 	useEffect(() => {
 		fetchData();
+		return () => {
+			resetError();
+		};
 	}, [people]);
 
 	const fetchData = async () => {
-		if (people.length === 0) {
+		if (gotData === 0 || gotData === 2) {
+			dispatch(gotDataSet(1));
 			const peopleRes = await getAllPeople();
-			if (peopleRes) {
-				dispatch(peopleGet(peopleRes));
+			if (!peopleRes) {
+				alert('Помилка при завантаженні людей!');
+				dispatch(gotDataSet(2));
+				return;
 			}
+
+			dispatch(gotDataSet(3));
+			dispatch(peopleGet(peopleRes));
 		}
 
 		const p: Person = people.find(
@@ -165,18 +182,25 @@ export const PersonProfile: FC = () => {
 			setSpecialties(specialties);
 
 			if (p.email) {
-				const user = await getUserByEmail(p.email);
+				let user = await getUserByEmail(p.email);
+				if (!user)
+					user = await createUser({ personId: p.id, role: UserRole.USER });
 				if (user) {
-					setIsUser(1);
 					setUserId(user.id);
-				} else setIsUser(0);
+					if (user.role === UserRole.HR) {
+						setIsHR(1);
+					} else setIsHR(0);
+				}
+			} else {
+				setIsHR(-1);
+				setUserId(-1);
 			}
 		}
 	};
 
 	const updateStatusToMaliuk = () => {
 		if (person && person.id) {
-			//resetError();
+			resetError();
 			dispatch(
 				// @ts-ignore
 				updateAPersonStatus(person.id, {
@@ -189,7 +213,7 @@ export const PersonProfile: FC = () => {
 
 	const updateStatusToBratchyk = () => {
 		if (person && person.id) {
-			//resetError();
+			resetError();
 			dispatch(
 				// @ts-ignore
 				updateAPersonStatus(person.id, {
@@ -203,7 +227,7 @@ export const PersonProfile: FC = () => {
 
 	const updateStatusToPoshanovanyi = () => {
 		if (person && person.id) {
-			//resetError();
+			resetError();
 			dispatch(
 				// @ts-ignore
 				updateAPersonStatus(person.id, {
@@ -217,7 +241,7 @@ export const PersonProfile: FC = () => {
 
 	const updateStatusToExBratchyk = () => {
 		if (person && person.id) {
-			//resetError();
+			resetError();
 			dispatch(
 				// @ts-ignore
 				updateAPersonStatus(person.id, {
@@ -230,7 +254,7 @@ export const PersonProfile: FC = () => {
 	};
 
 	const deletePerson = () => {
-		//resetError();
+		resetError();
 		// @ts-ignore
 		dispatch(deleteAPerson(person.id));
 		navigate('/members', { replace: true });
@@ -369,31 +393,27 @@ export const PersonProfile: FC = () => {
 		} else return false;
 	};
 
-	const addPersonUser = async () => {
+	const makePersonToBeHR = async () => {
 		try {
 			resetError();
-			const user = await createUser({
-				personId: Number(memberId),
-				role: UserRole.HR,
-			});
-			setIsUser(1);
-			setUserId(user.id!);
+			await updateUser(userId, UserRole.HR);
+			setIsHR(1);
 		} catch (e) {
-			setError((e as any).response.data.message);
+			dispatch(errorMessageSet((e as any).response.data.message));
 		}
 	};
 
-	const deletePersonUser = async () => {
+	const deletePersonFromHRs = async () => {
 		try {
 			resetError();
-			await deleteUser(userId);
-			setIsUser(0);
+			await updateUser(userId, UserRole.USER);
+			setIsHR(0);
 		} catch (e) {
-			setError((e as any).response.data.message);
+			dispatch(errorMessageSet((e as any).response.data.message));
 		}
 	};
 
-	return userRole !== UserRole.HR && userRole !== UserRole.USER ? (
+	return userRole !== UserRole.HR ? (
 		<Navigate to='/' />
 	) : (
 		<>
@@ -412,16 +432,25 @@ export const PersonProfile: FC = () => {
 						<div className='m-2 justify-content-center d-flex'>
 							{status !== Statuses.NEWCOMER ? (
 								<img
-									src='https://kvitkay.com.ua/image/catalog/IMG_9625.JPG'
+									src={avatar ? avatar : DEFAULT_AVATAR_URL}
 									className='rounded'
 									style={{
 										maxWidth: '350px',
 										maxHeight: '350px',
+										cursor: 'pointer',
 									}}
 									alt='Аватар'
+									onClick={() => setShowModal(!showModal)}
 								/>
 							) : null}
 						</div>
+						<EditAvatarUrlModal
+							title={'Посилання на аватар'}
+							setShow={setShowModal}
+							show={showModal}
+							avatarUrl={avatar}
+							setAvatarUrl={setAvatar}
+						/>
 						<h5
 							style={getStatusStyle(status)}
 							className='rounded mt-2 p-1 text-center ms-5 me-5'
@@ -683,27 +712,29 @@ export const PersonProfile: FC = () => {
 				) : null}
 			</div>
 			<div>
-				<ErrorMessageBig message={error} />
+				<ErrorMessageBig
+					message={typeof errorMessage === 'string' ? errorMessage : ''}
+				/>
 			</div>
 			<div>
-				{isUser === 0 ? (
+				{isHR === 0 && status !== Statuses.NEWCOMER ? (
 					<Button
 						variant='info'
-						onClick={addPersonUser}
+						onClick={makePersonToBeHR}
 						id='addUser'
 						className='m-2'
 					>
-						{'Зробити користувачем (HR-ом)'}
+						{'Зробити HR-ом'}
 					</Button>
 				) : null}
-				{isUser === 1 ? (
+				{isHR === 1 ? (
 					<Button
 						variant='info'
-						onClick={deletePersonUser}
+						onClick={deletePersonFromHRs}
 						id='deleteUser'
 						className='m-2'
 					>
-						{'Видалити з користувачів (HR-ів)'}
+						{'Видалити з HR-ів'}
 					</Button>
 				) : null}
 				<Button

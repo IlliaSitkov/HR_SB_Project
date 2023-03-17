@@ -10,6 +10,7 @@ import {
     maliukUpdateSchema,
     newcomerCreateSchema,
     newcomerUpdateSchema,
+    oldStatusSchema,
     poshanovanyiCreateSchema,
     poshanovanyiUpdateSchema,
     statusSchema,
@@ -20,7 +21,7 @@ import {idSchema} from "../validators/idSchema";
 import authMiddleware from "../middleware/authMiddleware";
 import {container} from "../config/container";
 import {PersonService} from "../services/PersonService";
-import {personValidator} from "../middleware/personValidator";
+import {oldStatusValidator, statusValidator} from '../middleware/personValidator';
 import {RoleEnum} from "../utils/enum/Role.enum";
 import StatusCode from "status-code-enum";
 
@@ -41,7 +42,7 @@ personRouter.route("/")
     .post(
         /*authorize()*/
         ...authMiddleware(),
-        personValidator({
+        statusValidator({
             statusSchema,
             NEWCOMER: newcomerCreateSchema,
             MALIUK: maliukCreateSchema,
@@ -85,7 +86,7 @@ personRouter.route("/:id")
         /*authorize()*/
         ...authMiddleware(),
         requestValidator(idSchema, "params"),
-        personValidator({
+        statusValidator({
             statusSchema,
             NEWCOMER: newcomerUpdateSchema,
             MALIUK: maliukUpdateSchema,
@@ -115,8 +116,8 @@ personRouter.route("/:id/status")
         /*authorize()*/
         ...authMiddleware(),
         requestValidator(idSchema, "params"),
-        personValidator({
-            statusSchema,
+        oldStatusValidator({
+            oldStatusSchema,
             NEWCOMER: statusUpdateSchemaToMaliuk,
             MALIUK: statusUpdateSchemaToMaliuk,
             BRATCHYK: statusUpdateSchema,
