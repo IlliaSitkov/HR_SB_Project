@@ -1,0 +1,21 @@
+
+.activity-card-grid-header {
+    font-size: 0.7em;
+    color: grey;
+}
+
+.activity-card-grid-header div {
+    padding-left: 12px;
+}
+
+.activity-card-grid {
+    display: grid;
+    grid-template-columns: 5fr 5fr 5fr 2fr;
+    grid-column-gap: 16px;
+}
+
+.activity-card-grid input {
+    text-overflow: ellipsis;
+}
+
+

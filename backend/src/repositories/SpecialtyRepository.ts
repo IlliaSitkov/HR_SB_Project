@@ -1,7 +1,6 @@
-import {inject, injectable} from "inversify";
-import {PrismaErrorUtil} from "../datasource/PrismaErrorUtil";
-import {prisma} from "../datasource/connectDB";
-import {ApiError} from "../models/ApiError";
+import {injectable} from 'inversify';
+import {prisma} from '../datasource/connectDB';
+import {ApiError} from '../models/ApiError';
 
 @injectable()
 export class SpecialtyRepository {

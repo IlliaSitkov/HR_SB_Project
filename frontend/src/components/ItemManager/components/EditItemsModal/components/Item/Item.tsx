@@ -66,7 +66,7 @@ export const Item: FC<{ item: IItem }> = ({ item }) => {
 
 	return (
 		<div className='d-flex flex-column gap-1'>
-			<div className='category-item d-flex gap-2'>
+			<div className='show-on-hover item-card d-flex gap-2'>
 				<Input
 					refCallback={refCallback}
 					disabled={!edit}
@@ -77,7 +77,7 @@ export const Item: FC<{ item: IItem }> = ({ item }) => {
 				/>
 				<div
 					className={`d-flex gap-1 ${
-						edit ? 'hidden-btn-group' : 'hiding-btn-group'
+						edit ? 'display-none' : 'visible-on-hover'
 					}`}
 				>
 					<button onClick={toggleEdit} className='empty pen'>
@@ -87,7 +87,7 @@ export const Item: FC<{ item: IItem }> = ({ item }) => {
 						{binIcon(24, 'red')}
 					</button>
 				</div>
-				<div className={`d-flex gap-1 ${edit ? '' : 'hidden-btn-group'}`}>
+				<div className={`d-flex gap-1 ${edit ? '' : 'display-none'}`}>
 					<button onClick={updateObj} className='empty check'>
 						{checkIcon(26, '#31c410')}
 					</button>

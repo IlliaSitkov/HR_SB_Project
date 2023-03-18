@@ -2,17 +2,19 @@ import React, { ChangeEventHandler, FC, useEffect, useRef } from 'react';
 
 export const Input: FC<{
 	type: string;
-	onChange: ChangeEventHandler<HTMLInputElement>;
+	onChange?: ChangeEventHandler<HTMLInputElement>;
 	required?: boolean;
 	label?: string;
 	id?: string;
 	placeholder?: string;
-	value: string;
+	value: any;
 	disabled?: boolean;
 	step?: number;
 	style?: object;
 	inputStyle?: object;
 	refCallback?: Function;
+	min?: number;
+	max?: number;
 }> = ({
 	type,
 	onChange,
@@ -24,8 +26,10 @@ export const Input: FC<{
 	disabled,
 	step,
 	style,
-    inputStyle,
+	inputStyle,
 	refCallback,
+	min,
+	max,
 }) => {
 	const inputRef = useRef(null);
 
@@ -51,7 +55,8 @@ export const Input: FC<{
 				onChange={onChange}
 				required={required}
 				placeholder={placeholder}
-				min={type === 'date' ? '1960-01-01' : 0}
+				min={type === 'date' ? '1960-01-01' : min}
+				max={max}
 				autoComplete='off'
 				style={inputStyle}
 			/>

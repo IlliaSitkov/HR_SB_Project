@@ -19,7 +19,7 @@ export const errorHandler = (error: Error, req: Request, res: Response, next: Ne
                     message: err.message
                 });
                 return acc;
-            }, {errors:obj})
+            }, {message: 'Неправильний формат даних', errors:obj})
         );
         return;
     }

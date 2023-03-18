@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
 	getAllPeople,
 	getFullName,
@@ -18,7 +18,6 @@ import { VALUE_NOT_SET } from '../../utils/constants';
 import { UserRole } from '../../api/common/types';
 import { getGotData, getUserRole } from '../../store/selectors';
 import { gotDataSet } from '../../store/gotData/actionCreators';
-import NearestBirthdays from '../NearestBritdays/NearestBirthdays';
 
 const getValuesOfChosenCheckboxes = (name: string) => {
 	const checkboxes: NodeListOf<any> = document.getElementsByName(name);
@@ -145,6 +144,7 @@ export const PeopleList: FC = () => {
 			dispatch(gotDataSet(1));
 			fetchData();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const addPerson = () => {

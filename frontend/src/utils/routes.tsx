@@ -1,5 +1,4 @@
 import { HOME_ROUTE } from './routesNames';
-import { HomePage } from '../pages';
 import { MainLayout } from '../components/layout';
 import { NonIndexRouteObject } from 'react-router-dom';
 // import AuthWrapper from '../components/auth/AuthWrapper';
@@ -8,6 +7,9 @@ import { PersonProfile } from '../components/PersonProfile/PersonProfile';
 import { MyProfile } from '../components/MyProfile/MyProfile';
 import { PeopleList } from '../components/PeopleList/PeopleList';
 import NearestBirthdays from '../components/NearestBritdays/NearestBirthdays';
+import { ItemManagerDemo } from '../ItemManagerDemo';
+import { ActivityManager } from '../components/ActivityManager/ActivityManager';
+import { HomePage } from '../pages';
 
 export const routes: NonIndexRouteObject[] = [
 	{
@@ -17,6 +19,10 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '',
 				element: <HomePage />,
+			},
+			{
+				path: '/events',
+				element: <ActivityManager eventId={1} />,
 			},
 			{
 				path: '/acts',
@@ -37,6 +43,10 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '/birthdays',
 				element: <NearestBirthdays />,
+			},
+			{
+				path: '/items',
+				element: <ItemManagerDemo />,
 			},
 		],
 	},

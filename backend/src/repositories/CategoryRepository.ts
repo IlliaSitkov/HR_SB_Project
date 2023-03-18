@@ -12,8 +12,8 @@ export class CategoryRepository {
     }
 
     getAllCategories = (): Promise<Category[]> => {
-        return prisma.category.findMany();
-    }
+        return prisma.category.findMany({orderBy: {id: 'asc'}});
+    };
 
     createCategory = async (name: string): Promise<Category> => {
         try {
@@ -27,7 +27,7 @@ export class CategoryRepository {
                 throw ApiError.internal('Помилка при додаванні категорії');
             }
         }
-    }
+    };
 
     updateCategory = async (id: number, name: string): Promise<Category> => {
         const category: Category = await this.getCategoryById(id);
@@ -43,7 +43,7 @@ export class CategoryRepository {
                 throw ApiError.internal('Помилка при редагуванні категорії');
             }
         }
-    }
+    };
 
     getCategoryById = async (id: number): Promise<Category> => {
         try {
@@ -55,7 +55,7 @@ export class CategoryRepository {
                 throw ApiError.internal('Помилка при отриманні категорії');
             }
         }
-    }
+    };
 
     deleteCategoryById = async (id: number): Promise<Category> => {
         try {
@@ -67,6 +67,6 @@ export class CategoryRepository {
                 throw ApiError.internal('Помилка при видаленні категорії');
             }
         }
-    }
+    };
 
 }
