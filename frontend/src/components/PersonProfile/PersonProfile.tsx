@@ -99,7 +99,6 @@ export const PersonProfile: FC = () => {
 	const [isHR, setIsHR] = useState<number>(-1);
 	const [userId, setUserId] = useState<number>(-1);
 
-
 	const goBack = () => {
 		resetError();
 		navigate('/members', { replace: true });
@@ -112,11 +111,13 @@ export const PersonProfile: FC = () => {
 		return () => {
 			resetError();
 		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [people]);
 
 	const fetchData = async () => {
 		if (gotData === 0 || gotData === 2) {
 			dispatch(gotDataSet(1));
+
 			const peopleRes = await getAllPeople();
 			if (!peopleRes) {
 				alert('Помилка при завантаженні людей!');

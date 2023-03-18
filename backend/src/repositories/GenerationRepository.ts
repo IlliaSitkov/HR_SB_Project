@@ -12,7 +12,7 @@ export class GenerationRepository {
 
     getGenerations = async () => {
         return prisma.generation.findMany();
-    }
+    };
 
     generationExists = async (id: number) => {
         const generation = await prisma.generation.findFirst({where: {id}});

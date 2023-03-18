@@ -9,10 +9,22 @@ import {requestValidator} from '../middleware/requestMiddleware';
 import {addUserSchema, updateUserSchema} from '../validators/userSchema';
 import {User} from '../models/User';
 import {idSchema} from '../validators/idSchema';
+import {ITokenPayload} from 'passport-azure-ad';
+import {emailSchema} from '../validators/emailSchema';
 
 const userRouter: Router = Router();
 
 const userService = container.get<UserService>(UserService);
+
+userRouter.route('/me')
+    //Get all users
+    .get(
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
+        asyncHandler(async (req: Request, res: Response) => {
+            const user = await userService.getUserByEmail((req.authInfo as ITokenPayload).preferred_username!);
+            res.status(StatusCode.SuccessOK).json(user);
+        })
+    );
 
 userRouter.route('/')
     //Get all users
@@ -34,7 +46,7 @@ userRouter.route('/')
     );
 
 userRouter.route('/:id')
-    //Update an user
+    //Update a user
     .put(
         ...authMiddleware(RoleEnum.HR),
         requestValidator(idSchema, 'params'),
@@ -63,6 +75,16 @@ userRouter.route('/:id')
         requestValidator(idSchema, 'params'),
         asyncHandler(async (req: Request, res: Response) => {
             const user: User = await userService.deleteById(+req.params.id);
+            res.status(StatusCode.SuccessOK).json(user);
+        })
+    );
+
+userRouter.route('/by_email/:email')
+    .get(
+        ...authMiddleware(RoleEnum.HR),
+        requestValidator(emailSchema, 'params'),
+        asyncHandler(async (req: Request, res: Response) => {
+            const user = await userService.getUserByEmail(req.params.email);
             res.status(StatusCode.SuccessOK).json(user);
         })
     );

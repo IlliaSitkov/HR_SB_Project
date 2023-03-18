@@ -7,14 +7,14 @@ import { SET_GOT_DATA } from './actionTypes';
 const gotDataInitialState: number = 0;
 
 export default function gotDataReducer(
-    state = gotDataInitialState,
-    action: any
+	state = gotDataInitialState,
+	action: any
 ) {
-    switch (action.type) {
-        case SET_GOT_DATA: {
-            return action.payload;
-        }
-        default:
-            return state;
-    }
+	switch (action.type) {
+		case SET_GOT_DATA: {
+			return action.payload;
+		}
+		default:
+			return state;
+	}
 }

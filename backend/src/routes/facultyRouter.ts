@@ -1,9 +1,9 @@
-import {Request, Response, Router} from "express";
-import {container} from "../config/container";
-import {FacultyService} from "../services/FacultyService";
-import authMiddleware from "../middleware/authMiddleware";
-import {RoleEnum} from "../utils/enum/Role.enum";
-import asyncHandler from "express-async-handler";
+import {Request, Response, Router} from 'express';
+import {container} from '../config/container';
+import {FacultyService} from '../services/FacultyService';
+import authMiddleware from '../middleware/authMiddleware';
+import {RoleEnum} from '../utils/enum/Role.enum';
+import asyncHandler from 'express-async-handler';
 
 const facultyRouter:Router = Router();
 
