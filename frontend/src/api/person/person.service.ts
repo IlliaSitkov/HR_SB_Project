@@ -72,6 +72,12 @@ export const getNearestBirthdays = async () => {
 	});
 };
 
+export const syncBirthdays = async () => {
+	const response = await authHost.get('/api/people/sync-birthdays');
+	console.log(response);
+	return response;
+};
+
 /*export const getAllRoles = async (): Promise<string[]> => {
 	const data = (await axios.get(url + '/roles')).data;
 	console.log('Got roles: ');

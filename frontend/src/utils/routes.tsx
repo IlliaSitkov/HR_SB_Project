@@ -9,6 +9,8 @@ import { PeopleList } from '../components/PeopleList/PeopleList';
 import NearestBirthdays from '../components/NearestBritdays/NearestBirthdays';
 import { ItemManagerDemo } from '../ItemManagerDemo';
 import { ActivityManager } from '../components/ActivityManager/ActivityManager';
+import { SynchronizeBirthdaysButton } from '../components/SynchronizeBirthdays/SynchronizeBirthdays';
+import { AuthenticatedTemplate } from '@azure/msal-react';
 
 export const routes: NonIndexRouteObject[] = [
 	{
@@ -37,7 +39,16 @@ export const routes: NonIndexRouteObject[] = [
 			},
 			{
 				path: '/birthdays',
-				element: <NearestBirthdays />,
+				element: (
+					<AuthenticatedTemplate>
+						<div className='mt-3'>
+							<NearestBirthdays />
+							<div className='mt-5 d-flex justify-content-center'>
+								<SynchronizeBirthdaysButton />
+							</div>
+						</div>
+					</AuthenticatedTemplate>
+				),
 			},
 			{
 				path: '/items',
