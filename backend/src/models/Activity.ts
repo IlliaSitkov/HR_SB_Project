@@ -1,8 +1,7 @@
-
 export interface Activity {
-    personId: number,
-    eventId: number,
+    person_id: number,
+    event_id: number,
     hours: number,
-    position: string
+    position?: string | null,
     contribution: string
 }

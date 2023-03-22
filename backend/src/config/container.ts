@@ -38,6 +38,9 @@ container.bind<PersonService>(PersonService).to(PersonService);
 container.bind<EventRepository>(EventRepository).to(EventRepository);
 container.bind<EventService>(EventService).to(EventService);
 
+container.bind<ActivityRepository>(ActivityRepository).to(ActivityRepository);
+container.bind<ActivityService>(ActivityService).to(ActivityService);
+
 container.bind<FacultyRepository>(FacultyRepository).to(FacultyRepository);
 container.bind<FacultyService>(FacultyService).to(FacultyService);
 

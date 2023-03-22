@@ -33,8 +33,11 @@ export class EventService {
 
     checkAndFormatEventDataForPost = async (eventData: any) => {
         // check whether category exists
-        const category_id = eventData.category_id ?
+        let category_id = eventData.category_id ?
             await this.categoryService.getById(eventData.category_id) : undefined;
+        if(eventData.category_id == 0){
+            category_id =  await this.categoryService.getById(eventData.category_id);
+        }
         if (category_id === undefined)
             throw ApiError.badRequest('Категорії з таким id не існує');
         const event: EventPostDto = {
