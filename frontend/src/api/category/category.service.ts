@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios';
-import { authHost } from '../../http';
+import { authHost } from '../index';
 import { Category, CategoryCreateDTO, CategoryUpdateDTO } from './types';
 
 const axios: AxiosInstance = authHost;

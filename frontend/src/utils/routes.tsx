@@ -9,17 +9,12 @@ import { PeopleList } from '../components/PeopleList/PeopleList';
 import NearestBirthdays from '../components/NearestBritdays/NearestBirthdays';
 import { ItemManagerDemo } from '../ItemManagerDemo';
 import { ActivityManager } from '../components/ActivityManager/ActivityManager';
-import { HomePage } from '../pages';
 
 export const routes: NonIndexRouteObject[] = [
 	{
 		path: HOME_ROUTE,
 		element: <MainLayout />,
 		children: [
-			{
-				path: '',
-				element: <HomePage />,
-			},
 			{
 				path: '/events',
 				element: <ActivityManager eventId={1} />,

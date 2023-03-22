@@ -1,7 +1,6 @@
-import { getProfilePhoto } from '../../http/user';
 import { useEffect, useState } from 'react';
-import { PersonBirthday } from '../../models/person';
-import { getNearestBirthdays } from '../../http/person';
+import { getNearestBirthdays, PersonBirthday } from '../../api/person';
+import { getProfilePhoto } from '../../api/user/user.service';
 
 const NearestBirthdays = () => {
 	const [birthdays, setBirthdays] = useState<PersonBirthday[]>([]);
