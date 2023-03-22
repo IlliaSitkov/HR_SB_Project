@@ -1,7 +1,7 @@
+import { getProfilePhoto } from '../../http/user';
 import { useEffect, useState } from 'react';
-import { getNearestBirthdays, PersonBirthday } from '../../api/person';
-import { getProfilePhoto } from '../../api/user/user.service';
-import './NearestBirthdays.css';
+import { PersonBirthday } from '../../models/person';
+import { getNearestBirthdays } from '../../http/person';
 
 const NearestBirthdays = () => {
 	const [birthdays, setBirthdays] = useState<PersonBirthday[]>([]);
@@ -24,7 +24,7 @@ const NearestBirthdaysWithHeaders = ({
 	birthdays: PersonBirthday[];
 }) => {
 	const headerTitle = {
-		fontFamily: '"Playfair Display SC", serif',
+		fontFamily: '"Palatino Linotype", "Book Antiqua", Palatino, serif',
 		fontSize: '28px',
 		letterSpacing: '2px',
 		wordSpacing: '2px',
@@ -105,7 +105,7 @@ const BirthdayRow = ({
 			<div className='ms-3'>
 				<div
 					style={{
-						fontFamily: 'Playfair Display, serif',
+						fontFamily: 'Verdana, Geneva, sans-serif',
 						fontSize: '20px',
 						letterSpacing: '2px',
 						wordSpacing: '2px',
@@ -121,13 +121,14 @@ const BirthdayRow = ({
 				</div>
 				<div
 					style={{
-						fontFamily: 'Playfair Display, serif',
-						fontSize: '20px',
+						fontFamily: 'Verdana, Geneva, sans-serif',
+						fontSize: '17px',
 						letterSpacing: '2px',
 						wordSpacing: '2px',
 						color: '#4D4D4D',
 						fontWeight: '400',
 						textDecoration: 'none',
+						fontStyle: 'italic',
 						fontVariant: 'normal',
 						textTransform: 'none',
 					}}

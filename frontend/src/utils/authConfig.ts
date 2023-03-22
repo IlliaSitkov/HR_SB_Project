@@ -41,7 +41,6 @@ export const logoutHandle = (instance = msalInstance) => {
 		.catch((e) => console.error(e));
 };
 
-//TODO: This check is not complete. If user have 2 accounts it won't work.
 export const isAuthenticated = () => msalInstance.getAllAccounts().length !== 0;
 
 export const requestAccessToken = async (
@@ -54,7 +53,6 @@ export const requestAccessToken = async (
 		scopes: scopes,
 		account: accounts[0],
 	};
-
 	return (await instance.acquireTokenSilent(request)).accessToken;
 };
 

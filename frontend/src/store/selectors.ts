@@ -56,3 +56,5 @@ export const getEventActivitiesWithGuests =
 			(a: Activity) =>
 				a.event_id === eventId && a.person.status === 'POSHANOVANYI'
 		);
+
+export const getEvents = (state: any) => state.events;
