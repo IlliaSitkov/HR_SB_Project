@@ -144,7 +144,6 @@ export const PeopleList: FC = () => {
 			dispatch(gotDataSet(1));
 			fetchData();
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const addPerson = () => {
