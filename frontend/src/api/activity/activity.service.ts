@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios';
-import { authHost } from '../index';
+import { authHost } from '../../http';
 import { Activity, ActivityPost, ActivityUpdate } from './types';
 
 const axios: AxiosInstance = authHost;

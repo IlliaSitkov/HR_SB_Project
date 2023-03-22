@@ -9,10 +9,12 @@ import {UserService} from '../services/UserService';
 import {UserRepository} from '../repositories/UserRepository';
 import {PersonRepository} from '../repositories/PersonRepository';
 import {PersonService} from '../services/PersonService';
-import {EventRepository} from '../repositories/EventRepository';
-import {EventService} from '../services/EventService';
-import {ActivityRepository} from '../repositories/ActivityRepository';
-import {ActivityService} from '../services/ActivityService';
+import {EventRepository} from "../repositories/EventRepository";
+import {EventService} from "../services/EventService";
+// @ts-ignore
+import {ActivityRepository} from "../repositories/ActivityRepository";
+// @ts-ignore
+import {ActivityService} from "../services/ActivityService";
 import {FacultyRepository} from '../repositories/FacultyRepository';
 import {FacultyService} from '../services/FacultyService';
 import {SpecialtyRepository} from '../repositories/SpecialtyRepository';
@@ -35,9 +37,6 @@ container.bind<PersonService>(PersonService).to(PersonService);
 
 container.bind<EventRepository>(EventRepository).to(EventRepository);
 container.bind<EventService>(EventService).to(EventService);
-
-container.bind<ActivityRepository>(ActivityRepository).to(ActivityRepository);
-container.bind<ActivityService>(ActivityService).to(ActivityService);
 
 container.bind<FacultyRepository>(FacultyRepository).to(FacultyRepository);
 container.bind<FacultyService>(FacultyService).to(FacultyService);

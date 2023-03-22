@@ -8,7 +8,7 @@ export const ErrorMessage: FC<{ message: string | undefined }> = ({
 	}
 
 	return (
-		<div style={{ whiteSpace: 'pre-wrap' }}>
+		<div>
 			<small style={{ fontSize: '0.9em', color: 'red' }}>{message}</small>
 		</div>
 	);

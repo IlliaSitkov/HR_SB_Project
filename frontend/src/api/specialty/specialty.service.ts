@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios';
-import { authHost } from '../index';
+import { authHost } from '../../http';
 import { Specialty } from './types';
 
 const axios: AxiosInstance = authHost;

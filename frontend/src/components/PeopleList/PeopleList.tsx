@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps*/
 import { FC, useEffect, useState } from 'react';
 import {
 	getAllPeople,
