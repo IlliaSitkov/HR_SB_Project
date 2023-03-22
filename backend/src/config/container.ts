@@ -13,6 +13,10 @@ import {FacultyRepository} from '../repositories/FacultyRepository';
 import {FacultyService} from '../services/FacultyService';
 import {SpecialtyRepository} from '../repositories/SpecialtyRepository';
 import {SpecialtyService} from '../services/SpecialtyService';
+// @ts-ignore
+import {ActivityRepository} from "../repositories/ActivityRepository";
+// @ts-ignore
+import {ActivityService} from "../services/ActivityService";
 
 const container = new Container();
 
@@ -34,5 +38,8 @@ container.bind<FacultyService>(FacultyService).to(FacultyService);
 
 container.bind<SpecialtyRepository>(SpecialtyRepository).to(SpecialtyRepository);
 container.bind<SpecialtyService>(SpecialtyService).to(SpecialtyService);
+
+container.bind<ActivityRepository>(ActivityRepository).to(ActivityRepository);
+container.bind<ActivityService>(ActivityService).to(ActivityService);
 
 export { container };
