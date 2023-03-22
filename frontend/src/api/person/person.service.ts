@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios';
-import { authHost } from '../../http';
-import { Person, StatusUpdateDto } from './types';
+import { authHost } from '../index';
+import { Person, PersonBirthday, StatusUpdateDto } from './types';
 
 const axios: AxiosInstance = authHost;
 const url: string = 'http://localhost:8000/api/people';
@@ -60,6 +60,22 @@ export const updatePersonStatus = async (
 	status: StatusUpdateDto
 ): Promise<Person> => {
 	return (await axios.put(urlById(id) + '/status', status)).data;
+};
+
+export const getNearestBirthdays = async () => {
+	const response = (
+		await authHost.get<PersonBirthday[]>('/api/people/nearestBirthdays')
+	).data;
+	return response.map((r) => {
+		r.birthday = new Date(r.birthday);
+		return r;
+	});
+};
+
+export const syncBirthdays = async () => {
+	const response = await authHost.get('/api/people/sync-birthdays');
+	console.log(response);
+	return response;
 };
 
 /*export const getAllRoles = async (): Promise<string[]> => {

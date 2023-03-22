@@ -1,29 +1,35 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { UserRole } from '../../api/common/types';
 import './Navbar.css';
 import {
 	AuthenticatedTemplate,
 	UnauthenticatedTemplate,
+	useIsAuthenticated,
+	useMsal,
 } from '@azure/msal-react';
 import { loginHandle, logoutHandle } from '../../utils/authConfig';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserRole } from '../../store/selectors';
 import { userFetched } from '../../store/user/actionCreators';
+import { fetchUserThunk } from '../../store/user/thunk';
 
 export const Navbar = () => {
+	const dispatch = useDispatch();
 	const role = useSelector<UserRole>(getUserRole);
 
-	const dispatch = useDispatch();
+	const isAuthenticated = useIsAuthenticated();
+
+	useEffect(() => {
+		dispatch(fetchUserThunk);
+	}, [isAuthenticated]);
 
 	const logout = () => {
 		logoutHandle();
 		dispatch(userFetched({ role: UserRole.ANONYMOUS }));
 	};
 
-	const login = () => {
-		loginHandle();
-	};
+	const login = () => loginHandle();
 
 	const tabs = [
 		{

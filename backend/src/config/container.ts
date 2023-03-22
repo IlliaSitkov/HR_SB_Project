@@ -9,16 +9,16 @@ import {UserService} from '../services/UserService';
 import {UserRepository} from '../repositories/UserRepository';
 import {PersonRepository} from '../repositories/PersonRepository';
 import {PersonService} from '../services/PersonService';
-import {FacultyRepository} from '../repositories/FacultyRepository';
-import {FacultyService} from '../services/FacultyService';
-import {SpecialtyRepository} from '../repositories/SpecialtyRepository';
-import {SpecialtyService} from '../services/SpecialtyService';
+import {EventRepository} from "../repositories/EventRepository";
+import {EventService} from "../services/EventService";
 // @ts-ignore
 import {ActivityRepository} from "../repositories/ActivityRepository";
 // @ts-ignore
 import {ActivityService} from "../services/ActivityService";
-import {EventRepository} from "../repositories/EventRepository";
-import {EventService} from "../services/EventService";
+import {FacultyRepository} from '../repositories/FacultyRepository';
+import {FacultyService} from '../services/FacultyService';
+import {SpecialtyRepository} from '../repositories/SpecialtyRepository';
+import {SpecialtyService} from '../services/SpecialtyService';
 
 const container = new Container();
 
@@ -35,17 +35,16 @@ container.bind<UserService>(UserService).to(UserService);
 container.bind<PersonRepository>(PersonRepository).to(PersonRepository);
 container.bind<PersonService>(PersonService).to(PersonService);
 
+container.bind<EventRepository>(EventRepository).to(EventRepository);
+container.bind<EventService>(EventService).to(EventService);
+
+container.bind<ActivityRepository>(ActivityRepository).to(ActivityRepository);
+container.bind<ActivityService>(ActivityService).to(ActivityService);
+
 container.bind<FacultyRepository>(FacultyRepository).to(FacultyRepository);
 container.bind<FacultyService>(FacultyService).to(FacultyService);
 
 container.bind<SpecialtyRepository>(SpecialtyRepository).to(SpecialtyRepository);
 container.bind<SpecialtyService>(SpecialtyService).to(SpecialtyService);
-
-container.bind<ActivityRepository>(ActivityRepository).to(ActivityRepository);
-container.bind<ActivityService>(ActivityService).to(ActivityService);
-
-container.bind<EventRepository>(EventRepository).to(EventRepository);
-container.bind<EventService>(EventService).to(EventService);
-
 
 export { container };

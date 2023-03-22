@@ -5,11 +5,11 @@ const router:Router = Router();
 import generationRouter from './generationRouter';
 import {categoryRouter} from './categoryRouter';
 import userRouter from './userRouter';
+import {eventRouter} from "./eventRouter";
 import personRouter from './personRouter';
 import facultyRouter from './facultyRouter';
 import specialtyRouter from './specialtyRouter';
 import activityRouter from "./activityRouter";
-import eventRouter from "./eventRouter";
 
 router.use('/generations', generationRouter);
 router.use('/categories', categoryRouter);
