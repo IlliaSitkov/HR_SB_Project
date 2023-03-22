@@ -1,5 +1,5 @@
-import Joi from "joi";
-import {intId} from "./idSchema";
+import Joi from 'joi';
+import {intId} from './idSchema';
 
 const fieldsEventCreate = {
     name: Joi.string().trim().required(),
@@ -8,12 +8,12 @@ const fieldsEventCreate = {
 
     date_end: Joi.date().required(),
 
-    description: Joi.string().trim(),
+    description: Joi.string().trim().min(0),
 
     category_id: intId().required(),
 
-    photo: Joi.string()
-}
+    photo: Joi.string().min(0)
+};
 
 const fieldsEventUpdate = {
     name: Joi.string().trim(),
@@ -27,7 +27,7 @@ const fieldsEventUpdate = {
     category_id: intId(),
 
     photo: Joi.string()
-}
+};
 
 export const eventCreateSchema = Joi.object({
     ...fieldsEventCreate

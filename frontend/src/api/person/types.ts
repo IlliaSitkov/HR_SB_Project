@@ -41,6 +41,14 @@ export interface Person {
 	date_exclusion?: Date | null;
 }
 
+export interface PersonBirthday {
+	name: string;
+	parental: string;
+	surname: string;
+	birthday: Date;
+	email: string;
+}
+
 export const getFullName = (p: Person) => {
 	let parental = '';
 	if (p.parental) parental = ' ' + p.parental;

@@ -8,7 +8,6 @@ const HorizontalCenterLayout: FC<{
 		<div
 			className='d-flex w-100 flex-column align-items-center'
 			style={{
-				height: '100vh',
 				...style,
 			}}
 		>
