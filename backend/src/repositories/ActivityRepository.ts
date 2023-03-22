@@ -12,7 +12,7 @@ export class ActivityRepository {
     }
 
     activityExists = async (person_id: number, event_id: number) => {
-        const activity = await prisma.activity.findFirst({where: {person_id: person_id, event_id: event_id}});
+        const activity = await prisma.activity.findFirst({where: {person_id, event_id}});
         if (!activity) {
             throw ApiError.badRequest(`Людина з id:${person_id} не має активності у події з id:${event_id}`);
         }
@@ -38,8 +38,8 @@ export class ActivityRepository {
                 where: {
                     person_id_event_id:
                         {
-                            person_id: person_id,
-                            event_id: event_id
+                            person_id,
+                            event_id
                         }
                 },
                 data: {
@@ -63,8 +63,8 @@ export class ActivityRepository {
                 where: {
                     person_id_event_id:
                         {
-                            person_id: person_id,
-                            event_id: event_id
+                            person_id,
+                            event_id
                         }
                 }
             });
@@ -81,7 +81,7 @@ export class ActivityRepository {
     getActivityByEventId = async (event_id: number) => {
         try {
             return await prisma.activity.findMany({
-                where: {event_id: event_id}
+                where: {event_id}
             });
         } catch (e: any) {
             if (this.errorUtil.isNotFound(e)) {
@@ -95,7 +95,7 @@ export class ActivityRepository {
     getActivityByPersonId = async (person_id: number) => {
         try {
             return await prisma.activity.findMany({
-                where: {person_id: person_id}
+                where: {person_id}
             });
         } catch (e: any) {
             if (this.errorUtil.isNotFound(e)) {
