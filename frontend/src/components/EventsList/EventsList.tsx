@@ -1,8 +1,8 @@
-import { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { SearchBar } from '../../common/SearchBar/SearchBar';
-import { Col, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 import { DropdownWithCheckboxes } from '../../common/DropdownWithCheckboxes/DropdownWithCheckboxes';
 import { UserRole } from '../../api/common/types';
 import { getGotData, getUserRole } from '../../store/selectors';
@@ -12,6 +12,7 @@ import { eventsGet } from '../../store/events/actionCreators';
 import { EventItem } from './components/EventItem/EventItem';
 import { Category } from '../../api/category';
 import { getAllCategories } from '../../api/category';
+import { CreateEventModal } from '../CreateEvent/CreateEventModal';
 
 const getValuesOfChosenCheckboxes = (name: string) => {
 	const checkboxes: NodeListOf<any> = document.getElementsByName(name);
@@ -105,11 +106,26 @@ export const EventsList: FC = () => {
 		}
 	};
 
+	const [show, setShow] = useState(false);
+
+	const toggleModal = () => {
+		setShow(!show);
+	};
+
 	return userRole !== UserRole.HR ? (
 		<Navigate to='/' />
 	) : (
 		<>
 			<h2 className='text-center'>Події СБ</h2>
+			<CreateEventModal showModal={show} toggleModal={toggleModal} />
+			<Button
+				onClick={toggleModal}
+				variant='primary'
+				id='addEvent'
+				className='ms-4 m-2 align-self-start'
+			>
+				Додати подію
+			</Button>
 			<SearchBar
 				searchText={searchText}
 				setSearchText={setSearchText}
