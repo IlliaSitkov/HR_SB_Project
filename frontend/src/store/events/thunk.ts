@@ -34,7 +34,6 @@ export const getAllEventsThunk = async (dispatch: any) => {
 		dispatch(errorMessageSet(errorToString(e)));
 	}
 };
-
 export function updateAnEvent(id: number, event: Event) {
 	return async function updateEventThunk(dispatch: any, getState: any) {
 		try {

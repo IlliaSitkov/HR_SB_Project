@@ -64,6 +64,10 @@ export const routes: NonIndexRouteObject[] = [
 				),
 			},
 			{
+				path: '/members',
+				element: <EventsList />,
+			},
+			{
 				path: '/profile',
 				element: (
 					<PrivateRoute>

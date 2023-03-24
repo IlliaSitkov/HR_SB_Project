@@ -30,6 +30,7 @@ export const CreateEventModal = ({
 
 	const [error, setError] = useState<string>('');
 
+
 	const dispatch = useDispatch();
 
 	const toggleShow = () => {

@@ -11,6 +11,7 @@ import { ActivityOrganizerItem } from './components/ActivityItem/ActivityOrganiz
 import { Activity } from '../../api/activity';
 import { ActivityGuestItem } from './components/ActivityItem/ActivityGuestItem';
 import { CreateEventModal } from '../CreateEvent/CreateEventModal';
+import { Button } from 'react-bootstrap';
 
 export const ActivityManager = ({ eventId }: { eventId: number }) => {
 	const [show, setShow] = useState(false);
@@ -66,6 +67,7 @@ export const ActivityManager = ({ eventId }: { eventId: number }) => {
 					</div>
 				</div>
 			</div>
+			<Button onClick={toggleModal}>Create Event</Button>
 		</div>
 	);
 };

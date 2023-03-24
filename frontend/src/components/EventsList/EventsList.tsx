@@ -53,6 +53,7 @@ export const EventsList: FC = () => {
 			!filterCategories.find((c) => c.id === event.category_id)
 		)
 			return false;
+      
 		return suitable;
 	};
 
@@ -66,7 +67,7 @@ export const EventsList: FC = () => {
 		let categories = await getAllCategories();
 		setPossibleCategories(categories);
 	};
-
+  
 	const dispatch = useDispatch();
 
 	useEffect(() => {
