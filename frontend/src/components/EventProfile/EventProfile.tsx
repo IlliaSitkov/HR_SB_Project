@@ -122,6 +122,7 @@ export const EventProfile: FC = () => {
 		);
 		addFieldIfNeeded(ev, description, 'description');
 		addFieldFromSelectIfNeeded(ev, category_id, 'category_id');
+		addFieldIfNeeded(ev, photo, 'photo');
 	};
 
 	const addFieldIfNeeded = (
