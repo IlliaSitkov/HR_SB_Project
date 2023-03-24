@@ -1,9 +1,9 @@
-import {Event, EventPatchDto, EventPostDto} from "../models/Event"
-import {prisma} from "../datasource/connectDB";
-import {ApiError} from "../models/ApiError";
-import {inject, injectable} from "inversify";
+import {Event, EventPatchDto, EventPostDto} from '../models/Event';
+import {prisma} from '../datasource/connectDB';
+import {ApiError} from '../models/ApiError';
+import {inject, injectable} from 'inversify';
 import 'reflect-metadata';
-import {PrismaErrorUtil} from "../datasource/PrismaErrorUtil";
+import {PrismaErrorUtil} from '../datasource/PrismaErrorUtil';
 
 @injectable()
 export class EventRepository {
@@ -17,7 +17,7 @@ export class EventRepository {
                 category: true
             }
         });
-    }
+    };
 
     eventExists = async (id: number) => {
         const event = await prisma.event.findFirst({where: {id}});
@@ -38,7 +38,7 @@ export class EventRepository {
                 throw ApiError.internal(`Помилка при додаванні події`);
             }
         }
-    }
+    };
 
     updateEvent = async (id: number, event: EventPatchDto) => {
         const ev = await this.eventExists(id);
@@ -48,9 +48,9 @@ export class EventRepository {
                     name: event.name ? event.name : ev.name,
                     date_start: event.date_start ? event.date_start : ev.date_start,
                     date_end: event.date_end ? event.date_end : ev.date_end,
-                    description: event.description ? event.description : ev.description,
+                    description: (event.description || event.description === '') ? event.description : ev.description,
                     category_id: event.category_id ? event.category_id : ev.category_id,
-                    photo: event.photo ? event.photo : ev.photo
+                    photo: (event.photo || event.photo === '') ? event.photo : ev.photo
                 },
                 include: {
                     category: true
@@ -63,7 +63,7 @@ export class EventRepository {
                 throw ApiError.internal(`Помилка при оновленні події`);
             }
         }
-    }
+    };
 
     getEventById = async (id: number): Promise<Event> => {
         try {
@@ -80,7 +80,7 @@ export class EventRepository {
                 throw ApiError.internal(`Помилка при отриманні події`);
             }
         }
-    }
+    };
 
     deleteEventById = async (id: number): Promise<Event> => {
         try {
@@ -97,6 +97,6 @@ export class EventRepository {
                 throw ApiError.internal(`Помилка при видаленні події`);
             }
         }
-    }
+    };
 
 }

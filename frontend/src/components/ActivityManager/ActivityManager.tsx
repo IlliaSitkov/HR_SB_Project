@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AddEventPerson } from './components/AddActivity/AddEventPerson';
 import { ActivitiesList } from './components/ActivitiesList/ActivitiesList';
 import {
@@ -10,10 +10,19 @@ import {
 import { ActivityOrganizerItem } from './components/ActivityItem/ActivityOrganizerItem';
 import { Activity } from '../../api/activity';
 import { ActivityGuestItem } from './components/ActivityItem/ActivityGuestItem';
+import { CreateEventModal } from '../CreateEvent/CreateEventModal';
+import { Button } from 'react-bootstrap';
 
 export const ActivityManager = ({ eventId }: { eventId: number }) => {
+	const [show, setShow] = useState(false);
+
+	const toggleModal = () => {
+		setShow(!show);
+	};
+
 	return (
 		<div className='container mt-3'>
+			<CreateEventModal showModal={show} toggleModal={toggleModal} />
 			<div className='row mb-5'>
 				<div className='col-12 col-lg-8'>
 					<div className='d-flex justify-content-between mb-3 align-items-center'>
@@ -58,6 +67,7 @@ export const ActivityManager = ({ eventId }: { eventId: number }) => {
 					</div>
 				</div>
 			</div>
+			<Button onClick={toggleModal}>Create Event</Button>
 		</div>
 	);
 };

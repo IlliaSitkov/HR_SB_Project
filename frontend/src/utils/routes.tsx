@@ -6,6 +6,7 @@ import { UserActivities } from '../components/UserActivities/UserActivities';
 import { PersonProfile } from '../components/PersonProfile/PersonProfile';
 import { MyProfile } from '../components/MyProfile/MyProfile';
 import { PeopleList } from '../components/PeopleList/PeopleList';
+import { EventsList } from '../components/EventsList/EventsList';
 import NearestBirthdays from '../components/NearestBritdays/NearestBirthdays';
 import { ItemManagerDemo } from '../ItemManagerDemo';
 import { ActivityManager } from '../components/ActivityManager/ActivityManager';
@@ -15,6 +16,7 @@ import {
 } from '@azure/msal-react';
 import { SynchronizeBirthdaysButton } from '../components/SynchronizeBirthdays/SynchronizeBirthdays';
 import PrivateRoute from '../components/PrivateRoute/PrivateRoute';
+import { EventProfile } from '../components/EventProfile/EventProfile';
 
 export const routes: NonIndexRouteObject[] = [
 	{
@@ -61,6 +63,22 @@ export const routes: NonIndexRouteObject[] = [
 				element: (
 					<PrivateRoute>
 						<PeopleList />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: '/all-events',
+				element: (
+					<PrivateRoute>
+						<EventsList />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: '/all-events/:eventId',
+				element: (
+					<PrivateRoute>
+						<EventProfile />
 					</PrivateRoute>
 				),
 			},

@@ -17,7 +17,11 @@ export const EditItemsModal: FC<{
 	));
 
 	return (
-		<Modal onHide={() => setShow(false)} show={show}>
+		<Modal
+			style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}
+			onHide={() => setShow(false)}
+			show={show}
+		>
 			<Modal.Header closeButton={true}>
 				<Modal.Title>{title}</Modal.Title>
 			</Modal.Header>
