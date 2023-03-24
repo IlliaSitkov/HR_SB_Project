@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps*/
 import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { UserRole } from '../../api/common/types';
@@ -6,7 +7,6 @@ import {
 	AuthenticatedTemplate,
 	UnauthenticatedTemplate,
 	useIsAuthenticated,
-	useMsal,
 } from '@azure/msal-react';
 import { loginHandle, logoutHandle } from '../../utils/authConfig';
 import { useDispatch, useSelector } from 'react-redux';
