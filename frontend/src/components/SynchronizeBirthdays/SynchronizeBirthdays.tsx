@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Button } from 'react-bootstrap';
 import { syncBirthdays } from '../../api/person';
 import './SynchronizeBirthdays.css';

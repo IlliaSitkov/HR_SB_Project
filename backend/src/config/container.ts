@@ -9,10 +9,12 @@ import {UserService} from '../services/UserService';
 import {UserRepository} from '../repositories/UserRepository';
 import {PersonRepository} from '../repositories/PersonRepository';
 import {PersonService} from '../services/PersonService';
-import {EventRepository} from '../repositories/EventRepository';
-import {EventService} from '../services/EventService';
-import {ActivityRepository} from '../repositories/ActivityRepository';
-import {ActivityService} from '../services/ActivityService';
+import {EventRepository} from "../repositories/EventRepository";
+import {EventService} from "../services/EventService";
+// @ts-ignore
+import {ActivityRepository} from "../repositories/ActivityRepository";
+// @ts-ignore
+import {ActivityService} from "../services/ActivityService";
 import {FacultyRepository} from '../repositories/FacultyRepository';
 import {FacultyService} from '../services/FacultyService';
 import {SpecialtyRepository} from '../repositories/SpecialtyRepository';

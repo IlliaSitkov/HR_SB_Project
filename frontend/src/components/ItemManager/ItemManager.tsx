@@ -72,7 +72,7 @@ export const ItemManager: FC<{
 				placeholder,
 			}}
 		>
-			<section className='d-flex gap-2 align-items-end'>
+			<section className='d-flex gap-2 align-items-end m-2'>
 				<Select
 					id='select'
 					noneSelectedOption={true}

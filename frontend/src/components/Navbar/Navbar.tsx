@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps*/
 import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { UserRole } from '../../api/common/types';
@@ -7,6 +6,7 @@ import {
 	AuthenticatedTemplate,
 	UnauthenticatedTemplate,
 	useIsAuthenticated,
+	useMsal,
 } from '@azure/msal-react';
 import { loginHandle, logoutHandle } from '../../utils/authConfig';
 import { useDispatch, useSelector } from 'react-redux';
@@ -45,11 +45,6 @@ export const Navbar = () => {
 		{
 			name: 'Події',
 			path: '/events',
-			roles: [UserRole.HR],
-		},
-		{
-			name: 'Усі події',
-			path: '/all-events',
 			roles: [UserRole.HR],
 		},
 		{

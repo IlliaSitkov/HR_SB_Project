@@ -1,5 +1,5 @@
-import Joi from 'joi';
-import {intId} from './idSchema';
+import Joi from "joi";
+import {intId} from "./idSchema";
 
 const fieldsActivityCreate = {
     person_id: intId().required(),
@@ -11,7 +11,7 @@ const fieldsActivityCreate = {
     position: Joi.string().trim(),
 
     contribution: Joi.string().trim().required()
-};
+}
 
 const fieldsActivityUpdate = {
     hours: Joi.number(),
@@ -19,7 +19,7 @@ const fieldsActivityUpdate = {
     position: Joi.string().trim(),
 
     contribution: Joi.string().trim()
-};
+}
 
 export const activityCreateSchema = Joi.object({
     ...fieldsActivityCreate
