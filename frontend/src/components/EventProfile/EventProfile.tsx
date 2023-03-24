@@ -20,7 +20,7 @@ import { ErrorMessageBig } from '../../common/ErrorMessage/ErrorMessageBig';
 import { UserRole } from '../../api/common/types';
 import { gotDataSet } from '../../store/gotData/actionCreators';
 import { errorMessageSet } from '../../store/errorMessage/actionCreators';
-import { DEFAULT_AVATAR_URL } from '../../utils/constants';
+import { DEFAULT_PHOTO_URL } from '../../utils/constants';
 import { EditPhotoUrlModal } from './components/EditPhotoUrlModal';
 
 export const EventProfile: FC = () => {
@@ -180,7 +180,7 @@ export const EventProfile: FC = () => {
 					<Col>
 						<div className='m-2 justify-content-center d-flex'>
 							<img
-								src={photo ? photo : DEFAULT_AVATAR_URL}
+								src={photo ? photo : DEFAULT_PHOTO_URL}
 								className='rounded'
 								style={{
 									maxWidth: '350px',
