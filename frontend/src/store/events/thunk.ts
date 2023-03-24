@@ -1,5 +1,16 @@
-import { eventAdded, eventDeleted, eventUpdated } from './actionCreators';
-import { createEvent, updateEvent, deleteEvent, Event } from '../../api/event';
+import {
+	eventAdded,
+	eventDeleted,
+	eventsGet,
+	eventUpdated,
+} from './actionCreators';
+import {
+	createEvent,
+	updateEvent,
+	deleteEvent,
+	Event,
+	getAllEvents,
+} from '../../api/event';
 import { errorMessageSet } from '../errorMessage/actionCreators';
 import { errorToString } from '../../utils/errorHandling';
 
@@ -14,6 +25,15 @@ export function saveNewEvent(event: Event) {
 	};
 }
 
+export const getAllEventsThunk = async (dispatch: any) => {
+	try {
+		const eventsRes = await getAllEvents();
+		dispatch(eventsGet(eventsRes));
+		console.log('GOT EVENTS IN THUNK');
+	} catch (e) {
+		dispatch(errorMessageSet(errorToString(e)));
+	}
+};
 export function updateAnEvent(id: number, event: Event) {
 	return async function updateEventThunk(dispatch: any, getState: any) {
 		try {

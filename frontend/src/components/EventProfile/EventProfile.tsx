@@ -1,5 +1,6 @@
+/*eslint-disable react-hooks/exhaustive-deps*/
 import React, { FC, useEffect, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	getErrorMessage,
@@ -20,8 +21,10 @@ import { ErrorMessageBig } from '../../common/ErrorMessage/ErrorMessageBig';
 import { UserRole } from '../../api/common/types';
 import { gotDataSet } from '../../store/gotData/actionCreators';
 import { errorMessageSet } from '../../store/errorMessage/actionCreators';
-import { DEFAULT_AVATAR_URL } from '../../utils/constants';
+import { DEFAULT_PHOTO_URL } from '../../utils/constants';
 import { EditPhotoUrlModal } from './components/EditPhotoUrlModal';
+import { ActivityManager } from '../ActivityManager/ActivityManager';
+import { getAllPeopleThunk } from '../../store/people/thunk';
 
 export const EventProfile: FC = () => {
 	const userRole = useSelector<UserRole>(getUserRole);
@@ -31,8 +34,7 @@ export const EventProfile: FC = () => {
 	const events = useSelector(getEvents);
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	//const { memberId } = useParams();
-
+	const { eventId } = useParams();
 	const [event, setEvent] = useState<Event | null>(null);
 	const [name, setName] = useState<string>('');
 	const [date_start, setDate_start] = useState<string>('');
@@ -45,17 +47,20 @@ export const EventProfile: FC = () => {
 
 	const goBack = () => {
 		resetError();
-		navigate('/members', { replace: true });
+		navigate('/all-events', { replace: true });
 	};
 
 	const resetError = () => dispatch(errorMessageSet(''));
+
+	useEffect(() => {
+		dispatch(getAllPeopleThunk as any);
+	}, []);
 
 	useEffect(() => {
 		fetchData();
 		return () => {
 			resetError();
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [events]);
 
 	const fetchData = async () => {
@@ -74,7 +79,7 @@ export const EventProfile: FC = () => {
 		}
 
 		const ev: Event = events.find(
-			(event: Event) => event.id === ev.id // ?
+			(event: Event) => event.id === Number(eventId)
 		);
 
 		if (ev) {
@@ -96,7 +101,7 @@ export const EventProfile: FC = () => {
 		resetError();
 		// @ts-ignore
 		dispatch(deleteAnEvent(event.id));
-		navigate('/members', { replace: true });
+		navigate('/all-events', { replace: true });
 	};
 
 	const updateEvent = () => {
@@ -123,6 +128,7 @@ export const EventProfile: FC = () => {
 		);
 		addFieldIfNeeded(ev, description, 'description');
 		addFieldFromSelectIfNeeded(ev, category_id, 'category_id');
+		addFieldIfNeeded(ev, photo, 'photo');
 	};
 
 	const addFieldIfNeeded = (
@@ -151,9 +157,14 @@ export const EventProfile: FC = () => {
 			// @ts-ignore
 			const value = event[fieldName];
 			if (!value || value === '') {
-				return !(!field || field.toString().trim() === '');
-			} else return !(value === field ||
-				(field && value.toString().trim() === field.toString().trim()));
+				if (!field || field.toString().trim() === '') return false;
+				else return true;
+			} else if (
+				value === field ||
+				(field && value.toString().trim() === field.toString().trim())
+			)
+				return false;
+			else return true;
 		} else return false;
 	};
 
@@ -175,7 +186,7 @@ export const EventProfile: FC = () => {
 					<Col>
 						<div className='m-2 justify-content-center d-flex'>
 							<img
-								src={photo ? photo : DEFAULT_AVATAR_URL}
+								src={photo ? photo : DEFAULT_PHOTO_URL}
 								className='rounded'
 								style={{
 									maxWidth: '350px',
@@ -196,7 +207,7 @@ export const EventProfile: FC = () => {
 					</Col>
 					<Col className='d-flex'>
 						<div className='border-secondary border border-1 p-2 rounded m-2 flex-fill'>
-							<h6 className='text-center'>Загальні дані</h6>
+							<h6 className='text-center'>Дані про подію</h6>
 							<Input
 								id='name'
 								placeholder={'Введіть назву...'}
@@ -229,15 +240,8 @@ export const EventProfile: FC = () => {
 								onChange={changeHandler(setDescription, resetError)}
 								value={description}
 								label='Опис'
-								required={true}
+								required={false}
 							/>
-						</div>
-					</Col>
-				</Row>
-				<Row xs={1} sm={1} md={2} lg={3} className='m-2'>
-					<Col className='d-flex'>
-						<div className='border-secondary border border-1 p-2 rounded m-2 flex-fill'>
-							<h6 className='text-center'>Категорія</h6>
 							<Select
 								id='selectCategory'
 								noneSelectedOption={true}
@@ -274,6 +278,9 @@ export const EventProfile: FC = () => {
 				>
 					{'Видалити'}
 				</Button>
+			</div>
+			<div className='mt-3 w-100 mb-5'>
+				<ActivityManager eventId={Number(eventId)} />
 			</div>
 		</>
 	);

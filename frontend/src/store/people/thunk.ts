@@ -1,4 +1,5 @@
 import {
+	peopleGet,
 	personAdded,
 	personDeleted,
 	personUpdated,
@@ -6,11 +7,12 @@ import {
 } from './actionCreators';
 import {
 	createPerson,
-	updatePerson,
-	updatePersonStatus,
 	deletePerson,
+	getAllPeople,
 	Person,
 	StatusUpdateDto,
+	updatePerson,
+	updatePersonStatus,
 } from '../../api/person';
 import { errorMessageSet } from '../errorMessage/actionCreators';
 import { errorToString } from '../../utils/errorHandling';
@@ -25,6 +27,15 @@ export function saveNewPerson(person: Person) {
 		}
 	};
 }
+
+export const getAllPeopleThunk = async (dispatch: any) => {
+	try {
+		const people = await getAllPeople();
+		dispatch(peopleGet(people));
+	} catch (e) {
+		dispatch(errorMessageSet(errorToString(e)));
+	}
+};
 
 export function updateAPerson(id: number, person: Person) {
 	return async function updatePersonThunk(dispatch: any, getState: any) {

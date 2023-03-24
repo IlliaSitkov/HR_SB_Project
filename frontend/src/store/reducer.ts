@@ -8,7 +8,7 @@ import { eventActivitiesReducer } from './eventActivities/reducer';
 
 const rootReducer = combineReducers({
 	people: peopleReducer,
-	events: eventsReducer,
+	allEvents: eventsReducer,
 	user: userReducer,
 	errorMessage: errorMessageReducer,
 	gotData: gotDataReducer,

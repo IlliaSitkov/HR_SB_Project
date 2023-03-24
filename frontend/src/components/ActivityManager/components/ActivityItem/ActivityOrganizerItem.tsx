@@ -16,6 +16,7 @@ import { ErrorMessage } from '../../../../common/ErrorMessage/ErrorMessage';
 import { changeHandler } from '../../../../shared';
 import { fetchEventActivitiesThunk } from '../../../../store/eventActivities/thunk';
 import { useDispatch } from 'react-redux';
+import { getFullName } from '../../../../api/person';
 
 export const ActivityOrganizerItem = ({ activity }: { activity: Activity }) => {
 	const dispatch = useDispatch();
@@ -96,7 +97,7 @@ export const ActivityOrganizerItem = ({ activity }: { activity: Activity }) => {
 					<div className='activity-card-grid'>
 						<Input
 							type='text'
-							value={activity.person.name + ' ' + activity.person.surname}
+							value={getFullName(activity.person)}
 							disabled={true}
 						/>
 						<Input

@@ -48,9 +48,9 @@ export class EventRepository {
                     name: event.name ? event.name : ev.name,
                     date_start: event.date_start ? event.date_start : ev.date_start,
                     date_end: event.date_end ? event.date_end : ev.date_end,
-                    description: event.description ? event.description : ev.description,
+                    description: (event.description || event.description === '') ? event.description : ev.description,
                     category_id: event.category_id ? event.category_id : ev.category_id,
-                    photo: event.photo ? event.photo : ev.photo
+                    photo: (event.photo || event.photo === '') ? event.photo : ev.photo
                 },
                 include: {
                     category: true

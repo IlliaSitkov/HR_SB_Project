@@ -1,6 +1,7 @@
-import { FC, useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps*/
+import React, { FC, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { SearchBar } from '../../common/SearchBar/SearchBar';
 import { Button, Col, Row } from 'react-bootstrap';
 import { DropdownWithCheckboxes } from '../../common/DropdownWithCheckboxes/DropdownWithCheckboxes';
@@ -12,6 +13,18 @@ import { eventsGet } from '../../store/events/actionCreators';
 import { EventItem } from './components/EventItem/EventItem';
 import { Category } from '../../api/category';
 import { getAllCategories } from '../../api/category';
+import { CreateEventModal } from '../CreateEvent/CreateEventModal';
+
+const getValuesOfChosenCheckboxes = (name: string) => {
+	const checkboxes: NodeListOf<any> = document.getElementsByName(name);
+	const res = [];
+	for (let i = 0; i < checkboxes.length; i += 1) {
+		if (checkboxes[i].checked) {
+			res.push(checkboxes[i].getAttribute('value'));
+		}
+	}
+	return res;
+};
 
 export const EventsList: FC = () => {
 	const userRole = useSelector<UserRole>(getUserRole);
@@ -21,6 +34,7 @@ export const EventsList: FC = () => {
 	const [possibleCategories, setPossibleCategories] = useState<Array<Category>>(
 		[]
 	);
+
 	const suitsSearch = (event: Event) => {
 		let sT = searchText.trim();
 		if (sT === '') return true;
@@ -39,17 +53,21 @@ export const EventsList: FC = () => {
 			!filterCategories.find((c) => c.id === event.category_id)
 		)
 			return false;
-
+      
 		return suitable;
 	};
 
 	const events = useSelector((state: any) =>
-		state.events.filter(
+		state.allEvents.filter(
 			(event: Event) => suitsSearch(event) && suitsFilter(event)
 		)
 	);
 
-	const navigate = useNavigate();
+	const fetchCategories = async () => {
+		let categories = await getAllCategories();
+		setPossibleCategories(categories);
+	};
+  
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -70,21 +88,18 @@ export const EventsList: FC = () => {
 			dispatch(gotDataSet(1));
 			fetchData();
 		}
+		fetchCategories();
 	}, []);
 
-	const addEvent = () => {
-		navigate('/members/add', { replace: true }); // ?
-	};
-
 	const updateFilters = (param: string) => {
-		const checkboxes: NodeListOf<any> = document.getElementsByName(param);
-		let val: string;
-		if (checkboxes[0].checked) {
-			val = checkboxes[0].getAttribute('value');
+		let vals = getValuesOfChosenCheckboxes(param);
+		if (vals.length !== 0) {
 			if (param === 'category') {
 				const newCategories: Array<Category> = [];
-				const cat = possibleCategories.find((c) => c.name === val);
-				if (cat) newCategories.push(cat);
+				vals.forEach((val) => {
+					const cat = possibleCategories.find((c) => c.name === val);
+					if (cat) newCategories.push(cat);
+				});
 				setFilterCategories(newCategories);
 			}
 		} else {
@@ -92,14 +107,21 @@ export const EventsList: FC = () => {
 		}
 	};
 
+	const [show, setShow] = useState(false);
+
+	const toggleModal = () => {
+		setShow(!show);
+	};
+
 	return userRole !== UserRole.HR ? (
 		<Navigate to='/' />
 	) : (
 		<>
 			<h2 className='text-center'>Події СБ</h2>
+			<CreateEventModal showModal={show} toggleModal={toggleModal} />
 			<Button
+				onClick={toggleModal}
 				variant='primary'
-				onClick={addEvent}
 				id='addEvent'
 				className='ms-4 m-2 align-self-start'
 			>
