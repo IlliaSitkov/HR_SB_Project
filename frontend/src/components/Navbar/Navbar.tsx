@@ -43,8 +43,8 @@ export const Navbar = () => {
 			roles: [UserRole.HR],
 		},
 		{
-			name: 'Події',
-			path: '/events',
+			name: 'Усі події',
+			path: '/all-events',
 			roles: [UserRole.HR],
 		},
 		{
@@ -71,7 +71,7 @@ export const Navbar = () => {
 				</nav>
 			</UnauthenticatedTemplate>
 			<AuthenticatedTemplate>
-				<nav className='menu-bar d-flex justify-content-between align-items-center'>
+				<nav className='menu-bar d-flex justify-content-between align-items-center mb-4'>
 					<div className='d-flex gap-4'>
 						{tabs
 							.filter((tab) => tab.roles.includes(role as UserRole))

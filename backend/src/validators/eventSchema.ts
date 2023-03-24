@@ -22,11 +22,11 @@ const fieldsEventUpdate = {
 
     date_end: Joi.date(),
 
-    description: Joi.string().trim(),
+    description: Joi.alternatives([Joi.string().trim(), '']),
 
     category_id: intId(),
 
-    photo: Joi.string()
+    photo: Joi.alternatives([Joi.string().trim(), ''])
 };
 
 export const eventCreateSchema = Joi.object({

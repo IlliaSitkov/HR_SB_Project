@@ -68,7 +68,6 @@ export const getNearestBirthdays = async () => {
 	).data;
 	return response.map((r) => {
 		r.birthday = new Date(r.birthday);
-		if (!r.avatar) r.avatar = '';
 		return r;
 	});
 };

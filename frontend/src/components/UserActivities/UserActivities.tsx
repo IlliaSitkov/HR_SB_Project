@@ -1,3 +1,4 @@
+/*eslint-disable react-hooks/exhaustive-deps*/
 import React, { FC, useEffect, useState } from 'react';
 import { Activity, getActivitiesOfUser } from '../../api/activity';
 
@@ -9,12 +10,10 @@ export const UserActivities: FC<{ personId: number }> = ({ personId }) => {
 
 	useEffect(() => {
 		fetchData();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
 		groupActivitiesByYear();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [activities]);
 
 	const groupActivitiesByYear = () => {
@@ -45,7 +44,7 @@ export const UserActivities: FC<{ personId: number }> = ({ personId }) => {
 
 	const oneYearGroupRows = (activitiesGroup: Activity[]) => {
 		return (
-			<>
+			<tbody key={activitiesGroup[0].year}>
 				<tr>
 					<td rowSpan={activitiesGroup.length + 1}>
 						{activitiesGroup[0].year}
@@ -63,7 +62,7 @@ export const UserActivities: FC<{ personId: number }> = ({ personId }) => {
 					<td colSpan={4}>Підсумок за рік</td>
 					<td colSpan={4}>{sumHours(activitiesGroup)}</td>
 				</tr>
-			</>
+			</tbody>
 		);
 	};
 
@@ -86,8 +85,8 @@ export const UserActivities: FC<{ personId: number }> = ({ personId }) => {
 							<th>Години стажування</th>
 						</tr>
 					</thead>
+					{tables()}
 					<tbody>
-						{tables()}
 						<tr className='table-primary fw-bold'>
 							<td colSpan={4}>Нараховано всього</td>
 							<td>{sumHours(activities)}</td>

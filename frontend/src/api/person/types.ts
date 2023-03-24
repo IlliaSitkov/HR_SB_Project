@@ -47,7 +47,6 @@ export interface PersonBirthday {
 	surname: string;
 	birthday: Date;
 	email: string;
-	avatar: string;
 }
 
 export const getFullName = (p: Person) => {

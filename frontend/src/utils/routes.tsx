@@ -2,19 +2,18 @@ import { HOME_ROUTE } from './routesNames';
 import { MainLayout } from '../components/layout';
 import { NonIndexRouteObject } from 'react-router-dom';
 // import AuthWrapper from '../../components/auth/AuthWrapper';
-import { UserActivities } from '../components/UserActivities/UserActivities';
 import { PersonProfile } from '../components/PersonProfile/PersonProfile';
 import { MyProfile } from '../components/MyProfile/MyProfile';
 import { PeopleList } from '../components/PeopleList/PeopleList';
+import { EventsList } from '../components/EventsList/EventsList';
 import NearestBirthdays from '../components/NearestBritdays/NearestBirthdays';
-import { ItemManagerDemo } from '../ItemManagerDemo';
-import { ActivityManager } from '../components/ActivityManager/ActivityManager';
 import {
 	AuthenticatedTemplate,
 	UnauthenticatedTemplate,
 } from '@azure/msal-react';
 import { SynchronizeBirthdaysButton } from '../components/SynchronizeBirthdays/SynchronizeBirthdays';
 import PrivateRoute from '../components/PrivateRoute/PrivateRoute';
+import { EventProfile } from '../components/EventProfile/EventProfile';
 
 export const routes: NonIndexRouteObject[] = [
 	{
@@ -33,22 +32,6 @@ export const routes: NonIndexRouteObject[] = [
 				),
 			},
 			{
-				path: '/events',
-				element: (
-					<PrivateRoute>
-						<ActivityManager eventId={1} />
-					</PrivateRoute>
-				),
-			},
-			{
-				path: '/acts',
-				element: (
-					<PrivateRoute>
-						<UserActivities personId={13} />
-					</PrivateRoute>
-				),
-			},
-			{
 				path: '/members/:memberId',
 				element: (
 					<PrivateRoute>
@@ -61,6 +44,22 @@ export const routes: NonIndexRouteObject[] = [
 				element: (
 					<PrivateRoute>
 						<PeopleList />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: '/all-events',
+				element: (
+					<PrivateRoute>
+						<EventsList />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: '/all-events/:eventId',
+				element: (
+					<PrivateRoute>
+						<EventProfile />
 					</PrivateRoute>
 				),
 			},
@@ -84,14 +83,6 @@ export const routes: NonIndexRouteObject[] = [
 								</div>
 							</div>
 						</AuthenticatedTemplate>
-					</PrivateRoute>
-				),
-			},
-			{
-				path: '/items',
-				element: (
-					<PrivateRoute>
-						<ItemManagerDemo />
 					</PrivateRoute>
 				),
 			},

@@ -11,6 +11,8 @@ import {
 import './CreateEventModal.css';
 import { ErrorMessage } from '../../common/ErrorMessage/ErrorMessage';
 import { createEvent } from '../../api/event_/event.service';
+import { useDispatch } from 'react-redux';
+import { getAllEventsThunk } from '../../store/events/thunk';
 
 export const CreateEventModal = ({
 	showModal,
@@ -22,11 +24,13 @@ export const CreateEventModal = ({
 	const [name, setName] = useState<string>('');
 	const [description, setDescription] = useState<string>('');
 	const [photoUrl, setPhotoUrl] = useState<string>('');
-	const [dateStart, setDateStart] = useState<Date | null>(null);
-	const [dateEnd, setDateEnd] = useState<Date | null>(null);
+	const [dateStart, setDateStart] = useState<Date>(new Date());
+	const [dateEnd, setDateEnd] = useState<Date>(new Date());
 	const [categoryId, setCategoryId] = useState<number>(-1);
 
 	const [error, setError] = useState<string>('');
+
+	const dispatch = useDispatch();
 
 	const toggleShow = () => {
 		toggleModal();
@@ -35,8 +39,8 @@ export const CreateEventModal = ({
 
 	const resetFields = () => {
 		setName('');
-		setDateStart(null);
-		setDateEnd(null);
+		setDateStart(new Date());
+		setDateEnd(new Date());
 		setDescription('');
 		setError('');
 		setPhotoUrl('');
@@ -82,6 +86,7 @@ export const CreateEventModal = ({
 				date_start: dateStart!,
 				photo: photoUrl,
 			});
+			dispatch(getAllEventsThunk as any);
 			toggleShow();
 		} catch (e) {
 			setError((e as any).response.data.message);

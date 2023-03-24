@@ -11,7 +11,6 @@ import { ActivityOrganizerItem } from './components/ActivityItem/ActivityOrganiz
 import { Activity } from '../../api/activity';
 import { ActivityGuestItem } from './components/ActivityItem/ActivityGuestItem';
 import { CreateEventModal } from '../CreateEvent/CreateEventModal';
-import { Button } from 'react-bootstrap';
 
 export const ActivityManager = ({ eventId }: { eventId: number }) => {
 	const [show, setShow] = useState(false);
@@ -24,7 +23,7 @@ export const ActivityManager = ({ eventId }: { eventId: number }) => {
 		<div className='container mt-3'>
 			<CreateEventModal showModal={show} toggleModal={toggleModal} />
 			<div className='row mb-5'>
-				<div className='col-12 col-lg-8'>
+				<div className='col-12 col-lg-8 offset-lg-2'>
 					<div className='d-flex justify-content-between mb-3 align-items-center'>
 						<h4>Організатори</h4>
 						<AddEventPerson
@@ -46,7 +45,7 @@ export const ActivityManager = ({ eventId }: { eventId: number }) => {
 				</div>
 			</div>
 			<div className='row'>
-				<div className='col-12 col-lg-8'>
+				<div className='col-12 col-lg-8 offset-lg-2'>
 					<div className='d-flex justify-content-between mb-3 align-items-center'>
 						<h4>Запрошені гості</h4>
 						<AddEventPerson
@@ -67,7 +66,6 @@ export const ActivityManager = ({ eventId }: { eventId: number }) => {
 					</div>
 				</div>
 			</div>
-			<Button onClick={toggleModal}>Create Event</Button>
 		</div>
 	);
 };

@@ -9,6 +9,7 @@ import {FacultyRepository} from '../repositories/FacultyRepository';
 import {SpecialtyRepository} from '../repositories/SpecialtyRepository';
 import {RoleEnum} from '../utils/enum/Role.enum';
 import {UserService} from './UserService';
+import {array} from 'joi';
 
 @injectable()
 export class PersonService {
@@ -155,8 +156,7 @@ export class PersonService {
                 name: person.name,
                 parental: person.parental,
                 surname: person.surname,
-                email: person.email,
-                avatar: person.avatar
+                email: person.email
             };
         });
 

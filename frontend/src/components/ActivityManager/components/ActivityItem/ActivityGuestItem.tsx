@@ -5,6 +5,7 @@ import './ActivityItem.css';
 import { binIcon } from '../../../../common/icons/icons';
 import { fetchEventActivitiesThunk } from '../../../../store/eventActivities/thunk';
 import { useDispatch } from 'react-redux';
+import { getFullName } from '../../../../api/person';
 
 export const ActivityGuestItem = ({ activity }: { activity: Activity }) => {
 	const dispatch = useDispatch();
@@ -26,13 +27,7 @@ export const ActivityGuestItem = ({ activity }: { activity: Activity }) => {
 				</div>
 				<Input
 					type='text'
-					value={
-						activity.person.name +
-						' ' +
-						activity.person.parental +
-						' ' +
-						activity.person.surname
-					}
+					value={getFullName(activity.person)}
 					disabled={true}
 				/>
 			</div>
