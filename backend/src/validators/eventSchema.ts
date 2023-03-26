@@ -27,6 +27,7 @@ const fieldsEventUpdate = {
     category_id: intId(),
 
     photo: Joi.alternatives([Joi.string().trim(), ''])
+
 };
 
 export const eventCreateSchema = Joi.object({

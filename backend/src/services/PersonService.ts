@@ -156,7 +156,8 @@ export class PersonService {
                 name: person.name,
                 parental: person.parental,
                 surname: person.surname,
-                email: person.email
+                email: person.email,
+                avatar: person.avatar
             };
         });
 

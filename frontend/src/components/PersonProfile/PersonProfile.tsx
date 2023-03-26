@@ -6,7 +6,6 @@ import {
 	getGotData,
 	getPeople,
 	getPeoplePossibleParents,
-	getUserRole,
 } from '../../store/selectors';
 import {
 	getAllPeople,
@@ -49,9 +48,9 @@ import { gotDataSet } from '../../store/gotData/actionCreators';
 import { errorMessageSet } from '../../store/errorMessage/actionCreators';
 import { DEFAULT_AVATAR_URL } from '../../utils/constants';
 import { EditAvatarUrlModal } from './components/EditAvatarUrlModal';
+import { ConfirmationModal } from '../ConfirmationModal/ConfirmationModal';
 
 export const PersonProfile: FC = () => {
-	const userRole = useSelector<UserRole>(getUserRole);
 	const gotData = useSelector<number>(getGotData);
 	const errorMessage = useSelector<string>(getErrorMessage);
 
@@ -91,7 +90,27 @@ export const PersonProfile: FC = () => {
 	const [faculties, setFaculties] = useState<Faculty[]>([]);
 	const [specialties, setSpecialties] = useState<Specialty[]>([]);
 	const [yearsEnter, setYearsEnter] = useState<number[]>([]);
-	const [showModal, setShowModal] = useState<boolean>(false);
+	const [showEditAvatarModal, setShowEditAvatarModal] =
+		useState<boolean>(false);
+
+	const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
+		useState<boolean>(false);
+	const [
+		showConfirmUpdateStatusToMaliukModal,
+		setShowConfirmUpdateStatusToMaliukModal,
+	] = useState<boolean>(false);
+	const [
+		showConfirmUpdateStatusToBratchykModal,
+		setShowConfirmUpdateStatusToBratchykModal,
+	] = useState<boolean>(false);
+	const [
+		showConfirmUpdateStatusToPoshanovanyiModal,
+		setShowConfirmUpdateStatusToPoshanovanyiModal,
+	] = useState<boolean>(false);
+	const [
+		showConfirmUpdateStatusToExBratchykModal,
+		setShowConfirmUpdateStatusToExBratchykModal,
+	] = useState<boolean>(false);
 
 	//-1 - not fetched yet or person does not have email
 	//0 - fetched, user is not HR
@@ -200,6 +219,9 @@ export const PersonProfile: FC = () => {
 	};
 
 	const updateStatusToMaliuk = () => {
+		setShowConfirmUpdateStatusToMaliukModal(
+			!showConfirmUpdateStatusToMaliukModal
+		);
 		if (person && person.id) {
 			resetError();
 			dispatch(
@@ -213,6 +235,9 @@ export const PersonProfile: FC = () => {
 	};
 
 	const updateStatusToBratchyk = () => {
+		setShowConfirmUpdateStatusToBratchykModal(
+			!showConfirmUpdateStatusToBratchykModal
+		);
 		if (person && person.id) {
 			resetError();
 			dispatch(
@@ -227,6 +252,9 @@ export const PersonProfile: FC = () => {
 	};
 
 	const updateStatusToPoshanovanyi = () => {
+		setShowConfirmUpdateStatusToPoshanovanyiModal(
+			!showConfirmUpdateStatusToPoshanovanyiModal
+		);
 		if (person && person.id) {
 			resetError();
 			dispatch(
@@ -241,6 +269,9 @@ export const PersonProfile: FC = () => {
 	};
 
 	const updateStatusToExBratchyk = () => {
+		setShowConfirmUpdateStatusToExBratchykModal(
+			!showConfirmUpdateStatusToExBratchykModal
+		);
 		if (person && person.id) {
 			resetError();
 			dispatch(
@@ -255,6 +286,7 @@ export const PersonProfile: FC = () => {
 	};
 
 	const deletePerson = () => {
+		setShowConfirmDeleteModal(!showConfirmDeleteModal);
 		resetError();
 		// @ts-ignore
 		dispatch(deleteAPerson(person.id));
@@ -383,14 +415,12 @@ export const PersonProfile: FC = () => {
 			// @ts-ignore
 			const value = person[fieldName];
 			if (!value || value === '') {
-				if (!field || field.toString().trim() === '') return false;
-				else return true;
-			} else if (
-				value === field ||
-				(field && value.toString().trim() === field.toString().trim())
-			)
-				return false;
-			else return true;
+				return !(!field || field.toString().trim() === '');
+			} else
+				return !(
+					value === field ||
+					(field && value.toString().trim() === field.toString().trim())
+				);
 		} else return false;
 	};
 
@@ -439,14 +469,14 @@ export const PersonProfile: FC = () => {
 										cursor: 'pointer',
 									}}
 									alt='Аватар'
-									onClick={() => setShowModal(!showModal)}
+									onClick={() => setShowEditAvatarModal(!showEditAvatarModal)}
 								/>
 							) : null}
 						</div>
 						<EditAvatarUrlModal
 							title={'Посилання на аватар'}
-							setShow={setShowModal}
-							show={showModal}
+							setShow={setShowEditAvatarModal}
+							show={showEditAvatarModal}
 							avatarUrl={avatar}
 							setAvatarUrl={setAvatar}
 						/>
@@ -672,7 +702,11 @@ export const PersonProfile: FC = () => {
 				{status === Statuses.NEWCOMER ? (
 					<Button
 						variant='primary'
-						onClick={updateStatusToMaliuk}
+						onClick={() =>
+							setShowConfirmUpdateStatusToMaliukModal(
+								!showConfirmUpdateStatusToMaliukModal
+							)
+						}
 						id='updateStatus'
 						className='m-2'
 					>
@@ -682,7 +716,11 @@ export const PersonProfile: FC = () => {
 				{status === Statuses.MALIUK ? (
 					<Button
 						variant='primary'
-						onClick={updateStatusToBratchyk}
+						onClick={() =>
+							setShowConfirmUpdateStatusToBratchykModal(
+								!showConfirmUpdateStatusToBratchykModal
+							)
+						}
 						id='updateStatus'
 						className='m-2'
 					>
@@ -692,7 +730,11 @@ export const PersonProfile: FC = () => {
 				{status === Statuses.BRATCHYK ? (
 					<Button
 						variant='primary'
-						onClick={updateStatusToPoshanovanyi}
+						onClick={() =>
+							setShowConfirmUpdateStatusToPoshanovanyiModal(
+								!showConfirmUpdateStatusToPoshanovanyiModal
+							)
+						}
 						id='updateStatus'
 						className='m-2'
 					>
@@ -702,7 +744,11 @@ export const PersonProfile: FC = () => {
 				{status === Statuses.BRATCHYK ? (
 					<Button
 						variant='primary'
-						onClick={updateStatusToExBratchyk}
+						onClick={() =>
+							setShowConfirmUpdateStatusToExBratchykModal(
+								!showConfirmUpdateStatusToExBratchykModal
+							)
+						}
 						id='updateStatus'
 						className='m-2'
 					>
@@ -746,7 +792,7 @@ export const PersonProfile: FC = () => {
 				</Button>
 				<Button
 					variant='danger'
-					onClick={deletePerson}
+					onClick={() => setShowConfirmDeleteModal(!showConfirmDeleteModal)}
 					id='deletePerson'
 					className='m-2'
 				>
@@ -754,6 +800,57 @@ export const PersonProfile: FC = () => {
 				</Button>
 			</div>
 			<UserActivities personId={Number(memberId)} />
+
+			<ConfirmationModal
+				question={
+					'Ви впевнені, що хочете видалити всю інформацію про людину ' +
+					(person ? getFullName(person) : '') +
+					'?'
+				}
+				setShow={setShowConfirmDeleteModal}
+				show={showConfirmDeleteModal}
+				action={deletePerson}
+			/>
+			<ConfirmationModal
+				question={
+					'Ви впевнені, що хочете змінити статус людини ' +
+					(person ? getFullName(person) + ' ' : '') +
+					'на Малюк?'
+				}
+				setShow={setShowConfirmUpdateStatusToMaliukModal}
+				show={showConfirmUpdateStatusToMaliukModal}
+				action={updateStatusToMaliuk}
+			/>
+			<ConfirmationModal
+				question={
+					'Ви впевнені, що хочете змінити статус людини ' +
+					(person ? getFullName(person) + ' ' : '') +
+					'на Братчик?'
+				}
+				setShow={setShowConfirmUpdateStatusToBratchykModal}
+				show={showConfirmUpdateStatusToBratchykModal}
+				action={updateStatusToBratchyk}
+			/>
+			<ConfirmationModal
+				question={
+					'Ви впевнені, що хочете змінити статус людини ' +
+					(person ? getFullName(person) + ' ' : '') +
+					'на Пошанований?'
+				}
+				setShow={setShowConfirmUpdateStatusToPoshanovanyiModal}
+				show={showConfirmUpdateStatusToPoshanovanyiModal}
+				action={updateStatusToPoshanovanyi}
+			/>
+			<ConfirmationModal
+				question={
+					'Ви впевнені, що хочете змінити статус людини ' +
+					(person ? getFullName(person) + ' ' : '') +
+					'на Виключений братчик?'
+				}
+				setShow={setShowConfirmUpdateStatusToExBratchykModal}
+				show={showConfirmUpdateStatusToExBratchykModal}
+				action={updateStatusToExBratchyk}
+			/>
 		</>
 	);
 };

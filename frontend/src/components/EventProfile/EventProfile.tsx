@@ -1,11 +1,10 @@
 /*eslint-disable react-hooks/exhaustive-deps*/
 import React, { FC, useEffect, useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	getErrorMessage,
 	getEvents,
-	getUserRole,
 	getEventsData,
 } from '../../store/selectors';
 import { getAllEvents, Event } from '../../api/event';
@@ -18,7 +17,6 @@ import { deleteAnEvent, updateAnEvent } from '../../store/events/thunk';
 import { eventsGet } from '../../store/events/actionCreators';
 import { dateToString } from '../../utils/dates';
 import { ErrorMessageBig } from '../../common/ErrorMessage/ErrorMessageBig';
-import { UserRole } from '../../api/common/types';
 import { errorMessageSet } from '../../store/errorMessage/actionCreators';
 import { DEFAULT_PHOTO_URL } from '../../utils/constants';
 import { EditPhotoUrlModal } from './components/EditPhotoUrlModal';
@@ -28,7 +26,6 @@ import { getAllPeopleThunk } from '../../store/people/thunk';
 import { gotEventDataSet } from '../../store/gotEventData/actionCreators';
 
 export const EventProfile: FC = () => {
-	const userRole = useSelector<UserRole>(getUserRole);
 	const gotEventData = useSelector<number>(getEventsData);
 	const errorMessage = useSelector<string>(getErrorMessage);
 
@@ -169,9 +166,7 @@ export const EventProfile: FC = () => {
 		} else return false;
 	};
 
-	return userRole !== UserRole.HR ? (
-		<Navigate to='/' />
-	) : (
+	return (
 		<>
 			<Button
 				id='backEvent'

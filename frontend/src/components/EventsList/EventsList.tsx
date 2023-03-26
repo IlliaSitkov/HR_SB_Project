@@ -1,12 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps*/
 import React, { FC, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Navigate } from 'react-router-dom';
 import { SearchBar } from '../../common/SearchBar/SearchBar';
 import { Button, Col, Row } from 'react-bootstrap';
 import { DropdownWithCheckboxes } from '../../common/DropdownWithCheckboxes/DropdownWithCheckboxes';
-import { UserRole } from '../../api/common/types';
-import { getEventsData, getUserRole } from '../../store/selectors';
+import { getEventsData } from '../../store/selectors';
 import { Event, getAllEvents } from '../../api/event';
 import { eventsGet } from '../../store/events/actionCreators';
 import { EventItem } from './components/EventItem/EventItem';
@@ -27,7 +25,6 @@ const getValuesOfChosenCheckboxes = (name: string) => {
 };
 
 export const EventsList: FC = () => {
-	const userRole = useSelector<UserRole>(getUserRole);
 	const gotData = useSelector<number>(getEventsData);
 	const [searchText, setSearchText] = useState('');
 	const [filterCategories, setFilterCategories] = useState<Array<Category>>([]);
@@ -53,7 +50,6 @@ export const EventsList: FC = () => {
 			!filterCategories.find((c) => c.id === event.category_id)
 		)
 			return false;
-      
 		return suitable;
 	};
 
@@ -67,7 +63,7 @@ export const EventsList: FC = () => {
 		let categories = await getAllCategories();
 		setPossibleCategories(categories);
 	};
-  
+
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -113,9 +109,7 @@ export const EventsList: FC = () => {
 		setShow(!show);
 	};
 
-	return userRole !== UserRole.HR ? (
-		<Navigate to='/' />
-	) : (
+	return (
 		<>
 			<h2 className='text-center'>Події СБ</h2>
 			<CreateEventModal showModal={show} toggleModal={toggleModal} />
