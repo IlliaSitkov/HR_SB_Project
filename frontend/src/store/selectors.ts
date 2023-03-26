@@ -41,6 +41,8 @@ export const getCurrentUserPersonId = (state: any): number | null =>
 export const getErrorMessage = (state: any) => state.errorMessage;
 export const getGotData = (state: any) => state.gotData;
 
+export const getEventsData = (state: any) => state.gotData;
+
 export const getEventActivitiesWithOrganizers =
 	(eventId: number) =>
 	(state: any): Activity[] =>

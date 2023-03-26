@@ -1,5 +1,5 @@
+/*eslint-disable react-hooks/exhaustive-deps*/
 import React, { FC, useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
 import {
 	getFullName,
 	getPerson,
@@ -10,21 +10,18 @@ import {
 	Statuses,
 } from '../../api/person';
 import { useSelector } from 'react-redux';
-import { getCurrentUserPersonId, getUserRole } from '../../store/selectors';
+import { getCurrentUserPersonId } from '../../store/selectors';
 import { TextField } from '../../common/TextField/TextField';
 import { Col, Row } from 'react-bootstrap';
 import { UserActivities } from '../UserActivities/UserActivities';
 import { DEFAULT_AVATAR_URL, VALUE_NOT_SET } from '../../utils/constants';
-import { UserRole } from '../../api/common/types';
 
 export const MyProfile: FC = () => {
-	const userRole = useSelector<UserRole>(getUserRole);
 	const personId = useSelector<number>(getCurrentUserPersonId);
 	const [person, setPerson] = useState<Person | null>(null);
 
 	useEffect(() => {
 		fetchPerson();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const fetchPerson = async () => {
@@ -62,9 +59,7 @@ export const MyProfile: FC = () => {
 			: VALUE_NOT_SET;
 	};
 
-	return userRole !== UserRole.HR && userRole !== UserRole.USER ? (
-		<Navigate to='/' />
-	) : (
+	return (
 		<>
 			<div className='w-100'>
 				<h3 className='text-center'>Мій профіль</h3>

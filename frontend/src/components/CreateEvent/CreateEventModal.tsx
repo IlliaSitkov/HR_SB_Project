@@ -24,12 +24,13 @@ export const CreateEventModal = ({
 	const [name, setName] = useState<string>('');
 	const [description, setDescription] = useState<string>('');
 	const [photoUrl, setPhotoUrl] = useState<string>('');
+
 	const [dateStart, setDateStart] = useState<Date>(new Date());
 	const [dateEnd, setDateEnd] = useState<Date>(new Date());
+
 	const [categoryId, setCategoryId] = useState<number>(-1);
 
 	const [error, setError] = useState<string>('');
-
 
 	const dispatch = useDispatch();
 
@@ -40,8 +41,10 @@ export const CreateEventModal = ({
 
 	const resetFields = () => {
 		setName('');
+
 		setDateStart(new Date());
 		setDateEnd(new Date());
+
 		setDescription('');
 		setError('');
 		setPhotoUrl('');

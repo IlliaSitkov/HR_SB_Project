@@ -6,8 +6,8 @@ import {
 	Person,
 	statusesForDropdown,
 } from '../../api/person';
-import { useSelector, useDispatch } from 'react-redux';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { peopleGet } from '../../store/people/actionCreators';
 import { SearchBar } from '../../common/SearchBar/SearchBar';
 import { PersonItem } from './components/PersonItem/PersonItem';
@@ -16,9 +16,9 @@ import { Generation, undefinedGeneration } from '../../api/generation';
 import { DropdownWithCheckboxes } from '../../common/DropdownWithCheckboxes/DropdownWithCheckboxes';
 import { getAllGenerations } from '../../api/generation/generation.service';
 import { VALUE_NOT_SET } from '../../utils/constants';
-import { UserRole } from '../../api/common/types';
-import { getGotData, getUserRole } from '../../store/selectors';
+import { getGotData } from '../../store/selectors';
 import { gotDataSet } from '../../store/gotData/actionCreators';
+import { Audio } from 'react-loader-spinner';
 
 const getValuesOfChosenCheckboxes = (name: string) => {
 	const checkboxes: NodeListOf<any> = document.getElementsByName(name);
@@ -32,7 +32,6 @@ const getValuesOfChosenCheckboxes = (name: string) => {
 };
 
 export const PeopleList: FC = () => {
-	const userRole = useSelector<UserRole>(getUserRole);
 	const gotData = useSelector<number>(getGotData);
 
 	const [searchText, setSearchText] = useState('');
@@ -120,22 +119,7 @@ export const PeopleList: FC = () => {
 				dispatch(gotDataSet(3));
 				dispatch(peopleGet(peopleRes));
 
-				const generationsCopy = [undefinedGeneration];
-				let generations = await getAllGenerations();
-				generations = generationsCopy.concat(generations);
-				setPossibleGenerations(generations);
-
-				const yearsCopy: Array<string> = [];
-				yearsCopy.push(VALUE_NOT_SET);
-				peopleRes.forEach((person) => {
-					if (
-						person.year_enter &&
-						!yearsCopy.includes(person.year_enter.toString())
-					) {
-						yearsCopy.push(person.year_enter.toString());
-					}
-				});
-				setPossibleYears(yearsCopy);
+				fillYears(peopleRes);
 			} else {
 				alert('Помилка при завантаженні людей!');
 				dispatch(gotDataSet(2));
@@ -144,8 +128,32 @@ export const PeopleList: FC = () => {
 		if (gotData === 0 || gotData === 2) {
 			dispatch(gotDataSet(1));
 			fetchData();
+		} else if (gotData === 3) {
+			fillYears(people);
 		}
+		fetchGenerations();
 	}, []);
+
+	const fetchGenerations = async () => {
+		const generationsCopy = [undefinedGeneration];
+		let generations = await getAllGenerations();
+		generations = generationsCopy.concat(generations);
+		setPossibleGenerations(generations);
+	};
+
+	const fillYears = (people: Array<Person>) => {
+		const yearsCopy: Array<string> = [];
+		yearsCopy.push(VALUE_NOT_SET);
+		people.forEach((person: Person) => {
+			if (
+				person.year_enter &&
+				!yearsCopy.includes(person.year_enter.toString())
+			) {
+				yearsCopy.push(person.year_enter.toString());
+			}
+		});
+		setPossibleYears(yearsCopy);
+	};
 
 	const addPerson = () => {
 		//OR open popup
@@ -180,9 +188,7 @@ export const PeopleList: FC = () => {
 		}
 	};
 
-	return userRole !== UserRole.HR ? (
-		<Navigate to='/' />
-	) : (
+	return (
 		<>
 			<h2 className='text-center'>Люди СБ</h2>
 			<Button
@@ -236,13 +242,33 @@ export const PeopleList: FC = () => {
 					/>
 				</Col>
 			</Row>
-			<Row xs={1} sm={2} md={4} lg={5} className='m-2'>
-				{people.map((person: Person) => (
-					<Col className='d-flex' style={{ minWidth: '280px' }} key={person.id}>
-						<PersonItem person={person} />
-					</Col>
-				))}
-			</Row>
+			{gotData !== 3 ? (
+				<Audio
+					height='150'
+					width='150'
+					//@ts-ignore
+					radius='9'
+					color='blue'
+					ariaLabel='loading'
+					//@ts-ignore
+					wrapperStyle
+					//@ts-ignore
+					wrapperClass
+					className='mt-5'
+				/>
+			) : (
+				<Row xs={1} sm={2} md={4} lg={5} className='m-2'>
+					{people.map((person: Person) => (
+						<Col
+							className='d-flex'
+							style={{ minWidth: '280px' }}
+							key={person.id}
+						>
+							<PersonItem person={person} />
+						</Col>
+					))}
+				</Row>
+			)}
 		</>
 	);
 };

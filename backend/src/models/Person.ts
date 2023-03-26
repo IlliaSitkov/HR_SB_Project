@@ -31,4 +31,4 @@ export interface Person {
 
 export type PersonPostDto = Omit<Person, 'id'>;
 export type PersonPatchDto = Omit<Person, 'id'>;
-export type PersonBirthday = Pick<Person, 'name' | 'parental' | 'surname' | 'email'> & { birthday: Person['date_birth'] };
+export type PersonBirthday = Pick<Person, 'name' | 'parental' | 'surname' | 'email' | 'avatar'> & { birthday: Person['date_birth'] };
