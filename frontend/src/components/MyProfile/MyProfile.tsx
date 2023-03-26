@@ -1,5 +1,4 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
 import {
 	getFullName,
 	getPerson,
@@ -62,9 +61,7 @@ export const MyProfile: FC = () => {
 			: VALUE_NOT_SET;
 	};
 
-	return userRole !== UserRole.HR && userRole !== UserRole.USER ? (
-		<Navigate to='/' />
-	) : (
+	return (
 		<>
 			<div className='w-100'>
 				<h3 className='text-center'>Мій профіль</h3>

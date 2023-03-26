@@ -7,7 +7,7 @@ import {
 	statusesForDropdown,
 } from '../../api/person';
 import { useSelector, useDispatch } from 'react-redux';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { peopleGet } from '../../store/people/actionCreators';
 import { SearchBar } from '../../common/SearchBar/SearchBar';
 import { PersonItem } from './components/PersonItem/PersonItem';
@@ -180,9 +180,7 @@ export const PeopleList: FC = () => {
 		}
 	};
 
-	return userRole !== UserRole.HR ? (
-		<Navigate to='/' />
-	) : (
+	return (
 		<>
 			<h2 className='text-center'>Люди СБ</h2>
 			<Button

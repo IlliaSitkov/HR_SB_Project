@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	getErrorMessage,
@@ -414,9 +414,7 @@ export const PersonProfile: FC = () => {
 		}
 	};
 
-	return userRole !== UserRole.HR ? (
-		<Navigate to='/' />
-	) : (
+	return (
 		<>
 			<Button
 				id='backPerson'
