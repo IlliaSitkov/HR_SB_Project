@@ -4,9 +4,9 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	getErrorMessage,
-	getGotData,
 	getEvents,
 	getUserRole,
+	getEventsData,
 } from '../../store/selectors';
 import { getAllEvents, Event } from '../../api/event';
 import { changeHandler } from '../../shared';
@@ -19,16 +19,17 @@ import { eventsGet } from '../../store/events/actionCreators';
 import { dateToString } from '../../utils/dates';
 import { ErrorMessageBig } from '../../common/ErrorMessage/ErrorMessageBig';
 import { UserRole } from '../../api/common/types';
-import { gotDataSet } from '../../store/gotData/actionCreators';
 import { errorMessageSet } from '../../store/errorMessage/actionCreators';
 import { DEFAULT_PHOTO_URL } from '../../utils/constants';
 import { EditPhotoUrlModal } from './components/EditPhotoUrlModal';
 import { ActivityManager } from '../ActivityManager/ActivityManager';
+// @ts-ignore
 import { getAllPeopleThunk } from '../../store/people/thunk';
+import { gotEventDataSet } from '../../store/gotEventData/actionCreators';
 
 export const EventProfile: FC = () => {
 	const userRole = useSelector<UserRole>(getUserRole);
-	const gotData = useSelector<number>(getGotData);
+	const gotEventData = useSelector<number>(getEventsData);
 	const errorMessage = useSelector<string>(getErrorMessage);
 
 	const events = useSelector(getEvents);
@@ -64,17 +65,17 @@ export const EventProfile: FC = () => {
 	}, [events]);
 
 	const fetchData = async () => {
-		if (gotData === 0 || gotData === 2) {
-			dispatch(gotDataSet(1));
+		if (gotEventData === 0 || gotEventData === 2) {
+			dispatch(gotEventDataSet(1));
 
 			const eventsRes = await getAllEvents();
 			if (!eventsRes) {
 				alert('Помилка при завантаженні подій!');
-				dispatch(gotDataSet(2));
+				dispatch(gotEventDataSet(2));
 				return;
 			}
 
-			dispatch(gotDataSet(3));
+			dispatch(gotEventDataSet(3));
 			dispatch(eventsGet(eventsRes));
 		}
 
@@ -261,6 +262,9 @@ export const EventProfile: FC = () => {
 					message={typeof errorMessage === 'string' ? errorMessage : ''}
 				/>
 			</div>
+			<div className='mt-3 w-100 mb-5'>
+				<ActivityManager eventId={Number(eventId)} />
+			</div>
 			<div>
 				<Button
 					variant='primary'
@@ -278,9 +282,6 @@ export const EventProfile: FC = () => {
 				>
 					{'Видалити'}
 				</Button>
-			</div>
-			<div className='mt-3 w-100 mb-5'>
-				<ActivityManager eventId={Number(eventId)} />
 			</div>
 		</>
 	);
