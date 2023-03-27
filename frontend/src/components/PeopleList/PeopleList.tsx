@@ -7,7 +7,6 @@ import {
 	statusesForDropdown,
 } from '../../api/person';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { peopleGet } from '../../store/people/actionCreators';
 import { SearchBar } from '../../common/SearchBar/SearchBar';
 import { PersonItem } from './components/PersonItem/PersonItem';
@@ -18,6 +17,7 @@ import { getAllGenerations } from '../../api/generation/generation.service';
 import { VALUE_NOT_SET } from '../../utils/constants';
 import { getGotData } from '../../store/selectors';
 import { gotDataSet } from '../../store/gotData/actionCreators';
+import AddPersonModal from '../AddPersonModal/AddPersonModal';
 import { Circles } from 'react-loader-spinner';
 import { GotDataStatus } from '../../store/gotDataEnum';
 
@@ -47,6 +47,7 @@ export const PeopleList: FC = () => {
 	const [possibleGenerations, setPossibleGenerations] = useState<
 		Array<Generation>
 	>([]);
+	const [isPersonAddShown, setIsPersonAddShown] = useState<boolean>(false);
 
 	const suitsSearch = (person: Person) => {
 		let sT = searchText.trim();
@@ -107,7 +108,6 @@ export const PeopleList: FC = () => {
 		)
 	);
 
-	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -126,6 +126,7 @@ export const PeopleList: FC = () => {
 				dispatch(gotDataSet(2));
 			}
 		}
+
 		if (
 			gotData === GotDataStatus.NOT_YET_LOADED ||
 			gotData === GotDataStatus.ERROR_WHILE_LOADING
@@ -161,7 +162,8 @@ export const PeopleList: FC = () => {
 
 	const addPerson = () => {
 		//OR open popup
-		navigate('/members/add', { replace: true });
+		setIsPersonAddShown(true);
+		// navigate('/members/add', { replace: true });
 	};
 
 	const updateFilters = (param: string) => {
@@ -194,6 +196,10 @@ export const PeopleList: FC = () => {
 
 	return (
 		<>
+			<AddPersonModal
+				isShown={isPersonAddShown}
+				onHide={() => setIsPersonAddShown(false)}
+			/>
 			<h2 className='text-center'>Люди СБ</h2>
 			<Button
 				variant='primary'

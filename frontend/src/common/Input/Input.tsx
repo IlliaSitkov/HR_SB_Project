@@ -1,7 +1,13 @@
-import React, { ChangeEventHandler, FC, useEffect, useRef } from 'react';
+import React, {
+	ChangeEventHandler,
+	FC,
+	HTMLInputTypeAttribute,
+	useEffect,
+	useRef,
+} from 'react';
 
 export const Input: FC<{
-	type: string;
+	type: HTMLInputTypeAttribute;
 	onChange?: ChangeEventHandler<HTMLInputElement>;
 	required?: boolean;
 	label?: string;
@@ -42,7 +48,14 @@ export const Input: FC<{
 
 	return (
 		<div style={style}>
-			{label && <label htmlFor={id}>{label}</label>}
+			{label && required ? (
+				<label htmlFor={id}>
+					<span style={{ color: 'red', fontWeight: '600' }}>*</span>
+					{label}
+				</label>
+			) : (
+				<label htmlFor={id}>{label}</label>
+			)}
 			<input
 				ref={inputRef}
 				step={step}

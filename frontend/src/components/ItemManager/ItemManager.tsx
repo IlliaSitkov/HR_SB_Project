@@ -37,6 +37,7 @@ export const ItemManager: FC<{
 	selectTitle: string;
 	modalTitle: string;
 	placeholder: string;
+	isRequired?: boolean;
 }> = ({
 	selectedItem,
 	setSelectedItem,
@@ -47,6 +48,7 @@ export const ItemManager: FC<{
 	selectTitle,
 	modalTitle,
 	placeholder,
+	isRequired,
 }) => {
 	const [items, setItems] = useState<IItem[]>([]);
 
@@ -82,6 +84,7 @@ export const ItemManager: FC<{
 					data={items}
 					idSelector={(d) => d.id}
 					nameSelector={(d) => d.name}
+					isRequired={isRequired}
 				/>
 				<Button
 					onClick={() => setShowModal(!showModal)}

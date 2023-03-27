@@ -13,6 +13,7 @@ import {
 } from '@azure/msal-react';
 import { SynchronizeBirthdaysButton } from '../components/SynchronizeBirthdays/SynchronizeBirthdays';
 import PrivateRoute from '../components/PrivateRoute/PrivateRoute';
+import JoinForm from '../components/JoinForm/JoinForm';
 import { EventProfile } from '../components/EventProfile/EventProfile';
 import { HelloPage } from '../components/HelloPage/HelloPage';
 
@@ -96,6 +97,14 @@ export const routes: NonIndexRouteObject[] = [
 				element: (
 					<PrivateRoute>
 						<ItemManagerDemo />
+					</PrivateRoute>
+				),
+			},
+			{
+				path: '/join',
+				element: (
+					<PrivateRoute>
+						<JoinForm />
 					</PrivateRoute>
 				),
 			},

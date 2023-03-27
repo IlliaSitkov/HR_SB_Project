@@ -64,3 +64,31 @@ export const getStatusStyle = (status: string | null = null) => {
 	const color = s ? s.color : 'white';
 	return { background: color };
 };
+
+export const statusesArray = [
+	{
+		id: 1,
+		name: 'Новенький',
+		val: Statuses.NEWCOMER,
+	},
+	{
+		id: 2,
+		name: 'Малюк',
+		val: Statuses.MALIUK,
+	},
+	{
+		id: 3,
+		name: 'Братчик',
+		val: Statuses.BRATCHYK,
+	},
+	{
+		id: 4,
+		name: 'Пошанований',
+		val: Statuses.POSHANOVANYI,
+	},
+	{
+		id: 5,
+		name: 'Виключений братчик',
+		val: Statuses.EX_BRATCHYK,
+	},
+];
