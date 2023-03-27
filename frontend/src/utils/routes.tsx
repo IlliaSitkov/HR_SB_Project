@@ -14,6 +14,7 @@ import {
 import { SynchronizeBirthdaysButton } from '../components/SynchronizeBirthdays/SynchronizeBirthdays';
 import PrivateRoute from '../components/PrivateRoute/PrivateRoute';
 import { EventProfile } from '../components/EventProfile/EventProfile';
+import { HelloPage } from '../components/HelloPage/HelloPage';
 
 export const routes: NonIndexRouteObject[] = [
 	{
@@ -25,9 +26,13 @@ export const routes: NonIndexRouteObject[] = [
 				element: (
 					<>
 						<UnauthenticatedTemplate>
-							You need to authorize before using the system
+							<HelloPage
+								helloText={`Вітаємо!\nДля доступу до системи необхідно автризуватись`}
+							/>
 						</UnauthenticatedTemplate>
-						<AuthenticatedTemplate>Welcome to the HR SB</AuthenticatedTemplate>
+						<AuthenticatedTemplate>
+							<HelloPage helloText='Вітаємо в системі HR SB!' />
+						</AuthenticatedTemplate>
 					</>
 				),
 			},
