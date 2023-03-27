@@ -47,8 +47,9 @@ import { UserRole } from '../../api/common/types';
 import { gotDataSet } from '../../store/gotData/actionCreators';
 import { errorMessageSet } from '../../store/errorMessage/actionCreators';
 import { DEFAULT_AVATAR_URL } from '../../utils/constants';
-import { EditAvatarUrlModal } from './components/EditAvatarUrlModal';
+import { EditPhotoUrlModal } from '../EditPhotoUrlModal/EditPhotoUrlModal';
 import { ConfirmationModal } from '../ConfirmationModal/ConfirmationModal';
+import { GotDataStatus } from '../../store/gotDataEnum';
 
 export const PersonProfile: FC = () => {
 	const gotData = useSelector<number>(getGotData);
@@ -134,17 +135,20 @@ export const PersonProfile: FC = () => {
 	}, [people]);
 
 	const fetchData = async () => {
-		if (gotData === 0 || gotData === 2) {
-			dispatch(gotDataSet(1));
+		if (
+			gotData === GotDataStatus.NOT_YET_LOADED ||
+			gotData === GotDataStatus.ERROR_WHILE_LOADING
+		) {
+			dispatch(gotDataSet(GotDataStatus.STARTED_LOADING));
 
 			const peopleRes = await getAllPeople();
 			if (!peopleRes) {
 				alert('Помилка при завантаженні людей!');
-				dispatch(gotDataSet(2));
+				dispatch(gotDataSet(GotDataStatus.ERROR_WHILE_LOADING));
 				return;
 			}
 
-			dispatch(gotDataSet(3));
+			dispatch(gotDataSet(GotDataStatus.LOADED_SUCCESSFULLY));
 			dispatch(peopleGet(peopleRes));
 		}
 
@@ -473,12 +477,12 @@ export const PersonProfile: FC = () => {
 								/>
 							) : null}
 						</div>
-						<EditAvatarUrlModal
+						<EditPhotoUrlModal
 							title={'Посилання на аватар'}
 							setShow={setShowEditAvatarModal}
 							show={showEditAvatarModal}
-							avatarUrl={avatar}
-							setAvatarUrl={setAvatar}
+							photoUrl={avatar}
+							setPhotoUrl={setAvatar}
 						/>
 						<h5
 							style={getStatusStyle(status)}

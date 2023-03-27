@@ -12,7 +12,7 @@ const specialtyService = container.get<SpecialtyService>(SpecialtyService);
 // @route GET api/specialties
 specialtyRouter.route('/')
     .get(
-        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
+        // ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         asyncHandler(async (req: Request, res: Response) => {
             const specialties = await specialtyService.getSpecialties();
             res.json(specialties);

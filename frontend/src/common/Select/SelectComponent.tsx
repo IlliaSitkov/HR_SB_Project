@@ -1,5 +1,6 @@
-import { ChangeEventHandler, FC } from 'react';
+import React, { ChangeEventHandler, FC } from 'react';
 import './SelectComponent.css';
+import RequiredStar from '../../components/common/RequiredStar';
 
 export const Select: FC<{
 	id: string;
@@ -10,6 +11,7 @@ export const Select: FC<{
 	data: any[];
 	idSelector: (d: any) => string;
 	nameSelector: (d: any) => string;
+	isRequired?: boolean;
 }> = ({
 	id,
 	noneSelectedOption,
@@ -19,10 +21,14 @@ export const Select: FC<{
 	data,
 	idSelector,
 	nameSelector,
+	isRequired,
 }) => {
 	return (
 		<div className='d-flex flex-column gap-2'>
-			<label htmlFor={id}>{label}</label>
+			<label htmlFor={id}>
+				{isRequired && <RequiredStar />}
+				{label}
+			</label>
 			<select
 				value={value}
 				onChange={onChange}

@@ -4,6 +4,7 @@ import { Input } from '../../common/Input/Input';
 import { changeHandler } from '../../shared';
 import { ItemManager } from '../ItemManager/ItemManager';
 import {
+	createCategory,
 	deleteCategory,
 	getAllCategories,
 	updateCategory,
@@ -139,7 +140,7 @@ export const CreateEventModal = ({
 						getAllFunc={getAllCategories}
 						updateFunc={updateCategory}
 						deleteFunc={deleteCategory}
-						createFunc={deleteCategory}
+						createFunc={createCategory}
 						selectTitle='Категорія події'
 						modalTitle='Усі категорії'
 						placeholder='Нова категорія'

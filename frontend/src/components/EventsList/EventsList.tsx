@@ -12,17 +12,9 @@ import { Category } from '../../api/category';
 import { getAllCategories } from '../../api/category';
 import { CreateEventModal } from '../CreateEvent/CreateEventModal';
 import { gotEventDataSet } from '../../store/gotEventData/actionCreators';
-
-const getValuesOfChosenCheckboxes = (name: string) => {
-	const checkboxes: NodeListOf<any> = document.getElementsByName(name);
-	const res = [];
-	for (let i = 0; i < checkboxes.length; i += 1) {
-		if (checkboxes[i].checked) {
-			res.push(checkboxes[i].getAttribute('value'));
-		}
-	}
-	return res;
-};
+import { Circles } from 'react-loader-spinner';
+import { GotDataStatus } from '../../store/gotDataEnum';
+import { getValuesOfChosenCheckboxes } from '../PeopleList/PeopleList';
 
 export const EventsList: FC = () => {
 	const gotData = useSelector<number>(getEventsData);
@@ -70,18 +62,21 @@ export const EventsList: FC = () => {
 		async function fetchData() {
 			const eventsRes = await getAllEvents();
 			if (eventsRes) {
-				dispatch(gotEventDataSet(3));
+				dispatch(gotEventDataSet(GotDataStatus.LOADED_SUCCESSFULLY));
 				dispatch(eventsGet(eventsRes));
 				const categories = await getAllCategories();
 				setPossibleCategories(categories);
 			} else {
 				alert('Помилка при завантаженні подій!');
-				dispatch(gotEventDataSet(2));
+				dispatch(gotEventDataSet(GotDataStatus.ERROR_WHILE_LOADING));
 			}
 		}
 
-		if (gotData === 0 || gotData === 2) {
-			dispatch(gotEventDataSet(1));
+		if (
+			gotData === GotDataStatus.NOT_YET_LOADED ||
+			gotData === GotDataStatus.ERROR_WHILE_LOADING
+		) {
+			dispatch(gotEventDataSet(GotDataStatus.STARTED_LOADING));
 			fetchData();
 		}
 		fetchCategories();
@@ -131,19 +126,36 @@ export const EventsList: FC = () => {
 					<DropdownWithCheckboxes
 						id='dropdownMenuCategory'
 						name='category'
-						labelText='Категорія'
+						labelText='Категорії'
 						items={possibleCategories.map((c) => c.name)}
 						updateFilters={updateFilters}
 					/>
 				</Col>
 			</Row>
-			<Row xs={1} sm={2} md={4} lg={5} className='m-2'>
-				{events.map((event: Event) => (
-					<Col className='d-flex' style={{ minWidth: '280px' }} key={event.id}>
-						<EventItem event={event} />
-					</Col>
-				))}
-			</Row>
+			{gotData !== GotDataStatus.LOADED_SUCCESSFULLY ? (
+				<div className='mt-3'>
+					<Circles
+						height='150'
+						width='150'
+						//@ts-ignore
+						radius='9'
+						color='blue'
+						ariaLabel='loading'
+					/>
+				</div>
+			) : (
+				<Row xs={1} sm={2} md={4} lg={5} className='m-2'>
+					{events.map((event: Event) => (
+						<Col
+							className='d-flex'
+							style={{ minWidth: '280px' }}
+							key={event.id}
+						>
+							<EventItem event={event} />
+						</Col>
+					))}
+				</Row>
+			)}
 		</>
 	);
 };

@@ -42,7 +42,7 @@ personRouter.route('/')
     )
     .post(
         /*authorize()*/
-        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
+        // ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         statusValidator({
             statusSchema,
             NEWCOMER: newcomerCreateSchema,

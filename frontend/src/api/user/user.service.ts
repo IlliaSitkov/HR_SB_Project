@@ -6,7 +6,7 @@ import { getGraphApiAccessToken, graphConfig } from '../../utils/authConfig';
 const axios: AxiosInstance = authHost;
 const url: string = 'http://localhost:8000/api/user';
 
-export const getUserMe = async () => {
+export const getUserMe = async (): Promise<User> => {
 	return (await axios.get(`${url}/me`)).data;
 };
 

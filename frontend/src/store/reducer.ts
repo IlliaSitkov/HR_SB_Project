@@ -5,6 +5,7 @@ import { userReducer } from './user/reducer';
 import errorMessageReducer from './errorMessage/reducer';
 import gotDataReducer from './gotData/reducer';
 import { eventActivitiesReducer } from './eventActivities/reducer';
+import gotEventsDataReducer from './gotEventData/reducer';
 
 const rootReducer = combineReducers({
 	people: peopleReducer,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
 	user: userReducer,
 	errorMessage: errorMessageReducer,
 	gotData: gotDataReducer,
+	gotEventsData: gotEventsDataReducer,
 	eventActivities: eventActivitiesReducer,
 });
 

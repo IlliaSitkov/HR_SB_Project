@@ -12,7 +12,7 @@ const facultyService = container.get<FacultyService>(FacultyService);
 // @route GET api/faculties
 facultyRouter.route('/')
     .get(
-        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
+        // ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         asyncHandler(async (req: Request, res: Response) => {
             const faculties = await facultyService.getFaculties();
             res.json(faculties);
