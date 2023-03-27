@@ -1,0 +1,6 @@
+export const enum GotDataStatus {
+	NOT_YET_LOADED,
+	STARTED_LOADING,
+	ERROR_WHILE_LOADING,
+	LOADED_SUCCESSFULLY,
+}

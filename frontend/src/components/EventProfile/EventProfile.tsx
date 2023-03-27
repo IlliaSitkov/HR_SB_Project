@@ -19,11 +19,13 @@ import { dateToString } from '../../utils/dates';
 import { ErrorMessageBig } from '../../common/ErrorMessage/ErrorMessageBig';
 import { errorMessageSet } from '../../store/errorMessage/actionCreators';
 import { DEFAULT_PHOTO_URL } from '../../utils/constants';
-import { EditPhotoUrlModal } from './components/EditPhotoUrlModal';
+import { EditPhotoUrlModal } from '../EditPhotoUrlModal/EditPhotoUrlModal';
 import { ActivityManager } from '../ActivityManager/ActivityManager';
 // @ts-ignore
 import { getAllPeopleThunk } from '../../store/people/thunk';
 import { gotEventDataSet } from '../../store/gotEventData/actionCreators';
+import { ConfirmationModal } from '../ConfirmationModal/ConfirmationModal';
+import { GotDataStatus } from '../../store/gotDataEnum';
 
 export const EventProfile: FC = () => {
 	const gotEventData = useSelector<number>(getEventsData);
@@ -41,11 +43,13 @@ export const EventProfile: FC = () => {
 	const [category_id, setCategory_id] = useState<number>(-1);
 	const [photo, setPhoto] = useState<string>('');
 	const [categories, setCategories] = useState<Category[]>([]); // ?
-	const [showModal, setShowModal] = useState<boolean>(false);
+	const [showEditPhotoModal, setShowEditPhotoModal] = useState<boolean>(false);
+	const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
+		useState<boolean>(false);
 
 	const goBack = () => {
 		resetError();
-		navigate('/all-events', { replace: true });
+		navigate('/events', { replace: true });
 	};
 
 	const resetError = () => dispatch(errorMessageSet(''));
@@ -62,17 +66,20 @@ export const EventProfile: FC = () => {
 	}, [events]);
 
 	const fetchData = async () => {
-		if (gotEventData === 0 || gotEventData === 2) {
-			dispatch(gotEventDataSet(1));
+		if (
+			gotEventData === GotDataStatus.NOT_YET_LOADED ||
+			gotEventData === GotDataStatus.ERROR_WHILE_LOADING
+		) {
+			dispatch(gotEventDataSet(GotDataStatus.STARTED_LOADING));
 
 			const eventsRes = await getAllEvents();
 			if (!eventsRes) {
 				alert('Помилка при завантаженні подій!');
-				dispatch(gotEventDataSet(2));
+				dispatch(gotEventDataSet(GotDataStatus.ERROR_WHILE_LOADING));
 				return;
 			}
 
-			dispatch(gotEventDataSet(3));
+			dispatch(gotEventDataSet(GotDataStatus.LOADED_SUCCESSFULLY));
 			dispatch(eventsGet(eventsRes));
 		}
 
@@ -99,7 +106,7 @@ export const EventProfile: FC = () => {
 		resetError();
 		// @ts-ignore
 		dispatch(deleteAnEvent(event.id));
-		navigate('/all-events', { replace: true });
+		navigate('/events', { replace: true });
 	};
 
 	const updateEvent = () => {
@@ -155,14 +162,12 @@ export const EventProfile: FC = () => {
 			// @ts-ignore
 			const value = event[fieldName];
 			if (!value || value === '') {
-				if (!field || field.toString().trim() === '') return false;
-				else return true;
-			} else if (
-				value === field ||
-				(field && value.toString().trim() === field.toString().trim())
-			)
-				return false;
-			else return true;
+				return !(!field || field.toString().trim() === '');
+			} else
+				return !(
+					value === field ||
+					(field && value.toString().trim() === field.toString().trim())
+				);
 		} else return false;
 	};
 
@@ -177,7 +182,7 @@ export const EventProfile: FC = () => {
 				Назад
 			</Button>
 			<div className='w-100'>
-				<h3 className='text-center'>Профіль події</h3>
+				<h3 className='text-center'>Інформація про подію</h3>
 				<Row xs={1} sm={1} md={2} lg={2} className='m-2'>
 					<Col>
 						<div className='m-2 justify-content-center d-flex'>
@@ -190,20 +195,19 @@ export const EventProfile: FC = () => {
 									cursor: 'pointer',
 								}}
 								alt='Фото'
-								onClick={() => setShowModal(!showModal)}
+								onClick={() => setShowEditPhotoModal(!showEditPhotoModal)}
 							/>
 						</div>
 						<EditPhotoUrlModal
 							title={'Посилання на фото'}
-							setShow={setShowModal}
-							show={showModal}
+							setShow={setShowEditPhotoModal}
+							show={showEditPhotoModal}
 							photoUrl={photo}
 							setPhotoUrl={setPhoto}
 						/>
 					</Col>
 					<Col className='d-flex'>
 						<div className='border-secondary border border-1 p-2 rounded m-2 flex-fill'>
-							<h6 className='text-center'>Дані про подію</h6>
 							<Input
 								id='name'
 								placeholder={'Введіть назву...'}
@@ -271,13 +275,23 @@ export const EventProfile: FC = () => {
 				</Button>
 				<Button
 					variant='danger'
-					onClick={deleteEvent}
+					onClick={() => setShowConfirmDeleteModal(!showConfirmDeleteModal)}
 					id='deleteEvent'
 					className='m-2'
 				>
 					{'Видалити'}
 				</Button>
 			</div>
+			<ConfirmationModal
+				question={
+					'Ви впевнені, що хочете видалити всю інформацію про подію ' +
+					(event ? event.name : '') +
+					'?'
+				}
+				setShow={setShowConfirmDeleteModal}
+				show={showConfirmDeleteModal}
+				action={deleteEvent}
+			/>
 		</>
 	);
 };

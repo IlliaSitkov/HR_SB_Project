@@ -1,15 +1,12 @@
 import { HOME_ROUTE } from './routesNames';
 import { MainLayout } from '../components/layout';
 import { NonIndexRouteObject } from 'react-router-dom';
-// import AuthWrapper from '../../components/auth/AuthWrapper';
-import { UserActivities } from '../components/UserActivities/UserActivities';
 import { PersonProfile } from '../components/PersonProfile/PersonProfile';
 import { MyProfile } from '../components/MyProfile/MyProfile';
 import { PeopleList } from '../components/PeopleList/PeopleList';
 import { EventsList } from '../components/EventsList/EventsList';
 import NearestBirthdays from '../components/NearestBritdays/NearestBirthdays';
 import { ItemManagerDemo } from '../ItemManagerDemo';
-import { ActivityManager } from '../components/ActivityManager/ActivityManager';
 import {
 	AuthenticatedTemplate,
 	UnauthenticatedTemplate,
@@ -43,14 +40,6 @@ export const routes: NonIndexRouteObject[] = [
 				),
 			},
 			{
-				path: '/events',
-				element: (
-					<PrivateRoute>
-						<ActivityManager eventId={1} />
-					</PrivateRoute>
-				),
-			},
-			{
 				path: '/members',
 				element: (
 					<PrivateRoute>
@@ -59,31 +48,7 @@ export const routes: NonIndexRouteObject[] = [
 				),
 			},
 			{
-				path: '/acts',
-				element: (
-					<PrivateRoute>
-						<UserActivities personId={13} />
-					</PrivateRoute>
-				),
-			},
-			{
-				path: '/all-events',
-				element: (
-					<PrivateRoute>
-						<EventsList />
-					</PrivateRoute>
-				),
-			},
-			{
-				path: '/members/:memberId',
-				element: (
-					<PrivateRoute>
-						<PersonProfile />
-					</PrivateRoute>
-				),
-			},
-			{
-				path: '/all-events/:eventId',
+				path: '/events/:eventId',
 				element: (
 					<PrivateRoute>
 						<EventProfile />
@@ -91,10 +56,10 @@ export const routes: NonIndexRouteObject[] = [
 				),
 			},
 			{
-				path: '/members',
+				path: '/events',
 				element: (
 					<PrivateRoute>
-						<PeopleList />
+						<EventsList />
 					</PrivateRoute>
 				),
 			},

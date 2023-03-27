@@ -18,9 +18,10 @@ import { getAllGenerations } from '../../api/generation/generation.service';
 import { VALUE_NOT_SET } from '../../utils/constants';
 import { getGotData } from '../../store/selectors';
 import { gotDataSet } from '../../store/gotData/actionCreators';
-import { Audio } from 'react-loader-spinner';
+import { Circles } from 'react-loader-spinner';
+import { GotDataStatus } from '../../store/gotDataEnum';
 
-const getValuesOfChosenCheckboxes = (name: string) => {
+export const getValuesOfChosenCheckboxes = (name: string) => {
 	const checkboxes: NodeListOf<any> = document.getElementsByName(name);
 	const res = [];
 	for (let i = 0; i < checkboxes.length; i += 1) {
@@ -125,10 +126,13 @@ export const PeopleList: FC = () => {
 				dispatch(gotDataSet(2));
 			}
 		}
-		if (gotData === 0 || gotData === 2) {
-			dispatch(gotDataSet(1));
+		if (
+			gotData === GotDataStatus.NOT_YET_LOADED ||
+			gotData === GotDataStatus.ERROR_WHILE_LOADING
+		) {
+			dispatch(gotDataSet(GotDataStatus.STARTED_LOADING));
 			fetchData();
-		} else if (gotData === 3) {
+		} else if (gotData === GotDataStatus.LOADED_SUCCESSFULLY) {
 			fillYears(people);
 		}
 		fetchGenerations();
@@ -242,20 +246,17 @@ export const PeopleList: FC = () => {
 					/>
 				</Col>
 			</Row>
-			{gotData !== 3 ? (
-				<Audio
-					height='150'
-					width='150'
-					//@ts-ignore
-					radius='9'
-					color='blue'
-					ariaLabel='loading'
-					//@ts-ignore
-					wrapperStyle
-					//@ts-ignore
-					wrapperClass
-					className='mt-5'
-				/>
+			{gotData !== GotDataStatus.LOADED_SUCCESSFULLY ? (
+				<div className='mt-3'>
+					<Circles
+						height='150'
+						width='150'
+						//@ts-ignore
+						radius='9'
+						color='blue'
+						ariaLabel='loading'
+					/>
+				</div>
 			) : (
 				<Row xs={1} sm={2} md={4} lg={5} className='m-2'>
 					{people.map((person: Person) => (

@@ -43,8 +43,8 @@ export const Navbar = () => {
 			roles: [UserRole.HR],
 		},
 		{
-			name: 'Усі події',
-			path: '/all-events',
+			name: 'Події',
+			path: '/events',
 			roles: [UserRole.HR],
 		},
 		{

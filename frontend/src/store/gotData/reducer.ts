@@ -1,10 +1,7 @@
 import { SET_GOT_DATA } from './actionTypes';
+import { GotDataStatus } from '../gotDataEnum';
 
-// 0 - not yet loaded
-// 1 - started loading
-// 2 - error while loading
-// 3 - loaded successfully
-const gotDataInitialState: number = 0;
+const gotDataInitialState: number = GotDataStatus.NOT_YET_LOADED;
 
 export default function gotDataReducer(
 	state = gotDataInitialState,

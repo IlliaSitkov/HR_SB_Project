@@ -8,7 +8,7 @@ export const EventItem: FC<{ event: Event }> = ({ event }) => {
 	const navigate = useNavigate();
 
 	const showEventDetails = () => {
-		navigate(`/all-events/${event.id}`, { replace: true });
+		navigate(`/events/${event.id}`, { replace: true });
 	};
 
 	return (
