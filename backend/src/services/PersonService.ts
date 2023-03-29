@@ -9,7 +9,6 @@ import {FacultyRepository} from '../repositories/FacultyRepository';
 import {SpecialtyRepository} from '../repositories/SpecialtyRepository';
 import {RoleEnum} from '../utils/enum/Role.enum';
 import {UserService} from './UserService';
-import {array} from 'joi';
 
 @injectable()
 export class PersonService {
@@ -22,12 +21,9 @@ export class PersonService {
     }
 
     private addBirthdayToCalendar = (person: Person) => {
-        //There is birthday and person is in organization
+        //There is birthday and person is bratchyk
         return <boolean>(person.date_birth &&
-            !person.date_poshanuvannia &&
-            !person.date_exclusion &&
-            person.status !== Status.EX_BRATCHYK &&
-            person.status !== Status.POSHANOVANYI);
+            person.status === Status.BRATCHYK);
     };
 
     getPeople = async () => {

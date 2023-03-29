@@ -4,11 +4,11 @@
     font-family: 'Playfair Display SC', serif;
     background-color: rgb(217, 237, 248);
     box-shadow: 4px 0 4px 4px rgb(34, 62, 100, .2);
-    padding: 12px 64px;
+    padding: 8px 64px;
 }
 
 .footer-text {
-    font-size: 0.9em;
+    font-size: 0.8em;
     color: rgb(32,60,114);
 }
 
@@ -19,16 +19,7 @@
         background-color: rgb(217, 237, 248);
         /*background-color: rgb(170,211,234);*/
         box-shadow: 4px 0 4px 4px rgb(34, 62, 100, .2);
-        padding: 8px 8px;
-    }
-
-}
-
-@media only screen and (max-width: 450px) {
-
-    .footer-text {
-        font-size: 0.8em;
-        color: rgb(32,60,114);
+        padding: 6px 8px;
     }
 
 }

@@ -9,6 +9,7 @@ const NearestBirthdays = () => {
 	useEffect(() => {
 		async function getBirthdays() {
 			const birthdays: PersonBirthday[] = await getNearestBirthdays();
+			console.log(birthdays);
 			return birthdays;
 		}
 
@@ -41,10 +42,15 @@ const NearestBirthdaysWithHeaders = ({
 
 	useEffect(() => {
 		if (birthdays.length !== 0) {
-			if (birthdays[0].birthday.getDate() !== new Date().getDate()) {
+			const birthday = birthdays[0].birthday;
+			const today = new Date();
+			if (
+				birthday.getDate() !== today.getDate() ||
+				birthday.getMonth() !== today.getMonth()
+			) {
 				//No birthday today
 				setBirthdayTodayTitle('Сьогодні немає днів народжень');
-				setNearestBirthdayDate(birthdays[0].birthday);
+				setNearestBirthdayDate(birthday);
 			}
 		}
 	}, [birthdays]);
@@ -55,7 +61,7 @@ const NearestBirthdaysWithHeaders = ({
 				{nearestBirthdayDate && (
 					<p
 						style={headerTitle}
-					>{`Дні народження - ${nearestBirthdayDate.toLocaleDateString(
+					>{`Найближчі дні народження - ${nearestBirthdayDate.toLocaleDateString(
 						'default',
 						{
 							month: 'long',
