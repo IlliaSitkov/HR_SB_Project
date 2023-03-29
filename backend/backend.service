@@ -5,7 +5,7 @@ After=network.target
 User=ec2-user
 Group=ec2-user
 WorkingDirectory=/home/ec2-user/backend
-ExecStart=/usr/bin/npm run start:prod
+ExecStart=/bin/bash npm run start:prod
 Restart=always
 [Install]
 WantedBy=multi-user.target

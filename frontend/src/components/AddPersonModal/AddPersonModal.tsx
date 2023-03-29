@@ -122,6 +122,7 @@ const AddPersonModal: React.FC<{
 				return;
 			}
 			if (avatar !== '') {
+				console.log(avatar);
 				p.avatar = avatar;
 			} else if (isRequired('avatar')) {
 				dispatch(errorMessageSet('Аватар не має бути порожнім'));

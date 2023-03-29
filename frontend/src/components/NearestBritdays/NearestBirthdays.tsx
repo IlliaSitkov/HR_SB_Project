@@ -25,7 +25,7 @@ const NearestBirthdaysWithHeaders = ({
 }) => {
 	const headerTitle = {
 		fontFamily: '"Playfair Display SC", serif',
-		fontSize: '28px',
+		fontSize: '26px',
 		letterSpacing: '2px',
 		wordSpacing: '2px',
 		color: '#000000',
@@ -50,7 +50,7 @@ const NearestBirthdaysWithHeaders = ({
 	}, [birthdays]);
 	return (
 		<>
-			<div>
+			<div className='m-3'>
 				<p style={headerTitle}>{birthdayTodayTitle}</p>
 				{nearestBirthdayDate && (
 					<p

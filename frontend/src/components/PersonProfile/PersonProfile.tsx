@@ -706,6 +706,49 @@ export const PersonProfile: FC = () => {
 				</Row>
 			</div>
 			<div>
+				<ErrorMessageBig
+					message={typeof errorMessage === 'string' ? errorMessage : ''}
+				/>
+			</div>
+			<div>
+				<Button
+					variant='primary'
+					onClick={updatePerson}
+					id='updatePerson'
+					className='m-2'
+				>
+					{'Оновити'}
+				</Button>
+				{isHR === 0 && status !== Statuses.NEWCOMER ? (
+					<Button
+						variant='info'
+						onClick={makePersonToBeHR}
+						id='addUser'
+						className='m-2'
+					>
+						{'Зробити HR-ом'}
+					</Button>
+				) : null}
+				{isHR === 1 ? (
+					<Button
+						variant='info'
+						onClick={deletePersonFromHRs}
+						id='deleteUser'
+						className='m-2'
+					>
+						{'Видалити з HR-ів'}
+					</Button>
+				) : null}
+				<Button
+					variant='danger'
+					onClick={() => setShowConfirmDeleteModal(!showConfirmDeleteModal)}
+					id='deletePerson'
+					className='m-2'
+				>
+					{'Видалити'}
+				</Button>
+			</div>
+			<div>
 				{status === Statuses.NEWCOMER ? (
 					<Button
 						variant='primary'
@@ -762,49 +805,6 @@ export const PersonProfile: FC = () => {
 						{'Братчик -> Виключений братчик'}
 					</Button>
 				) : null}
-			</div>
-			<div>
-				<ErrorMessageBig
-					message={typeof errorMessage === 'string' ? errorMessage : ''}
-				/>
-			</div>
-			<div>
-				{isHR === 0 && status !== Statuses.NEWCOMER ? (
-					<Button
-						variant='info'
-						onClick={makePersonToBeHR}
-						id='addUser'
-						className='m-2'
-					>
-						{'Зробити HR-ом'}
-					</Button>
-				) : null}
-				{isHR === 1 ? (
-					<Button
-						variant='info'
-						onClick={deletePersonFromHRs}
-						id='deleteUser'
-						className='m-2'
-					>
-						{'Видалити з HR-ів'}
-					</Button>
-				) : null}
-				<Button
-					variant='primary'
-					onClick={updatePerson}
-					id='updatePerson'
-					className='m-2'
-				>
-					{'Оновити'}
-				</Button>
-				<Button
-					variant='danger'
-					onClick={() => setShowConfirmDeleteModal(!showConfirmDeleteModal)}
-					id='deletePerson'
-					className='m-2'
-				>
-					{'Видалити'}
-				</Button>
 			</div>
 			<UserActivities personId={Number(memberId)} />
 

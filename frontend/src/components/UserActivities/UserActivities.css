@@ -1,3 +1,17 @@
 td, th {
     padding: 16px !important;
 }
+
+.activities {
+    margin: 0 16px 4em 16px;
+}
+
+@media only screen and (max-width: 620px) {
+    td, th {
+        padding: 2px !important;
+    }
+
+    table {
+        font-size: small;
+    }
+}

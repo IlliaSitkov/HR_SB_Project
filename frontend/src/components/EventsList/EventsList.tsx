@@ -144,11 +144,17 @@ export const EventsList: FC = () => {
 					/>
 				</div>
 			) : (
-				<Row xs={1} sm={2} md={4} lg={5} className='m-2'>
+				<Row
+					xs={1}
+					sm={2}
+					md={4}
+					lg={5}
+					className='m-2 mb-5 justify-content-center'
+				>
 					{events.map((event: Event) => (
 						<Col
 							className='d-flex'
-							style={{ minWidth: '280px' }}
+							style={{ minWidth: '280px', maxWidth: '330px' }}
 							key={event.id}
 						>
 							<EventItem event={event} />

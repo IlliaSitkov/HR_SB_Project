@@ -95,7 +95,7 @@ export class PersonRepository {
             if (this.errorUtil.isUniqueConstraintViolation(err)) {
                 throw ApiError.badRequest('Людина з такими контактами (поштою, телефоном, телеграмом чи фейсбуком) вже існує');
             } else {
-                throw ApiError.internal('Помилка при додаванні людини');
+                throw ApiError.internal('Помилка при редагуванні людини');
             }
         }
     };

@@ -27,7 +27,7 @@ export const ActivityManager = ({ eventId }: { eventId: number }) => {
 					<div className='d-flex justify-content-between mb-3 align-items-center'>
 						<h4>Організатори</h4>
 						<AddEventPerson
-							buttonTitle='Додати учасника'
+							buttonTitle='Додати організатора'
 							eventId={eventId}
 							eventPersonSelector={getPossibleOrganizers}
 						/>

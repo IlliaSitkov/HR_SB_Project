@@ -11,7 +11,7 @@ import {
 } from '../../api/category';
 import './CreateEventModal.css';
 import { ErrorMessage } from '../../common/ErrorMessage/ErrorMessage';
-import { createEvent } from '../../api/event_/event.service';
+import { createEvent, EventPostDto } from '../../api/event';
 import { useDispatch } from 'react-redux';
 import { getAllEventsThunk } from '../../store/events/thunk';
 
@@ -83,14 +83,19 @@ export const CreateEventModal = ({
 		if (!checkData()) return;
 		setError('');
 		try {
-			await createEvent({
+			const event: EventPostDto = {
 				name: name!,
-				description,
 				category_id: categoryId,
 				date_end: dateEnd!,
 				date_start: dateStart!,
-				photo: photoUrl,
-			});
+			};
+			if (description !== '') {
+				event.description = description;
+			}
+			if (photoUrl !== '') {
+				event.photo = photoUrl;
+			}
+			await createEvent(event);
 			dispatch(getAllEventsThunk as any);
 			toggleShow();
 		} catch (e) {
@@ -112,6 +117,7 @@ export const CreateEventModal = ({
 						type='text'
 						value={name}
 						onChange={changeHandler(setName, resetError)}
+						required={true}
 					/>
 					<Input
 						label='Опис'
@@ -124,12 +130,14 @@ export const CreateEventModal = ({
 						type='date'
 						value={dateStart}
 						onChange={changeHandler(setDateStart, resetError)}
+						required={true}
 					/>
 					<Input
 						label='Дата закінчення'
 						type='date'
 						value={dateEnd}
 						onChange={changeHandler(setDateEnd, resetError)}
+						required={true}
 					/>
 					<ItemManager
 						selectedItem={categoryId}
@@ -141,9 +149,10 @@ export const CreateEventModal = ({
 						updateFunc={updateCategory}
 						deleteFunc={deleteCategory}
 						createFunc={createCategory}
-						selectTitle='Категорія події'
+						selectTitle='Категорія'
 						modalTitle='Усі категорії'
 						placeholder='Нова категорія'
+						isRequired={true}
 					/>
 					<Input
 						label='Посилання на фото'

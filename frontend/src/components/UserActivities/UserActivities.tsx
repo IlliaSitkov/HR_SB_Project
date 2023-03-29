@@ -73,7 +73,7 @@ export const UserActivities: FC<{ personId: number }> = ({ personId }) => {
 	};
 
 	return (
-		<div>
+		<div className='activities'>
 			{activityGroups.length > 0 ? (
 				<table className='table'>
 					<thead>
@@ -94,7 +94,7 @@ export const UserActivities: FC<{ personId: number }> = ({ personId }) => {
 					</tbody>
 				</table>
 			) : (
-				<p>В учасника немає жодних активностей</p>
+				<p>У людини немає жодних активностей</p>
 			)}
 		</div>
 	);

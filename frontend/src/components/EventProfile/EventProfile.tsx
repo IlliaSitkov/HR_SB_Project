@@ -11,8 +11,12 @@ import { getAllEvents, Event } from '../../api/event';
 import { changeHandler } from '../../shared';
 import { Input } from '../../common/Input/Input';
 import { Button, Col, Row } from 'react-bootstrap';
-import { Select } from '../../common/Select/SelectComponent';
-import { Category, getAllCategories } from '../../api/category';
+import {
+	createCategory,
+	deleteCategory,
+	getAllCategories,
+	updateCategory,
+} from '../../api/category';
 import { deleteAnEvent, updateAnEvent } from '../../store/events/thunk';
 import { eventsGet } from '../../store/events/actionCreators';
 import { dateToString } from '../../utils/dates';
@@ -26,6 +30,7 @@ import { getAllPeopleThunk } from '../../store/people/thunk';
 import { gotEventDataSet } from '../../store/gotEventData/actionCreators';
 import { ConfirmationModal } from '../ConfirmationModal/ConfirmationModal';
 import { GotDataStatus } from '../../store/gotDataEnum';
+import { ItemManager } from '../ItemManager/ItemManager';
 
 export const EventProfile: FC = () => {
 	const gotEventData = useSelector<number>(getEventsData);
@@ -42,7 +47,6 @@ export const EventProfile: FC = () => {
 	const [description, setDescription] = useState<string>('');
 	const [category_id, setCategory_id] = useState<number>(-1);
 	const [photo, setPhoto] = useState<string>('');
-	const [categories, setCategories] = useState<Category[]>([]);
 	const [showEditPhotoModal, setShowEditPhotoModal] = useState<boolean>(false);
 	const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
 		useState<boolean>(false);
@@ -97,8 +101,6 @@ export const EventProfile: FC = () => {
 			if (ev.description) setDescription(ev.description);
 			if (ev.category_id) setCategory_id(ev.category_id);
 			if (ev.photo) setPhoto(ev.photo);
-			const categories = await getAllCategories();
-			setCategories(categories);
 		}
 	};
 
@@ -218,22 +220,6 @@ export const EventProfile: FC = () => {
 								required={true}
 							/>
 							<Input
-								id='dateStart'
-								type='date'
-								onChange={changeHandler(setDate_start, resetError)}
-								value={date_start}
-								label='Дата початку події'
-								required={true}
-							/>
-							<Input
-								id='dateEnd'
-								type='date'
-								onChange={changeHandler(setDate_end, resetError)}
-								value={date_end}
-								label='Дата завершення події'
-								required={true}
-							/>
-							<Input
 								id='description'
 								placeholder={'Введіть опис...'}
 								type='text'
@@ -242,15 +228,36 @@ export const EventProfile: FC = () => {
 								label='Опис'
 								required={false}
 							/>
-							<Select
-								id='selectCategory'
-								noneSelectedOption={true}
-								value={category_id}
-								label='Категорія'
-								onChange={changeHandler(setCategory_id)}
-								data={categories}
-								idSelector={(c) => c.id}
-								nameSelector={(c) => c.name}
+							<Input
+								id='dateStart'
+								type='date'
+								onChange={changeHandler(setDate_start, resetError)}
+								value={date_start}
+								label='Дата початку'
+								required={true}
+							/>
+							<Input
+								id='dateEnd'
+								type='date'
+								onChange={changeHandler(setDate_end, resetError)}
+								value={date_end}
+								label='Дата закінчення'
+								required={true}
+							/>
+							<ItemManager
+								selectedItem={category_id}
+								setSelectedItem={(id) => {
+									setCategory_id(id);
+									resetError();
+								}}
+								getAllFunc={getAllCategories}
+								updateFunc={updateCategory}
+								deleteFunc={deleteCategory}
+								createFunc={createCategory}
+								selectTitle='Категорія'
+								modalTitle='Усі категорії'
+								placeholder='Нова категорія'
+								isRequired={true}
 							/>
 						</div>
 					</Col>

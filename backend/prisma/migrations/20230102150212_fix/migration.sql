@@ -1,0 +1,17 @@
+
+-- UpdateEnum
+ALTER TYPE "Role" RENAME VALUE 'BRATCHYK' TO 'PR_HEAD';
+ALTER TYPE "Role" ADD VALUE 'KIS' AFTER 'PR_HEAD';
+
+-- UpdateTable
+ALTER TABLE "Person"
+ALTER COLUMN "avatar" TYPE TEXT;
+
+-- UpdateTable
+ALTER TABLE "Event"
+ALTER COLUMN "description" DROP NOT NULL,
+ALTER COLUMN "photo" TYPE TEXT;
+
+-- UpdateTable
+ALTER TABLE "Activity"
+ALTER COLUMN "position" DROP NOT NULL;

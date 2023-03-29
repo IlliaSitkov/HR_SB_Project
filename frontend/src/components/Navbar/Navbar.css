@@ -40,3 +40,24 @@ a:link {
     background-color: rgb(32,60,114);
     color: rgb(213, 237, 250);
 }
+
+@media only screen and (max-width: 620px) {
+
+    .menu-bar {
+        font-family: 'Playfair Display SC', serif;
+        background-color: rgb(217, 237, 248);
+        /*background-color: rgb(170,211,234);*/
+        box-shadow: 0 4px 4px rgb(34, 62, 100, .2);
+        padding: 8px 8px;
+    }
+
+    .btn-bordered {
+        background-color: transparent;
+        border-radius: 64px;
+        padding: 6px 10px;
+        font-size: 0.9em;
+        border: 1px solid rgb(32,60,114);
+        margin-left: 2px;
+    }
+
+}
