@@ -17,9 +17,9 @@ const userRouter: Router = Router();
 const userService = container.get<UserService>(UserService);
 
 userRouter.route('/me')
-    //Get all users
+    //Get my user
     .get(
-        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER, RoleEnum.NEWCOMER),
         asyncHandler(async (req: Request, res: Response) => {
             const user = await userService.getUserByEmail((req.authInfo as ITokenPayload).preferred_username!);
             res.status(StatusCode.SuccessOK).json(user);
@@ -29,7 +29,7 @@ userRouter.route('/me')
 userRouter.route('/')
     //Get all users
     .get(
-        ...authMiddleware(RoleEnum.HR),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         asyncHandler(async (req: Request, res: Response) => {
             const users = await userService.getAll();
             res.status(StatusCode.SuccessOK).json(users);
@@ -58,7 +58,7 @@ userRouter.route('/:id')
     )
     //Get user
     .get(
-        ...authMiddleware(RoleEnum.HR),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         requestValidator(idSchema, 'params'),
         asyncHandler(async (req: Request, res: Response) => {
             const user = await userService.getById(+req.params.id);

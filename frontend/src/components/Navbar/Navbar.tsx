@@ -35,7 +35,7 @@ export const Navbar = () => {
 		{
 			name: 'Люди',
 			path: '/members',
-			roles: [UserRole.HR],
+			roles: [UserRole.HR, UserRole.USER],
 		},
 		{
 			name: 'Дні народження',
@@ -45,12 +45,12 @@ export const Navbar = () => {
 		{
 			name: 'Події',
 			path: '/events',
-			roles: [UserRole.HR],
+			roles: [UserRole.HR, UserRole.USER],
 		},
 		{
 			name: 'Профіль',
 			path: '/profile',
-			roles: [UserRole.HR, UserRole.USER],
+			roles: [UserRole.HR, UserRole.USER, UserRole.NEWCOMER],
 		},
 		{
 			name: 'Приєднатись до СО "Спудейське Братство НаУКМА"',

@@ -27,35 +27,3 @@ export const updateCategory = async (
 ): Promise<Category> => {
 	return (await axios.put(urlById(id), category)).data;
 };
-
-// import {AxiosInstance} from "axios";
-// import {host} from "../../http";
-// import {Category, CategoryCreateDTO, CategoryUpdateDTO} from "./types";
-//
-// export class CategoryService {
-//
-//     axios: AxiosInstance = host;
-//     readonly url: string = "api/categories"
-//
-//     urlById = (id: number): string => `${url}/${id}`;
-//
-//     getAllCategories = async (): Promise<Category[]> => {
-//         return (await axios.get(url)).data;
-//     };
-//
-//     createCategory = async (category: CategoryCreateDTO): Promise<Category> => {
-//         return (await axios.post(url, category)).data;
-//     };
-//
-//     deleteCategory = async (id: number): Promise<Category> => {
-//         return (await axios.delete(urlById(id))).data;
-//     };
-//
-//     updateCategory = async (id: number, category: CategoryUpdateDTO): Promise<Category> => {
-//         return (await axios.put(urlById(id), category)).data;
-//     };
-//
-//
-// }
-//
-//

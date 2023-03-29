@@ -34,9 +34,9 @@ export class PersonService {
         return this.personRepository.personExists(id);
     };
 
-    createPerson = async (person: PersonPostDto) => {
+    createPerson = async (person: PersonPostDto, role: RoleEnum = RoleEnum.USER) => {
         const p = await this.personRepository.createPerson(person);
-        await this.userService.add({personId: p.id, role: RoleEnum.USER});
+        await this.userService.add({personId: p.id, role});
         return p;
     };
 
@@ -45,7 +45,8 @@ export class PersonService {
         if (p.email) {
             const user = await this.userService.getUserByEmail(p.email);
             if (!user) {
-                await this.userService.add({personId: p.id, role: RoleEnum.USER});
+                const role = p.status === Status.NEWCOMER ? RoleEnum.NEWCOMER : RoleEnum.USER;
+                await this.userService.add({personId: p.id, role});
             }
         }
         return p;
@@ -124,7 +125,9 @@ export class PersonService {
         }
         //newcomer -> maliuk
         if (person.status === Status.NEWCOMER && newStatus === Status.MALIUK) {
-            return this.personRepository.updatePersonStatusToMaliuk(id);
+            const result = await this.personRepository.updatePersonStatusToMaliuk(id);
+            await this.userService.updateByPersonId({personId: person.id, role: RoleEnum.USER});
+            return result;
         }
         //maliuk -> bratchyk (add date_vysviata)
         if (person.status === Status.MALIUK && newStatus === Status.BRATCHYK) {

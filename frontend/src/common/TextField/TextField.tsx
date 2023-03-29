@@ -8,7 +8,8 @@ export const TextField: FC<{
 	value: string;
 	style?: object;
 	textStyle?: object;
-}> = ({ label, id, placeholder = '', value, style, textStyle }) => {
+	required?: boolean;
+}> = ({ label, id, placeholder = '', value, style, textStyle, required }) => {
 	// @ts-ignore
 	if (textStyle && !textStyle.background) {
 		// @ts-ignore
@@ -26,6 +27,7 @@ export const TextField: FC<{
 			disabled={true}
 			style={style}
 			inputStyle={textStyle}
+			required={required}
 		/>
 	);
 };

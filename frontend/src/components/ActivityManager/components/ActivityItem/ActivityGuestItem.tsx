@@ -1,14 +1,17 @@
 import React from 'react';
 import { Activity, deleteActivity } from '../../../../api/activity';
 import './ActivityItem.css';
-import { binIcon } from '../../../../common/icons/icons';
 import { fetchEventActivitiesThunk } from '../../../../store/eventActivities/thunk';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { getUserRole } from '../../../../store/selectors';
+import { UserRole } from '../../../../api/common/types';
+import { binIcon } from '../../../../common/icons/icons';
 
 export const ActivityGuestItem = ({ activity }: { activity: Activity }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const userRole = useSelector(getUserRole);
 
 	const goToPersonProfile = () => {
 		navigate(`/members/${activity.person_id}`, { replace: true });
@@ -35,11 +38,13 @@ export const ActivityGuestItem = ({ activity }: { activity: Activity }) => {
 					</button>
 				</div>
 			</div>
-			<div className='visible-on-hover'>
-				<button onClick={deleteAct} className='empty bin'>
-					{binIcon(24, 'red')}
-				</button>
-			</div>
+			{userRole === UserRole.HR ? (
+				<div className='visible-on-hover'>
+					<button onClick={deleteAct} className='empty bin'>
+						{binIcon(24, 'red')}
+					</button>
+				</div>
+			) : null}
 		</div>
 	);
 };

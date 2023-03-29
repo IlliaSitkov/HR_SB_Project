@@ -15,16 +15,19 @@ import {
 import { ErrorMessage } from '../../../../common/ErrorMessage/ErrorMessage';
 import { changeHandler } from '../../../../shared';
 import { fetchEventActivitiesThunk } from '../../../../store/eventActivities/thunk';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { UserRole } from '../../../../api/common/types';
+import { getUserRole } from '../../../../store/selectors';
 
 export const ActivityOrganizerItem = ({ activity }: { activity: Activity }) => {
 	const dispatch = useDispatch();
+	const userRole = useSelector(getUserRole);
 
 	const [edit, setEdit] = useState(false);
 	const [error, setError] = useState('');
 
-	const [inputRef, setInputRef] = useState<React.MutableRefObject<null>>();
+	const [inputRef] = useState<React.MutableRefObject<null>>();
 
 	const [position, setPosition] = useState(activity.position);
 	const [contribution, setContribution] = useState(activity.contribution);
@@ -39,10 +42,6 @@ export const ActivityOrganizerItem = ({ activity }: { activity: Activity }) => {
 	const toggleEdit = () => {
 		setError('');
 		setEdit(!edit);
-	};
-
-	const refCallback = (ref: React.MutableRefObject<null>) => {
-		setInputRef(ref);
 	};
 
 	useEffect(() => {
@@ -114,6 +113,7 @@ export const ActivityOrganizerItem = ({ activity }: { activity: Activity }) => {
 								value={position}
 								disabled={!edit}
 								onChange={changeHandler(setPosition, () => setError(''))}
+								style={{ background: 'white' }}
 							/>
 						</div>
 						<div>
@@ -124,6 +124,7 @@ export const ActivityOrganizerItem = ({ activity }: { activity: Activity }) => {
 								value={contribution}
 								disabled={!edit}
 								onChange={changeHandler(setContribution, () => setError(''))}
+								style={{ background: 'white' }}
 							/>
 						</div>
 						<Input
@@ -136,28 +137,30 @@ export const ActivityOrganizerItem = ({ activity }: { activity: Activity }) => {
 						/>
 					</div>
 				</div>
-				<div>
-					<div
-						className={`d-flex gap-1 ${
-							edit ? 'display-none' : 'visible-on-hover'
-						}`}
-					>
-						<button onClick={toggleEdit} className='empty pen'>
-							{penIcon(24, 'blue')}
-						</button>
-						<button onClick={deleteAct} className='empty bin'>
-							{binIcon(24, 'red')}
-						</button>
+				{userRole === UserRole.HR ? (
+					<div>
+						<div
+							className={`d-flex gap-1 ${
+								edit ? 'display-none' : 'visible-on-hover'
+							}`}
+						>
+							<button onClick={toggleEdit} className='empty pen'>
+								{penIcon(24, 'blue')}
+							</button>
+							<button onClick={deleteAct} className='empty bin'>
+								{binIcon(24, 'red')}
+							</button>
+						</div>
+						<div className={`d-flex gap-1 ${edit ? '' : 'display-none'}`}>
+							<button onClick={update} className='empty check'>
+								{checkIcon(28, '#31c410')}
+							</button>
+							<button onClick={closeEdit} className='empty bin'>
+								{crossIcon(20, 'red')}
+							</button>
+						</div>
 					</div>
-					<div className={`d-flex gap-1 ${edit ? '' : 'display-none'}`}>
-						<button onClick={update} className='empty check'>
-							{checkIcon(28, '#31c410')}
-						</button>
-						<button onClick={closeEdit} className='empty bin'>
-							{crossIcon(20, 'red')}
-						</button>
-					</div>
-				</div>
+				) : null}
 			</div>
 			<ErrorMessage message={error} />
 		</div>

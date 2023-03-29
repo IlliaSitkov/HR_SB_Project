@@ -1,3 +1,5 @@
+import { VALUE_NOT_SET } from '../../utils/constants';
+
 export const roles = [
 	{
 		id: 0,
@@ -7,12 +9,12 @@ export const roles = [
 	{
 		id: 1,
 		name: 'PYSAR',
-		ukr: 'Писар',
+		ukr: 'Писар_івна',
 	},
 	{
 		id: 2,
 		name: 'SKARBNYK',
-		ukr: 'Скарбник',
+		ukr: 'Скарбник / Скарбиня',
 	},
 	{
 		id: 3,
@@ -27,17 +29,17 @@ export const roles = [
 	{
 		id: 5,
 		name: 'RAK_MEMBER',
-		ukr: 'Член РАК',
+		ukr: 'Член_киня РАК',
 	},
 	{
 		id: 6,
 		name: 'RECHNYK',
-		ukr: 'Речник',
+		ukr: 'Речник / Речниця',
 	},
 	{
 		id: 7,
 		name: 'KOMIRNYK',
-		ukr: 'Комірник',
+		ukr: 'Комірник / Комірниця',
 	},
 	{
 		id: 8,
@@ -45,3 +47,9 @@ export const roles = [
 		ukr: 'КІС',
 	},
 ];
+
+export const getRoleUkr = (role: string | null = null) => {
+	// @ts-ignore
+	const r = roles.find((r) => r.name === role);
+	return r ? r.ukr : VALUE_NOT_SET;
+};

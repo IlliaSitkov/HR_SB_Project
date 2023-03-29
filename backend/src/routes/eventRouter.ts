@@ -15,7 +15,7 @@ const eventService: EventService = container.get<EventService>(EventService);
 
 eventRouter.route('/')
     .get(
-        ...authMiddleware(RoleEnum.HR),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         asyncHandler(async (req: Request, res: Response) => {
             const events: Event[] = await eventService.getEvents();
             res.json(events);
@@ -43,7 +43,7 @@ eventRouter.route('/:id')
         })
     )
     .get(
-        ...authMiddleware(RoleEnum.HR),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         requestValidator(idSchema, 'id'),
         asyncHandler(async (req: Request, res: Response) => {
             const event: Event = await eventService.getEventById(Number(req.params.id));

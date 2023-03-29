@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { SearchBar } from '../../common/SearchBar/SearchBar';
 import { Button, Col, Row } from 'react-bootstrap';
 import { DropdownWithCheckboxes } from '../../common/DropdownWithCheckboxes/DropdownWithCheckboxes';
-import { getEventsData } from '../../store/selectors';
+import { getEventsData, getUserRole } from '../../store/selectors';
 import { Event, getAllEvents } from '../../api/event';
 import { eventsGet } from '../../store/events/actionCreators';
 import { EventItem } from './components/EventItem/EventItem';
@@ -15,6 +15,8 @@ import { gotEventDataSet } from '../../store/gotEventData/actionCreators';
 import { Circles } from 'react-loader-spinner';
 import { GotDataStatus } from '../../store/gotDataEnum';
 import { getValuesOfChosenCheckboxes } from '../PeopleList/PeopleList';
+import { compareEvents } from '../../utils/comparators';
+import { UserRole } from '../../api/common/types';
 
 export const EventsList: FC = () => {
 	const gotData = useSelector<number>(getEventsData);
@@ -23,6 +25,7 @@ export const EventsList: FC = () => {
 	const [possibleCategories, setPossibleCategories] = useState<Array<Category>>(
 		[]
 	);
+	const userRole = useSelector(getUserRole);
 
 	const suitsSearch = (event: Event) => {
 		let sT = searchText.trim();
@@ -46,9 +49,9 @@ export const EventsList: FC = () => {
 	};
 
 	const events = useSelector((state: any) =>
-		state.allEvents.filter(
-			(event: Event) => suitsSearch(event) && suitsFilter(event)
-		)
+		state.allEvents
+			.filter((event: Event) => suitsSearch(event) && suitsFilter(event))
+			.sort(compareEvents)
 	);
 
 	const fetchCategories = async () => {
@@ -107,15 +110,19 @@ export const EventsList: FC = () => {
 	return (
 		<>
 			<h2 className='text-center'>Події СБ</h2>
-			<CreateEventModal showModal={show} toggleModal={toggleModal} />
-			<Button
-				onClick={toggleModal}
-				variant='primary'
-				id='addEvent'
-				className='ms-4 m-2 align-self-start'
-			>
-				Додати подію
-			</Button>
+			{userRole === UserRole.HR ? (
+				<>
+					<CreateEventModal showModal={show} toggleModal={toggleModal} />
+					<Button
+						onClick={toggleModal}
+						variant='primary'
+						id='addEvent'
+						className='ms-4 m-2 align-self-start'
+					>
+						Додати подію
+					</Button>
+				</>
+			) : null}
 			<SearchBar
 				searchText={searchText}
 				setSearchText={setSearchText}

@@ -101,6 +101,7 @@ model Activity {
 enum SystemRole {
     HR
     USER
+    NEWCOMER
 }
 
 enum Role {

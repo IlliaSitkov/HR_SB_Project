@@ -7,6 +7,7 @@ export enum UserRole {
 	ANONYMOUS = 'ANONYMOUS',
 	HR = 'HR',
 	USER = 'USER',
+	NEWCOMER = 'NEWCOMER',
 }
 
 export interface User {

@@ -18,7 +18,7 @@ import {
     statusUpdateSchemaToMaliuk
 } from '../validators/personSchema';
 import {idSchema} from '../validators/idSchema';
-import authMiddleware from '../middleware/authMiddleware';
+import authMiddleware, {newcomerAccessMiddleware} from '../middleware/authMiddleware';
 import {container} from '../config/container';
 import {PersonService} from '../services/PersonService';
 import {oldStatusValidator, statusValidator} from '../middleware/personValidator';
@@ -34,7 +34,7 @@ const personService = container.get<PersonService>(PersonService);
 // @route GET api/people
 personRouter.route('/')
     .get(
-        ...authMiddleware(RoleEnum.HR),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         asyncHandler(async (req: Request, res: Response) => {
             const people = await personService.getPeople();
             res.json(people);
@@ -66,7 +66,7 @@ personRouter.route('/join')
         }),
         asyncHandler(async (req: Request, res: Response) => {
             const personDTO = await personService.checkAndFormatPersonData(req.body);
-            const newPerson = await personService.createPerson(personDTO);
+            const newPerson = await personService.createPerson(personDTO, RoleEnum.NEWCOMER);
             res.json(newPerson);
         })
     );
@@ -102,8 +102,9 @@ personRouter.route('/nearestBirthdays')
 // @route  GET api/people/:id
 personRouter.route('/:id')
     .get(
-        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER, RoleEnum.NEWCOMER),
         requestValidator(idSchema, 'params'),
+        newcomerAccessMiddleware(true),
         asyncHandler(async (req: Request, res: Response) => {
             const person = await personService.getPersonById(Number(req.params.id));
             res.json(person);

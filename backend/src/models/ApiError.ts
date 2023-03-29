@@ -22,6 +22,10 @@ export class ApiError extends Error {
         return new ApiError(StatusCode.ClientErrorNotFound, msg);
     }
 
+    static accessForbidden(msg: string) {
+        return new ApiError(StatusCode.ClientErrorForbidden, msg);
+    }
+
     static internal(msg: string) {
         return new ApiError(StatusCode.ServerErrorInternal, msg);
     }

@@ -9,7 +9,7 @@ export const Footer = () => {
 		<footer className='footer-bar fixed-bottom'>
 			<div>
 				<img
-					width='30'
+					width='28'
 					src='shared/images/sb_logo.png'
 					className='me-3'
 					alt=''

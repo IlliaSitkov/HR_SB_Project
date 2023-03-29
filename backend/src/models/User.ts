@@ -13,3 +13,4 @@ export interface UserOptionalUpdate {
 }
 
 export type UserAdd = Pick<User, 'personId' | 'role'>;
+export type UserUpdateByPersonId = UserAdd;

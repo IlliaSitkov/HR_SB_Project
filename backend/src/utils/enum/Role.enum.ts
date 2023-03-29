@@ -1,4 +1,5 @@
 export enum RoleEnum {
     HR = 'HR',
-    USER = 'USER'
+    USER = 'USER',
+    NEWCOMER = 'NEWCOMER'
 }
