@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { TextField } from '../../common/TextField/TextField';
 import { msalInstance } from '../../utils/authConfig';
 import { AccountInfo } from '@azure/msal-browser';
+import './JoinForm.css';
 
 const JoinForm: React.FC<{}> = () => {
 	const currentAccount: AccountInfo = msalInstance.getAllAccounts()[0];
@@ -163,7 +164,7 @@ const JoinForm: React.FC<{}> = () => {
 				/>
 			</div>
 			<ErrorMessage message={error} />
-			<Button onClick={join} variant='primary' className='ms-4 m-2'>
+			<Button onClick={join} variant='primary' className='button-margin'>
 				Доєднатися
 			</Button>
 		</section>
