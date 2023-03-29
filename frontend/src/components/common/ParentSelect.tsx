@@ -5,7 +5,7 @@ import { getFullName, getStatusUkr } from '../../api/person';
 import { useSelector } from 'react-redux';
 import { getPeoplePossibleParents } from '../../store/selectors';
 
-const FacultySelect: React.FC<{
+const ParentSelect: React.FC<{
 	setParentId: Function;
 	parentId: number;
 	isRequired?: boolean;
@@ -32,4 +32,4 @@ const FacultySelect: React.FC<{
 	);
 };
 
-export default FacultySelect;
+export default ParentSelect;

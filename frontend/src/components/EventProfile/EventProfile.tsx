@@ -42,7 +42,7 @@ export const EventProfile: FC = () => {
 	const [description, setDescription] = useState<string>('');
 	const [category_id, setCategory_id] = useState<number>(-1);
 	const [photo, setPhoto] = useState<string>('');
-	const [categories, setCategories] = useState<Category[]>([]); // ?
+	const [categories, setCategories] = useState<Category[]>([]);
 	const [showEditPhotoModal, setShowEditPhotoModal] = useState<boolean>(false);
 	const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
 		useState<boolean>(false);

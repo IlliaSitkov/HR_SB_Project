@@ -3,7 +3,7 @@ import { changeHandler } from '../../shared';
 import { Select } from '../../common/Select/SelectComponent';
 import { roles } from '../../api/person';
 
-const FacultySelect: React.FC<{
+const RoleSelect: React.FC<{
 	setRoleId: Function;
 	roleId: number;
 	isRequired?: boolean;
@@ -21,4 +21,4 @@ const FacultySelect: React.FC<{
 	/>
 );
 
-export default FacultySelect;
+export default RoleSelect;

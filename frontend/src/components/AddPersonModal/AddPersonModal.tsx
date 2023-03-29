@@ -14,7 +14,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_AVATAR_URL } from '../../utils/constants';
 import { errorMessageSet } from '../../store/errorMessage/actionCreators';
-import { EditAvatarUrlModal } from '../PersonProfile/components/EditAvatarUrlModal';
 import {
 	FacultySelect,
 	GenerationSelect,
@@ -28,6 +27,7 @@ import { statusToNecessaryFields } from './fields';
 import { errorToString } from '../../utils/errorHandling';
 import { saveNewPerson } from '../../store/people/thunk';
 import { getErrorMessage } from '../../store/selectors';
+import { EditPhotoUrlModal } from '../EditPhotoUrlModal/EditPhotoUrlModal';
 
 const AddPersonModal: React.FC<{
 	isShown: boolean;
@@ -103,80 +103,78 @@ const AddPersonModal: React.FC<{
 		try {
 			resetError();
 			if (name === '') {
-				dispatch(errorMessageSet("Ім'я не має бути пустим"));
+				dispatch(errorMessageSet("Ім'я не має бути порожнім"));
 				return;
 			}
 			if (surname === '') {
-				dispatch(errorMessageSet('Прізвище не має бути пустим'));
+				dispatch(errorMessageSet('Прізвище не має бути порожнім'));
 				return;
 			}
 			if (statusId === -1) {
-				dispatch(errorMessageSet('Статус не має бути пустим'));
+				dispatch(errorMessageSet('Статус не має бути порожнім'));
 				return;
 			}
 			let p: Person = { name, surname, status };
 			if (parental !== '') {
 				p.parental = parental;
-			} else if (isRequired('avatar')) {
-				dispatch(errorMessageSet("Ім'я по-батькові не має бути пустим"));
+			} else if (isRequired('parental')) {
+				dispatch(errorMessageSet("Ім'я по-батькові не має бути порожнім"));
 				return;
 			}
 			if (avatar !== '') {
 				p.avatar = avatar;
 			} else if (isRequired('avatar')) {
-				dispatch(errorMessageSet('Аватар не має бути пустим'));
+				dispatch(errorMessageSet('Аватар не має бути порожнім'));
 				return;
 			}
 			if (date_birth !== '') {
 				p.date_birth = new Date(date_birth);
 			} else if (isRequired('dateBirth')) {
-				dispatch(errorMessageSet('Аватар не має бути пустим'));
+				dispatch(errorMessageSet('Аватар не має бути порожнім'));
 				return;
 			}
 			if (facultyId !== -1) {
 				p.faculty_id = facultyId;
 			} else if (isRequired('faculty')) {
-				dispatch(errorMessageSet('Факультет не має бути пустим'));
+				dispatch(errorMessageSet('Факультет не має бути порожнім'));
 				return;
 			}
 			if (specialtyId !== -1) {
 				p.specialty_id = specialtyId;
 			} else if (isRequired('specialty')) {
-				dispatch(errorMessageSet('Факультет не має бути пустим'));
+				dispatch(errorMessageSet('Спеціальність не має бути порожньою'));
 				return;
 			}
 			if (yearEnter !== -1) {
 				p.year_enter = yearEnter;
 			} else if (isRequired('yearEnter')) {
-				dispatch(errorMessageSet('Рік вступу не має бути пустим'));
+				dispatch(errorMessageSet('Рік вступу не має бути порожнім'));
 				return;
 			}
 			if (email !== '' && /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
 				p.email = email;
 			} else if (isRequired('email')) {
 				dispatch(
-					errorMessageSet(
-						'Електронна пошта має бути непустою та у валідному форматі'
-					)
+					errorMessageSet('Email має бути непорожнім та у валідному форматі')
 				);
 				return;
 			}
 			if (telegram !== '') {
 				p.telegram = telegram;
 			} else if (isRequired('telegram')) {
-				dispatch(errorMessageSet('Телеграм не має бути пустим'));
+				dispatch(errorMessageSet('Телеграм не має бути порожнім'));
 				return;
 			}
 			if (facebook !== '') {
 				p.facebook = facebook;
 			} else if (isRequired('facebook')) {
-				dispatch(errorMessageSet('Facebook не має бути пустим'));
+				dispatch(errorMessageSet('Facebook не має бути порожнім'));
 				return;
 			}
 			if (telephone !== '') {
 				p.telephone = telephone;
 			} else if (isRequired('telephone')) {
-				dispatch(errorMessageSet('Електронна пошта не має бути пустим'));
+				dispatch(errorMessageSet('Телефон не має бути порожнім'));
 				return;
 			}
 			/* eslint-disable eqeqeq*/
@@ -185,49 +183,51 @@ const AddPersonModal: React.FC<{
 			if (roleId !== -1 && role !== undefined) {
 				p.role = role?.name as string;
 			} else if (isRequired('role')) {
-				dispatch(errorMessageSet('Посада не має бути пустою'));
+				dispatch(errorMessageSet('Посада не має бути порожньою'));
 				return;
 			}
 			if (parentId !== -1) {
 				p.parent_id = parentId;
 			} else if (isRequired('parent')) {
-				dispatch(errorMessageSet('Патрон не має бути пустим'));
+				dispatch(errorMessageSet('Патрон не має бути порожнім'));
 				return;
 			}
 			if (generationId !== -1) {
 				p.generation_id = generationId;
 			} else if (isRequired('generationId')) {
-				dispatch(errorMessageSet('Покоління не має бути пустим'));
+				dispatch(errorMessageSet('Покоління не має бути порожнім'));
 				return;
 			}
 			if (about !== '') {
 				p.about = about;
 			} else if (isRequired('about')) {
-				dispatch(errorMessageSet('Опис не має бути пустим'));
+				dispatch(errorMessageSet('Опис не має бути порожнім'));
 				return;
 			}
 			if (date_fill_form !== '') {
 				p.date_fill_form = new Date(date_fill_form);
 			} else if (isRequired('dateFillForm')) {
-				dispatch(errorMessageSet('Дата заповнення форми не має бути пустою'));
+				dispatch(
+					errorMessageSet('Дата заповнення форми не має бути порожньою')
+				);
 				return;
 			}
 			if (date_vysviata !== '') {
 				p.date_vysviata = new Date(date_vysviata);
 			} else if (isRequired('dateVysviata')) {
-				dispatch(errorMessageSet('Дата висвяти не має бути пустою'));
+				dispatch(errorMessageSet('Дата висвяти не має бути порожньою'));
 				return;
 			}
 			if (date_poshanuvannia !== '') {
 				p.date_poshanuvannia = new Date(date_poshanuvannia);
 			} else if (isRequired('datePoshanuvannia')) {
-				dispatch(errorMessageSet('Дата пошанування не має бути пустою'));
+				dispatch(errorMessageSet('Дата пошанування не має бути порожньою'));
 				return;
 			}
 			if (date_exclusion !== '') {
 				p.date_exclusion = new Date(date_exclusion);
 			} else if (isRequired('dateExclusion')) {
-				dispatch(errorMessageSet('Дата виключення не має бути пустою'));
+				dispatch(errorMessageSet('Дата виключення не має бути порожньою'));
 				return;
 			}
 			dispatch(
@@ -270,12 +270,12 @@ const AddPersonModal: React.FC<{
 									/>
 								)}
 							</div>
-							<EditAvatarUrlModal
+							<EditPhotoUrlModal
 								title={'Посилання на аватар'}
 								setShow={setShowModal}
 								show={showModal}
-								avatarUrl={avatar}
-								setAvatarUrl={setAvatar}
+								photoUrl={avatar}
+								setPhotoUrl={setAvatar}
 							/>
 							<h5
 								style={getStatusStyle(status)}

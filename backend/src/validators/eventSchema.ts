@@ -8,11 +8,11 @@ const fieldsEventCreate = {
 
     date_end: Joi.date().required(),
 
-    description: Joi.string().trim().min(0),
+    description: Joi.alternatives([Joi.string().trim(), '']),
 
     category_id: intId().required(),
 
-    photo: Joi.string().min(0)
+    photo: Joi.alternatives([Joi.string().trim(), ''])
 };
 
 const fieldsEventUpdate = {

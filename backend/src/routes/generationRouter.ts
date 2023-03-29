@@ -22,7 +22,6 @@ generationRouter.route('/')
         })
     )
     .post(
-        /*authorize()*/
         ...authMiddleware(RoleEnum.HR),
         requestValidator(generationSchema, 'body'),
         asyncHandler(async (req: Request, res: Response) => {
@@ -35,7 +34,6 @@ generationRouter.route('/')
 // @route  GET api/generations/:id
 generationRouter.route('/:id')
     .get(
-        /*authorize()*/
         ...authMiddleware(RoleEnum.HR),
         requestValidator(idSchema, 'params'),
         asyncHandler(async (req: Request, res: Response) => {
@@ -44,7 +42,6 @@ generationRouter.route('/:id')
         })
     )
     .put(
-        /*authorize()*/
         ...authMiddleware(RoleEnum.HR),
         requestValidator(idSchema, 'params'),
         requestValidator(generationSchema, 'body'),
@@ -55,7 +52,6 @@ generationRouter.route('/:id')
         })
     )
     .delete(
-        /*authorize()*/
         ...authMiddleware(RoleEnum.HR),
         requestValidator(idSchema, 'params'),
         asyncHandler(async (req: Request, res: Response) => {

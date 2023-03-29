@@ -16,6 +16,7 @@ import PrivateRoute from '../components/PrivateRoute/PrivateRoute';
 import JoinForm from '../components/JoinForm/JoinForm';
 import { EventProfile } from '../components/EventProfile/EventProfile';
 import { HelloPage } from '../components/HelloPage/HelloPage';
+import { UserRole } from '../api/common/types';
 
 export const routes: NonIndexRouteObject[] = [
 	{
@@ -40,7 +41,7 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '/members/:memberId',
 				element: (
-					<PrivateRoute>
+					<PrivateRoute allowedRoles={[UserRole.HR]}>
 						<PersonProfile />
 					</PrivateRoute>
 				),
@@ -48,7 +49,7 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '/members',
 				element: (
-					<PrivateRoute>
+					<PrivateRoute allowedRoles={[UserRole.HR]}>
 						<PeopleList />
 					</PrivateRoute>
 				),
@@ -56,7 +57,7 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '/events/:eventId',
 				element: (
-					<PrivateRoute>
+					<PrivateRoute allowedRoles={[UserRole.HR]}>
 						<EventProfile />
 					</PrivateRoute>
 				),
@@ -64,7 +65,7 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '/events',
 				element: (
-					<PrivateRoute>
+					<PrivateRoute allowedRoles={[UserRole.HR]}>
 						<EventsList />
 					</PrivateRoute>
 				),
@@ -72,7 +73,7 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '/profile',
 				element: (
-					<PrivateRoute>
+					<PrivateRoute allowedRoles={[UserRole.USER, UserRole.HR]}>
 						<MyProfile />
 					</PrivateRoute>
 				),
@@ -80,7 +81,7 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '/birthdays',
 				element: (
-					<PrivateRoute>
+					<PrivateRoute allowedRoles={[UserRole.HR]}>
 						<AuthenticatedTemplate>
 							<div className='mt-3'>
 								<NearestBirthdays />
@@ -95,7 +96,7 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '/items',
 				element: (
-					<PrivateRoute>
+					<PrivateRoute allowedRoles={[UserRole.HR]}>
 						<ItemManagerDemo />
 					</PrivateRoute>
 				),

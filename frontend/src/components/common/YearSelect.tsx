@@ -2,7 +2,7 @@ import React from 'react';
 import { changeHandler } from '../../shared';
 import { Select } from '../../common/Select/SelectComponent';
 
-const FacultySelect: React.FC<{
+const YearSelect: React.FC<{
 	setYearEnter: Function;
 	yearEnter: number;
 	isRequired?: boolean;
@@ -28,4 +28,4 @@ const FacultySelect: React.FC<{
 	);
 };
 
-export default FacultySelect;
+export default YearSelect;
