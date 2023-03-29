@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -49,10 +49,11 @@ import { UserRole } from '../../api/common/types';
 import { gotDataSet } from '../../store/gotData/actionCreators';
 import { errorMessageSet } from '../../store/errorMessage/actionCreators';
 import { DEFAULT_AVATAR_URL, VALUE_NOT_SET } from '../../utils/constants';
-import { EditPhotoUrlModal } from '../EditPhotoUrlModal/EditPhotoUrlModal';
 import { ConfirmationModal } from '../ConfirmationModal/ConfirmationModal';
 import { GotDataStatus } from '../../store/gotDataEnum';
 import { TextField } from '../../common/TextField/TextField';
+import { ImageInput } from '../../common/ImageInput/ImageInput';
+import { uploadImageAndGetUrl } from '../../utils/uploadImages';
 
 export const PersonProfile: FC = () => {
 	const gotData = useSelector<number>(getGotData);
@@ -70,6 +71,7 @@ export const PersonProfile: FC = () => {
 	const [parental, setParental] = useState<string>('');
 	const [date_birth, setDate_birth] = useState<string>('');
 	const [avatar, setAvatar] = useState<string>('');
+	const [avatarFilePath, setAvatarFilePath] = useState<string>('');
 
 	const [faculty_id, setFaculty_id] = useState<number>(-1);
 	const [specialty_id, setSpecialty_id] = useState<number>(-1);
@@ -94,8 +96,6 @@ export const PersonProfile: FC = () => {
 	const [faculties, setFaculties] = useState<Faculty[]>([]);
 	const [specialties, setSpecialties] = useState<Specialty[]>([]);
 	const [yearsEnter, setYearsEnter] = useState<number[]>([]);
-	const [showEditAvatarModal, setShowEditAvatarModal] =
-		useState<boolean>(false);
 
 	const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
 		useState<boolean>(false);
@@ -482,6 +482,27 @@ export const PersonProfile: FC = () => {
 			: VALUE_NOT_SET;
 	};
 
+	const processFileChosen = async (event: ChangeEvent) => {
+		resetError();
+		// @ts-ignore
+		setAvatarFilePath(event.target.value);
+		const errorText = 'Не вдалося встановити новий аватар';
+		try {
+			// @ts-ignore
+			const selectedFile = event.target.files[0];
+			const newAvatarUrl = await uploadImageAndGetUrl(
+				selectedFile,
+				surname + name
+			);
+			if (newAvatarUrl) {
+				setAvatar(newAvatarUrl);
+				console.log(newAvatarUrl);
+			} else dispatch(errorMessageSet(errorText));
+		} catch (e) {
+			dispatch(errorMessageSet(errorText));
+		}
+	};
+
 	return (
 		<>
 			<Button
@@ -498,17 +519,28 @@ export const PersonProfile: FC = () => {
 					<Col>
 						<div className='m-2 justify-content-center d-flex'>
 							{status !== Statuses.NEWCOMER && userRole === UserRole.HR ? (
-								<img
-									src={avatar ? avatar : DEFAULT_AVATAR_URL}
-									className='rounded'
-									style={{
-										maxWidth: '350px',
-										maxHeight: '350px',
-										cursor: 'pointer',
-									}}
-									alt='Аватар'
-									onClick={() => setShowEditAvatarModal(!showEditAvatarModal)}
-								/>
+								<>
+									<ImageInput
+										id='selectAvatarPersonProfile'
+										value={avatarFilePath}
+										onChange={(e) => processFileChosen(e)}
+									/>
+									<img
+										src={avatar ? avatar : DEFAULT_AVATAR_URL}
+										className='rounded'
+										style={{
+											maxWidth: '320px',
+											maxHeight: '320px',
+											cursor: 'pointer',
+										}}
+										alt='Аватар'
+										onClick={() =>
+											document
+												.getElementById('selectAvatarPersonProfile')!
+												.click()
+										}
+									/>
+								</>
 							) : null}
 							{status !== Statuses.NEWCOMER && userRole !== UserRole.HR ? (
 								<img
@@ -522,15 +554,6 @@ export const PersonProfile: FC = () => {
 								/>
 							) : null}
 						</div>
-						{userRole === UserRole.HR ? (
-							<EditPhotoUrlModal
-								title={'Посилання на аватар'}
-								setShow={setShowEditAvatarModal}
-								show={showEditAvatarModal}
-								photoUrl={avatar}
-								setPhotoUrl={setAvatar}
-							/>
-						) : null}
 						<h5
 							style={getStatusStyle(status)}
 							className='rounded mt-2 p-1 text-center ms-5 me-5'

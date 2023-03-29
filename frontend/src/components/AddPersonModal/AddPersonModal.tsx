@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Button, Col, Modal, Row } from 'react-bootstrap';
 import { Input } from '../../common/Input/Input';
 import { changeHandler } from '../../shared';
@@ -27,7 +27,8 @@ import { statusToNecessaryFields } from './fields';
 import { errorToString } from '../../utils/errorHandling';
 import { saveNewPerson } from '../../store/people/thunk';
 import { getErrorMessage } from '../../store/selectors';
-import { EditPhotoUrlModal } from '../EditPhotoUrlModal/EditPhotoUrlModal';
+import { uploadImageAndGetUrl } from '../../utils/uploadImages';
+import { ImageInput } from '../../common/ImageInput/ImageInput';
 
 const AddPersonModal: React.FC<{
 	isShown: boolean;
@@ -41,6 +42,7 @@ const AddPersonModal: React.FC<{
 	const [parental, setParental] = useState<string>('');
 	const [date_birth, setDate_birth] = useState<string>('');
 	const [avatar, setAvatar] = useState<string>('');
+	const [avatarFilePath, setAvatarFilePath] = useState<string>('');
 
 	const [facultyId, setFacultyId] = useState<number>(-1);
 	const [specialtyId, setSpecialtyId] = useState<number>(-1);
@@ -62,8 +64,6 @@ const AddPersonModal: React.FC<{
 	const [date_vysviata, setDate_vysviata] = useState<string>('');
 	const [date_poshanuvannia, setDate_poshanuvannia] = useState<string>('');
 	const [date_exclusion, setDate_exclusion] = useState<string>('');
-
-	const [showModal, setShowModal] = useState<boolean>(false);
 
 	const resetError = () => dispatch(errorMessageSet(''));
 	const resetFields = () => {
@@ -247,6 +247,27 @@ const AddPersonModal: React.FC<{
 		return statusToNecessaryFields.get(status)?.includes(field) as boolean;
 	};
 
+	const processFileChosen = async (event: ChangeEvent) => {
+		resetError();
+		// @ts-ignore
+		setAvatarFilePath(event.target.value);
+		const errorText = 'Не вдалося встановити аватар';
+		try {
+			// @ts-ignore
+			const selectedFile = event.target.files[0];
+			const newAvatarUrl = await uploadImageAndGetUrl(
+				selectedFile,
+				surname + name
+			);
+			if (newAvatarUrl) {
+				setAvatar(newAvatarUrl);
+				console.log(newAvatarUrl);
+			} else dispatch(errorMessageSet(errorText));
+		} catch (e) {
+			dispatch(errorMessageSet(errorText));
+		}
+	};
+
 	return (
 		<Modal className='modal-xl' show={isShown} onHide={onHide}>
 			<Modal.Header closeButton={true}>
@@ -258,26 +279,30 @@ const AddPersonModal: React.FC<{
 						<Col>
 							<div className='m-2 justify-content-center d-flex'>
 								{status !== Statuses.NEWCOMER && (
-									<img
-										src={avatar ? avatar : DEFAULT_AVATAR_URL}
-										className='rounded'
-										style={{
-											maxWidth: '350px',
-											maxHeight: '350px',
-											cursor: 'pointer',
-										}}
-										alt='Аватар'
-										onClick={() => setShowModal(!showModal)}
-									/>
+									<>
+										<ImageInput
+											id='selectAvatarAddPerson'
+											value={avatarFilePath}
+											onChange={(e) => processFileChosen(e)}
+										/>
+										<img
+											src={avatar ? avatar : DEFAULT_AVATAR_URL}
+											className='rounded'
+											style={{
+												maxWidth: '320px',
+												maxHeight: '320px',
+												cursor: 'pointer',
+											}}
+											alt='Аватар'
+											onClick={() =>
+												document
+													.getElementById('selectAvatarAddPerson')!
+													.click()
+											}
+										/>
+									</>
 								)}
 							</div>
-							<EditPhotoUrlModal
-								title={'Посилання на аватар'}
-								setShow={setShowModal}
-								show={showModal}
-								photoUrl={avatar}
-								setPhotoUrl={setAvatar}
-							/>
 							<h5
 								style={getStatusStyle(status)}
 								className='rounded mt-2 p-1 text-center ms-5 me-5'

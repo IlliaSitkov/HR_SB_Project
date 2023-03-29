@@ -1,5 +1,5 @@
 /*eslint-disable react-hooks/exhaustive-deps*/
-import React, { FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -24,7 +24,6 @@ import { dateToString } from '../../utils/dates';
 import { ErrorMessageBig } from '../../common/ErrorMessage/ErrorMessageBig';
 import { errorMessageSet } from '../../store/errorMessage/actionCreators';
 import { DEFAULT_PHOTO_URL, VALUE_NOT_SET } from '../../utils/constants';
-import { EditPhotoUrlModal } from '../EditPhotoUrlModal/EditPhotoUrlModal';
 import { ActivityManager } from '../ActivityManager/ActivityManager';
 // @ts-ignore
 import { getAllPeopleThunk } from '../../store/people/thunk';
@@ -35,6 +34,8 @@ import { ItemManager } from '../ItemManager/ItemManager';
 import './EventProfile.css';
 import { UserRole } from '../../api/common/types';
 import { TextField } from '../../common/TextField/TextField';
+import { uploadImageAndGetUrl } from '../../utils/uploadImages';
+import { ImageInput } from '../../common/ImageInput/ImageInput';
 
 export const EventProfile: FC = () => {
 	const gotEventData = useSelector<number>(getEventsData);
@@ -51,7 +52,7 @@ export const EventProfile: FC = () => {
 	const [description, setDescription] = useState<string>('');
 	const [category_id, setCategory_id] = useState<number>(-1);
 	const [photo, setPhoto] = useState<string>('');
-	const [showEditPhotoModal, setShowEditPhotoModal] = useState<boolean>(false);
+	const [photoFilePath, setPhotoFilePath] = useState<string>('');
 	const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
 		useState<boolean>(false);
 	const userRole = useSelector(getUserRole);
@@ -205,6 +206,27 @@ export const EventProfile: FC = () => {
 			: VALUE_NOT_SET;
 	};
 
+	const processFileChosen = async (event: ChangeEvent) => {
+		resetError();
+		// @ts-ignore
+		setPhotoFilePath(event.target.value);
+		const errorText = 'Не вдалося встановити фото';
+		try {
+			// @ts-ignore
+			const selectedFile = event.target.files[0];
+			const newPhotoUrl = await uploadImageAndGetUrl(
+				selectedFile,
+				name + (date_end ? new Date(date_end).getFullYear() : '')
+			);
+			if (newPhotoUrl) {
+				setPhoto(newPhotoUrl);
+				console.log(newPhotoUrl);
+			} else dispatch(errorMessageSet(errorText));
+		} catch (e) {
+			dispatch(errorMessageSet(errorText));
+		}
+	};
+
 	return (
 		<>
 			<Button
@@ -221,17 +243,28 @@ export const EventProfile: FC = () => {
 					<Col>
 						<div className='m-2 justify-content-center d-flex'>
 							{userRole === UserRole.HR ? (
-								<img
-									src={photo ? photo : DEFAULT_PHOTO_URL}
-									className='rounded'
-									style={{
-										maxWidth: '350px',
-										maxHeight: '350px',
-										cursor: 'pointer',
-									}}
-									alt='Фото'
-									onClick={() => setShowEditPhotoModal(!showEditPhotoModal)}
-								/>
+								<>
+									<ImageInput
+										id='selectPhotoEventProfile'
+										value={photoFilePath}
+										onChange={(e) => processFileChosen(e)}
+									/>
+									<img
+										src={photo ? photo : DEFAULT_PHOTO_URL}
+										className='rounded'
+										style={{
+											maxWidth: '320px',
+											maxHeight: '320px',
+											cursor: 'pointer',
+										}}
+										alt='Фото'
+										onClick={() =>
+											document
+												.getElementById('selectPhotoEventProfile')!
+												.click()
+										}
+									/>
+								</>
 							) : (
 								<img
 									src={photo ? photo : DEFAULT_PHOTO_URL}
@@ -244,15 +277,6 @@ export const EventProfile: FC = () => {
 								/>
 							)}
 						</div>
-						{userRole === UserRole.HR ? (
-							<EditPhotoUrlModal
-								title={'Посилання на фото'}
-								setShow={setShowEditPhotoModal}
-								show={showEditPhotoModal}
-								photoUrl={photo}
-								setPhotoUrl={setPhoto}
-							/>
-						) : null}
 					</Col>
 					<Col className='d-flex'>
 						<div className='border-secondary border border-1 p-2 rounded m-2 flex-fill'>
