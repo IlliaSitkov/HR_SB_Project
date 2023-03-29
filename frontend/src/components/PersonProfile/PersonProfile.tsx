@@ -369,7 +369,7 @@ export const PersonProfile: FC = () => {
 		addFieldIfNeeded(p, role, 'role');
 		addFieldIfNeeded(
 			p,
-			date_fill_form === '' ? null : new Date(date_vysviata),
+			date_vysviata === '' ? null : new Date(date_vysviata),
 			'date_vysviata'
 		);
 	};
@@ -615,14 +615,16 @@ export const PersonProfile: FC = () => {
 					<Col className='d-flex'>
 						<div className='border-secondary border border-1 p-2 rounded m-2 flex-fill'>
 							<h6 className='text-center'>Дані в СБ</h6>
-							<Input
-								id='about'
-								placeholder={'Введіть опис...'}
-								type='text'
-								onChange={changeHandler(setAbout, resetError)}
-								value={about}
-								label='Опис'
-							/>
+							<div>
+								<label htmlFor='about'>Опис</label>
+								<textarea
+									className='form-control'
+									placeholder='Введіть опис...'
+									id='about'
+									value={about}
+									onChange={changeHandler(setAbout, resetError)}
+								/>
+							</div>
 							{status !== Statuses.NEWCOMER ? (
 								<Select
 									id='selectParent'

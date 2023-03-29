@@ -25,7 +25,6 @@ export const PersonItem: FC<{ person: Person }> = ({ person }) => {
 				<Card.Text style={{ background: status.color }} className='rounded'>
 					{status.ukr}
 				</Card.Text>
-				{person.email ? <Card.Text>{person.email}</Card.Text> : null}
 				{person.telegram ? <Card.Text>{person.telegram}</Card.Text> : null}
 				<Button variant='primary' onClick={showPersonDetails}>
 					Деталі

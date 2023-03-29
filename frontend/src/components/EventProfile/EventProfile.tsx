@@ -220,15 +220,16 @@ export const EventProfile: FC = () => {
 								label='Назва'
 								required={true}
 							/>
-							<Input
-								id='description'
-								placeholder={'Введіть опис...'}
-								type='text'
-								onChange={changeHandler(setDescription, resetError)}
-								value={description}
-								label='Опис'
-								required={false}
-							/>
+							<div>
+								<label htmlFor='description'>Опис</label>
+								<textarea
+									className='form-control'
+									placeholder='Введіть опис...'
+									id='description'
+									value={description}
+									onChange={changeHandler(setDescription, resetError)}
+								/>
+							</div>
 							<Input
 								id='dateStart'
 								type='date'

@@ -13,7 +13,7 @@ export const ActivityPersonDropdownItem = ({
 		<Dropdown.Item className='show-on-hover' onClick={onClick}>
 			<div className='d-flex justify-content-between gap-2 align-items-center'>
 				<div>
-					{person.name} {person.surname}
+					{person.surname} {person.name}
 				</div>
 				<div className='visible-on-hover'>
 					<button className='empty'>{plusIcon(16, 'blue')}</button>

@@ -119,12 +119,15 @@ export const CreateEventModal = ({
 						onChange={changeHandler(setName, resetError)}
 						required={true}
 					/>
-					<Input
-						label='Опис'
-						type='text'
-						value={description}
-						onChange={changeHandler(setDescription)}
-					/>
+					<div>
+						<label htmlFor='description'>Опис</label>
+						<textarea
+							className='form-control'
+							id='description'
+							value={description}
+							onChange={changeHandler(setDescription)}
+						/>
+					</div>
 					<Input
 						label='Дата початку'
 						type='date'
@@ -165,7 +168,7 @@ export const CreateEventModal = ({
 				<ErrorMessage message={error} />
 			</Modal.Body>
 			<Modal.Footer>
-				<Button onClick={toggleShow} className='btn-danger'>
+				<Button onClick={toggleShow} className='btn-secondary'>
 					Скасувати
 				</Button>
 				<Button onClick={create}>Створити</Button>

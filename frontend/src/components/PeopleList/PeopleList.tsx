@@ -55,7 +55,6 @@ export const PeopleList: FC = () => {
 		sT = sT.toLowerCase();
 		return (
 			getFullName(person).toLowerCase().includes(sT) ||
-			person.email?.toLowerCase().includes(sT) ||
 			person.telegram?.toLowerCase().includes(sT)
 		);
 	};

@@ -3,7 +3,7 @@ import { Input } from '../../common/Input/Input';
 import { ItemsContext } from '../ItemManager/ItemManager';
 import { changeHandler } from '../../shared';
 import { ErrorMessage } from '../../common/ErrorMessage/ErrorMessage';
-import { createPerson, Person, Statuses } from '../../api/person';
+import { createPersonFromJoinForm, Person, Statuses } from '../../api/person';
 import FacultySelect from '../common/FacultySelect';
 import SpecialtySelect from '../common/SpecialtySelect';
 import YearSelect from '../common/YearSelect';
@@ -49,7 +49,7 @@ const JoinForm: React.FC<{}> = () => {
 				status: Statuses.NEWCOMER,
 			};
 			// @ts-ignore
-			await createPerson(person);
+			await createPersonFromJoinForm(person);
 			// refresh();
 			navigate('/profile', { replace: true });
 		} catch (e) {
@@ -153,14 +153,16 @@ const JoinForm: React.FC<{}> = () => {
 				className='d-flex align-items-center gap-1 mb-2 input-group'
 				style={{ maxWidth: '350px' }}
 			>
-				<Input
+				<label htmlFor='about'>
+					Декілька речень про себе. Чим любиш займатися? Що тебе цікавить в СБ?
+				</label>
+				<textarea
+					className='form-control'
 					placeholder={placeholder}
-					style={{ width: '100%' }}
-					type='text'
-					onChange={changeHandler(setAbout, resetError)}
 					id='about'
 					value={about}
-					label='Декілька речень про себе. Чим любиш займатися? Що тебе цікавить в СБ?'
+					onChange={changeHandler(setAbout, resetError)}
+					style={{ width: '100%' }}
 				/>
 			</div>
 			<ErrorMessage message={error} />

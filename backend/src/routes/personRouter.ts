@@ -41,7 +41,7 @@ personRouter.route('/')
         })
     )
     .post(
-        // ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
+        ...authMiddleware(RoleEnum.HR),
         statusValidator({
             statusSchema,
             NEWCOMER: newcomerCreateSchema,
@@ -49,6 +49,20 @@ personRouter.route('/')
             BRATCHYK: bratchykCreateSchema,
             POSHANOVANYI: poshanovanyiCreateSchema,
             EX_BRATCHYK: exBratchykCreateSchema
+        }),
+        asyncHandler(async (req: Request, res: Response) => {
+            const personDTO = await personService.checkAndFormatPersonData(req.body);
+            const newPerson = await personService.createPerson(personDTO);
+            res.json(newPerson);
+        })
+    );
+
+personRouter.route('/join')
+    .post(
+        ...authMiddleware(),
+        statusValidator({
+            statusSchema,
+            NEWCOMER: newcomerCreateSchema
         }),
         asyncHandler(async (req: Request, res: Response) => {
             const personDTO = await personService.checkAndFormatPersonData(req.body);

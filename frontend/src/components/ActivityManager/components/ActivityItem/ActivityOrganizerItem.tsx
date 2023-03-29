@@ -16,7 +16,7 @@ import { ErrorMessage } from '../../../../common/ErrorMessage/ErrorMessage';
 import { changeHandler } from '../../../../shared';
 import { fetchEventActivitiesThunk } from '../../../../store/eventActivities/thunk';
 import { useDispatch } from 'react-redux';
-import { getFullName } from '../../../../api/person';
+import { useNavigate } from 'react-router-dom';
 
 export const ActivityOrganizerItem = ({ activity }: { activity: Activity }) => {
 	const dispatch = useDispatch();
@@ -29,6 +29,12 @@ export const ActivityOrganizerItem = ({ activity }: { activity: Activity }) => {
 	const [position, setPosition] = useState(activity.position);
 	const [contribution, setContribution] = useState(activity.contribution);
 	const [hours, setHours] = useState(activity.hours);
+
+	const navigate = useNavigate();
+
+	const goToPersonProfile = () => {
+		navigate(`/members/${activity.person_id}`, { replace: true });
+	};
 
 	const toggleEdit = () => {
 		setError('');
@@ -89,32 +95,37 @@ export const ActivityOrganizerItem = ({ activity }: { activity: Activity }) => {
 			<div className='show-on-hover item-card d-flex gap-2 align-items-center'>
 				<div>
 					<div className='activity-card-grid activity-card-grid-header'>
-						<div>Імʼя та прізвище</div>
+						<div>Прізвище та ім'я</div>
 						<div>Посада</div>
 						<div>Внесок</div>
 						<div>Години</div>
 					</div>
 					<div className='activity-card-grid'>
-						<Input
-							type='text'
-							value={getFullName(activity.person)}
-							disabled={true}
-						/>
-						<Input
-							placeholder='Посада учасника'
-							refCallback={refCallback}
-							disabled={!edit}
-							type='text'
-							onChange={changeHandler(setPosition, () => setError(''))}
-							value={position}
-						/>
-						<Input
-							placeholder='Внесок учасника'
-							disabled={!edit}
-							type='text'
-							onChange={changeHandler(setContribution, () => setError(''))}
-							value={contribution}
-						/>
+						<div className='align-self-center ms-2'>
+							<button className='link-button' onClick={goToPersonProfile}>
+								{activity.person.surname + ' ' + activity.person.name}
+							</button>
+						</div>
+						<div>
+							<textarea
+								className='form-control'
+								placeholder='Посада людини'
+								id='position'
+								value={position}
+								disabled={!edit}
+								onChange={changeHandler(setPosition, () => setError(''))}
+							/>
+						</div>
+						<div>
+							<textarea
+								className='form-control'
+								placeholder='Внесок людини'
+								id='contribution'
+								value={contribution}
+								disabled={!edit}
+								onChange={changeHandler(setContribution, () => setError(''))}
+							/>
+						</div>
 						<Input
 							placeholder='Кількість годин стажування'
 							min={0}

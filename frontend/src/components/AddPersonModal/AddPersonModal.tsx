@@ -401,15 +401,16 @@ const AddPersonModal: React.FC<{
 									statusId={statusId}
 									isRequired={true}
 								/>
-								<Input
-									id='about'
-									placeholder={'Введіть опис...'}
-									type='text'
-									onChange={changeHandler(setAbout, resetError)}
-									value={about}
-									label='Опис'
-									required={isRequired('about')}
-								/>
+								<div>
+									<label htmlFor='about'>Опис</label>
+									<textarea
+										className='form-control'
+										placeholder='Введіть опис...'
+										id='about'
+										value={about}
+										onChange={changeHandler(setAbout, resetError)}
+									/>
+								</div>
 								{status !== Statuses.NEWCOMER && (
 									<ParentSelect
 										setParentId={setParentId}
@@ -483,7 +484,7 @@ const AddPersonModal: React.FC<{
 				/>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button onClick={onHide} className='btn-danger'>
+				<Button onClick={onHide} className='btn-secondary'>
 					Скасувати
 				</Button>
 				<Button onClick={createP}>Створити</Button>

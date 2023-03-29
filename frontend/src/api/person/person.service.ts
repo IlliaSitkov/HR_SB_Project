@@ -44,6 +44,12 @@ export const createPerson = async (person: Person): Promise<Person> => {
 	return (await axios.post(url, person)).data;
 };
 
+export const createPersonFromJoinForm = async (
+	person: Person
+): Promise<Person> => {
+	return (await axios.post(url + '/join', person)).data;
+};
+
 export const deletePerson = async (id: number): Promise<Person> => {
 	return (await axios.delete(urlById(id))).data;
 };
@@ -78,10 +84,3 @@ export const syncBirthdays = async () => {
 	console.log(response);
 	return response;
 };
-
-/*export const getAllRoles = async (): Promise<string[]> => {
-	const data = (await axios.get(url + '/roles')).data;
-	console.log('Got roles: ');
-	console.log(data);
-	return data;
-};*/
