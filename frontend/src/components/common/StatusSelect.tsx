@@ -3,7 +3,7 @@ import { changeHandler } from '../../shared';
 import { Select } from '../../common/Select/SelectComponent';
 import { statusesArray } from '../../api/person';
 
-const FacultySelect: React.FC<{
+const StatusSelect: React.FC<{
 	setStatusId: Function;
 	statusId: number;
 	isRequired?: boolean;
@@ -13,7 +13,7 @@ const FacultySelect: React.FC<{
 			id='selectStatus'
 			noneSelectedOption={true}
 			value={statusId}
-			label='Роль'
+			label='Статус'
 			onChange={changeHandler(setStatusId)}
 			data={statusesArray}
 			idSelector={(r) => r.id}
@@ -23,4 +23,4 @@ const FacultySelect: React.FC<{
 	</div>
 );
 
-export default FacultySelect;
+export default StatusSelect;

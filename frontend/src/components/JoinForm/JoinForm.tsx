@@ -18,6 +18,7 @@ const JoinForm: React.FC<{}> = () => {
 	const email = currentAccount.username;
 
 	const [name, setName] = useState<string>('');
+	const [parental, setParental] = useState<string>('');
 	const [surname, setSurname] = useState<string>('');
 	const [facultyId, setFacultyId] = useState<number>(0);
 	const [specialtyId, setSpecialtyId] = useState<number>(0);
@@ -35,6 +36,7 @@ const JoinForm: React.FC<{}> = () => {
 			await createFunc({ name });
 			const person: Person = {
 				name,
+				parental,
 				surname,
 				faculty_id: facultyId,
 				specialty_id: specialtyId,
@@ -66,6 +68,20 @@ const JoinForm: React.FC<{}> = () => {
 					placeholder={placeholder}
 					style={{ width: '100%' }}
 					type='text'
+					onChange={changeHandler(setSurname, resetError)}
+					id='surname'
+					value={surname}
+					label='Прізвище'
+				/>
+			</div>
+			<div
+				className='d-flex align-items-center gap-1 mb-2 input-group'
+				style={{ maxWidth: '350px' }}
+			>
+				<Input
+					placeholder={placeholder}
+					style={{ width: '100%' }}
+					type='text'
 					onChange={changeHandler(setName, resetError)}
 					id='name'
 					value={name}
@@ -80,10 +96,10 @@ const JoinForm: React.FC<{}> = () => {
 					placeholder={placeholder}
 					style={{ width: '100%' }}
 					type='text'
-					onChange={changeHandler(setSurname, resetError)}
-					id='surname'
-					value={surname}
-					label='Прізвище'
+					onChange={changeHandler(setParental, resetError)}
+					id='parental'
+					value={parental}
+					label='По батькові'
 				/>
 			</div>
 			<div
@@ -115,7 +131,7 @@ const JoinForm: React.FC<{}> = () => {
 					style={{ width: '100%' }}
 					id='email'
 					value={email}
-					label='Email'
+					label='Корпоративна пошта'
 				/>
 			</div>
 			<div
@@ -129,7 +145,7 @@ const JoinForm: React.FC<{}> = () => {
 					onChange={changeHandler(setTelegram, resetError)}
 					id='telegram'
 					value={telegram}
-					label='Telegram'
+					label='Телеграм'
 				/>
 			</div>
 			<div
@@ -143,7 +159,7 @@ const JoinForm: React.FC<{}> = () => {
 					onChange={changeHandler(setAbout, resetError)}
 					id='about'
 					value={about}
-					label='Про себе'
+					label='Декілька речень про себе. Чим любиш займатися? Що тебе цікавить в СБ?'
 				/>
 			</div>
 			<ErrorMessage message={error} />

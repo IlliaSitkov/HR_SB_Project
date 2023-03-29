@@ -34,14 +34,13 @@ const personService = container.get<PersonService>(PersonService);
 // @route GET api/people
 personRouter.route('/')
     .get(
-        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
+        ...authMiddleware(RoleEnum.HR),
         asyncHandler(async (req: Request, res: Response) => {
             const people = await personService.getPeople();
             res.json(people);
         })
     )
     .post(
-        /*authorize()*/
         // ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         statusValidator({
             statusSchema,
@@ -89,7 +88,6 @@ personRouter.route('/nearestBirthdays')
 // @route  GET api/people/:id
 personRouter.route('/:id')
     .get(
-        /*authorize()*/
         ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         requestValidator(idSchema, 'params'),
         asyncHandler(async (req: Request, res: Response) => {
@@ -98,7 +96,6 @@ personRouter.route('/:id')
         })
     )
     .patch(
-        /*authorize()*/
         ...authMiddleware(RoleEnum.HR),
         requestValidator(idSchema, 'params'),
         statusValidator({
@@ -116,7 +113,6 @@ personRouter.route('/:id')
         })
     )
     .delete(
-        /*authorize()*/
         ...authMiddleware(RoleEnum.HR),
         requestValidator(idSchema, 'params'),
         asyncHandler(async (req: Request, res: Response) => {
@@ -128,7 +124,6 @@ personRouter.route('/:id')
 // @route  GET api/people/:id/status
 personRouter.route('/:id/status')
     .put(
-        /*authorize()*/
         ...authMiddleware(RoleEnum.HR),
         requestValidator(idSchema, 'params'),
         oldStatusValidator({
