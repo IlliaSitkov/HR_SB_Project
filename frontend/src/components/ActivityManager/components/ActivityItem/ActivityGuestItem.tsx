@@ -1,14 +1,21 @@
 import React from 'react';
 import { Activity, deleteActivity } from '../../../../api/activity';
-import { Input } from '../../../../common/Input/Input';
 import './ActivityItem.css';
-import { binIcon } from '../../../../common/icons/icons';
 import { fetchEventActivitiesThunk } from '../../../../store/eventActivities/thunk';
-import { useDispatch } from 'react-redux';
-import { getFullName } from '../../../../api/person';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { getUserRole } from '../../../../store/selectors';
+import { UserRole } from '../../../../api/common/types';
+import { binIcon } from '../../../../common/icons/icons';
 
 export const ActivityGuestItem = ({ activity }: { activity: Activity }) => {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const userRole = useSelector(getUserRole);
+
+	const goToPersonProfile = () => {
+		navigate(`/members/${activity.person_id}`, { replace: true });
+	};
 
 	const deleteAct = async () => {
 		try {
@@ -23,19 +30,21 @@ export const ActivityGuestItem = ({ activity }: { activity: Activity }) => {
 		<div className='show-on-hover item-card d-flex align-items-center justify-content-between'>
 			<div>
 				<div className='activity-card-grid-header'>
-					<div>Імʼя та прізвище</div>
+					<div>Прізвище та ім'я</div>
 				</div>
-				<Input
-					type='text'
-					value={getFullName(activity.person)}
-					disabled={true}
-				/>
+				<div className='p-2'>
+					<button className='link-button' onClick={goToPersonProfile}>
+						{activity.person.surname + ' ' + activity.person.name}
+					</button>
+				</div>
 			</div>
-			<div className='visible-on-hover'>
-				<button onClick={deleteAct} className='empty bin'>
-					{binIcon(24, 'red')}
-				</button>
-			</div>
+			{userRole === UserRole.HR ? (
+				<div className='visible-on-hover'>
+					<button onClick={deleteAct} className='empty bin'>
+						{binIcon(24, 'red')}
+					</button>
+				</div>
+			) : null}
 		</div>
 	);
 };

@@ -20,9 +20,7 @@ import { errorToString } from '../../utils/errorHandling';
 export function saveNewPerson(person: Person, cb?: (p: Person) => void) {
 	return async function saveNewPersonThunk(dispatch: any, getState: any) {
 		try {
-			console.log('adding person');
 			const response = await createPerson(person);
-			console.log('added: ' + response);
 			dispatch(personAdded(response));
 			if (cb !== undefined) {
 				cb(response);

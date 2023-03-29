@@ -21,6 +21,7 @@ export const Input: FC<{
 	refCallback?: Function;
 	min?: number;
 	max?: number;
+	accept?: string;
 }> = ({
 	type,
 	onChange,
@@ -36,6 +37,7 @@ export const Input: FC<{
 	refCallback,
 	min,
 	max,
+	accept,
 }) => {
 	const inputRef = useRef(null);
 
@@ -72,6 +74,7 @@ export const Input: FC<{
 				max={max}
 				autoComplete='off'
 				style={inputStyle}
+				accept={accept}
 			/>
 		</div>
 	);

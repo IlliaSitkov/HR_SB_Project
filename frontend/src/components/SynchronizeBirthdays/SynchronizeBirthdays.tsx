@@ -24,14 +24,15 @@ export const SynchronizeBirthdaysButton = () => {
 	};
 
 	return (
-		<div className='d-flex flex-column justify-content-center sync-birthdays'>
+		<div className='d-flex flex-column justify-content-center sync-birthdays ms-3'>
+			<p>Зберегти дні народження братчиків в календар Google-акаунту СБ:</p>
 			<Button
 				disabled={load}
 				onClick={() => handler()}
 				style={{ fontFamily: '"Playfair Display", serif' }}
-				className='mb-2 btn-lg sync-button'
+				className='mb-2 btn-lg sync-button align-self-center'
 			>
-				Синхронізувати усе в календар
+				Синхронізувати
 			</Button>
 			<Alert
 				show={showErrorAlert}

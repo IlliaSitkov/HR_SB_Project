@@ -8,23 +8,23 @@ export enum Statuses {
 
 export const statusesColorful = {
 	NEWCOMER: {
-		ukr: 'Новенький',
+		ukr: 'Новенький / Новенька',
 		color: '#b8e4f9',
 	},
 	MALIUK: {
-		ukr: 'Малюк',
+		ukr: 'Малюк / Малючка',
 		color: '#bdf7e4',
 	},
 	BRATCHYK: {
-		ukr: 'Братчик',
+		ukr: 'Братчик / Братчиця',
 		color: '#e9c2f2',
 	},
 	POSHANOVANYI: {
-		ukr: 'Пошанований',
+		ukr: 'Пошанований / Пошанована',
 		color: '#f0d1a8',
 	},
 	EX_BRATCHYK: {
-		ukr: 'Виключений братчик',
+		ukr: 'Виключений братчик / Виключена братчиця',
 		color: '#fcb9d6',
 	},
 };
@@ -68,27 +68,27 @@ export const getStatusStyle = (status: string | null = null) => {
 export const statusesArray = [
 	{
 		id: 1,
-		name: 'Новенький',
+		name: 'Новенький / Новенька',
 		val: Statuses.NEWCOMER,
 	},
 	{
 		id: 2,
-		name: 'Малюк',
+		name: 'Малюк / Малючка',
 		val: Statuses.MALIUK,
 	},
 	{
 		id: 3,
-		name: 'Братчик',
+		name: 'Братчик / Братчиця',
 		val: Statuses.BRATCHYK,
 	},
 	{
 		id: 4,
-		name: 'Пошанований',
+		name: 'Пошанований / Пошанована',
 		val: Statuses.POSHANOVANYI,
 	},
 	{
 		id: 5,
-		name: 'Виключений братчик',
+		name: 'Виключений братчик / Виключена братчиця',
 		val: Statuses.EX_BRATCHYK,
 	},
 ];

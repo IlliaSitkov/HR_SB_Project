@@ -39,7 +39,6 @@ statusToNecessaryFields.set(Statuses.BRATCHYK, [
 	'status',
 	'dateBirth',
 	'telephone',
-	'role',
 	'parent',
 	'dateVysviata',
 ]);
@@ -79,6 +78,7 @@ statusToOptionalFields.set(Statuses.BRATCHYK, [
 	'avatar',
 	'facebook',
 	'about',
+	'role',
 ]);
 statusToOptionalFields.set(Statuses.POSHANOVANYI, [
 	'parental',

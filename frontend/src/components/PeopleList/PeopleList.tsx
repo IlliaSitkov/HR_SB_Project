@@ -15,11 +15,13 @@ import { Generation, undefinedGeneration } from '../../api/generation';
 import { DropdownWithCheckboxes } from '../../common/DropdownWithCheckboxes/DropdownWithCheckboxes';
 import { getAllGenerations } from '../../api/generation/generation.service';
 import { VALUE_NOT_SET } from '../../utils/constants';
-import { getGotData } from '../../store/selectors';
+import { getGotData, getUserRole } from '../../store/selectors';
 import { gotDataSet } from '../../store/gotData/actionCreators';
 import AddPersonModal from '../AddPersonModal/AddPersonModal';
 import { Circles } from 'react-loader-spinner';
 import { GotDataStatus } from '../../store/gotDataEnum';
+import { comparePeople } from '../../utils/comparators';
+import { UserRole } from '../../api/common/types';
 
 export const getValuesOfChosenCheckboxes = (name: string) => {
 	const checkboxes: NodeListOf<any> = document.getElementsByName(name);
@@ -48,6 +50,7 @@ export const PeopleList: FC = () => {
 		Array<Generation>
 	>([]);
 	const [isPersonAddShown, setIsPersonAddShown] = useState<boolean>(false);
+	const userRole = useSelector(getUserRole);
 
 	const suitsSearch = (person: Person) => {
 		let sT = searchText.trim();
@@ -55,7 +58,6 @@ export const PeopleList: FC = () => {
 		sT = sT.toLowerCase();
 		return (
 			getFullName(person).toLowerCase().includes(sT) ||
-			person.email?.toLowerCase().includes(sT) ||
 			person.telegram?.toLowerCase().includes(sT)
 		);
 	};
@@ -103,9 +105,9 @@ export const PeopleList: FC = () => {
 	};
 
 	const people = useSelector((state: any) =>
-		state.people.filter(
-			(person: Person) => suitsSearch(person) && suitsFilter(person)
-		)
+		state.people
+			.filter((person: Person) => suitsSearch(person) && suitsFilter(person))
+			.sort(comparePeople)
 	);
 
 	const dispatch = useDispatch();
@@ -196,19 +198,23 @@ export const PeopleList: FC = () => {
 
 	return (
 		<>
-			<AddPersonModal
-				isShown={isPersonAddShown}
-				onHide={() => setIsPersonAddShown(false)}
-			/>
 			<h2 className='text-center'>Люди СБ</h2>
-			<Button
-				variant='primary'
-				onClick={addPerson}
-				id='addPerson'
-				className='ms-4 m-2 align-self-start'
-			>
-				Додати людину
-			</Button>
+			{userRole === UserRole.HR ? (
+				<>
+					<AddPersonModal
+						isShown={isPersonAddShown}
+						onHide={() => setIsPersonAddShown(false)}
+					/>
+					<Button
+						variant='primary'
+						onClick={addPerson}
+						id='addPerson'
+						className='ms-4 m-2 align-self-start'
+					>
+						Додати людину
+					</Button>
+				</>
+			) : null}
 			<SearchBar
 				searchText={searchText}
 				setSearchText={setSearchText}
@@ -264,11 +270,17 @@ export const PeopleList: FC = () => {
 					/>
 				</div>
 			) : (
-				<Row xs={1} sm={2} md={4} lg={5} className='m-2'>
+				<Row
+					xs={1}
+					sm={2}
+					md={4}
+					lg={5}
+					className='m-2 mb-5 justify-content-center'
+				>
 					{people.map((person: Person) => (
 						<Col
 							className='d-flex'
-							style={{ minWidth: '280px' }}
+							style={{ minWidth: '280px', maxWidth: '330px' }}
 							key={person.id}
 						>
 							<PersonItem person={person} />

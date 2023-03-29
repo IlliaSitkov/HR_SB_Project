@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { Input } from '../../common/Input/Input';
 import { changeHandler } from '../../shared';
@@ -11,9 +11,13 @@ import {
 } from '../../api/category';
 import './CreateEventModal.css';
 import { ErrorMessage } from '../../common/ErrorMessage/ErrorMessage';
-import { createEvent } from '../../api/event_/event.service';
+import { createEvent, EventPostDto } from '../../api/event';
 import { useDispatch } from 'react-redux';
 import { getAllEventsThunk } from '../../store/events/thunk';
+import { uploadImageAndGetUrl } from '../../utils/uploadImages';
+import { errorMessageSet } from '../../store/errorMessage/actionCreators';
+import { ImageInput } from '../../common/ImageInput/ImageInput';
+import { DEFAULT_PHOTO_URL } from '../../utils/constants';
 
 export const CreateEventModal = ({
 	showModal,
@@ -25,6 +29,7 @@ export const CreateEventModal = ({
 	const [name, setName] = useState<string>('');
 	const [description, setDescription] = useState<string>('');
 	const [photoUrl, setPhotoUrl] = useState<string>('');
+	const [photoFilePath, setPhotoFilePath] = useState<string>('');
 
 	const [dateStart, setDateStart] = useState<Date>(new Date());
 	const [dateEnd, setDateEnd] = useState<Date>(new Date());
@@ -83,14 +88,19 @@ export const CreateEventModal = ({
 		if (!checkData()) return;
 		setError('');
 		try {
-			await createEvent({
+			const event: EventPostDto = {
 				name: name!,
-				description,
 				category_id: categoryId,
 				date_end: dateEnd!,
 				date_start: dateStart!,
-				photo: photoUrl,
-			});
+			};
+			if (description !== '') {
+				event.description = description;
+			}
+			if (photoUrl !== '') {
+				event.photo = photoUrl;
+			}
+			await createEvent(event);
 			dispatch(getAllEventsThunk as any);
 			toggleShow();
 		} catch (e) {
@@ -100,6 +110,27 @@ export const CreateEventModal = ({
 
 	const resetError = () => setError('');
 
+	const processFileChosen = async (event: ChangeEvent) => {
+		resetError();
+		// @ts-ignore
+		setPhotoFilePath(event.target.value);
+		const errorText = 'Не вдалося встановити фото';
+		try {
+			// @ts-ignore
+			const selectedFile = event.target.files[0];
+			const newPhotoUrl = await uploadImageAndGetUrl(
+				selectedFile,
+				name + (dateEnd ? new Date(dateEnd).getFullYear() : '')
+			);
+			if (newPhotoUrl) {
+				setPhotoUrl(newPhotoUrl);
+				console.log(newPhotoUrl);
+			} else dispatch(errorMessageSet(errorText));
+		} catch (e) {
+			dispatch(errorMessageSet(errorText));
+		}
+	};
+
 	return (
 		<Modal show={showModal} onHide={toggleShow}>
 			<Modal.Header closeButton={true}>
@@ -107,29 +138,55 @@ export const CreateEventModal = ({
 			</Modal.Header>
 			<Modal.Body>
 				<div className='gap-8'>
+					<div>
+						<ImageInput
+							id='selectPhotoNewEvent'
+							value={photoFilePath}
+							onChange={(e) => processFileChosen(e)}
+						/>
+						<img
+							src={photoUrl ? photoUrl : DEFAULT_PHOTO_URL}
+							className='rounded'
+							style={{
+								maxWidth: '320px',
+								maxHeight: '320px',
+								cursor: 'pointer',
+							}}
+							alt='Фото'
+							onClick={() =>
+								document.getElementById('selectPhotoNewEvent')!.click()
+							}
+						/>
+					</div>
 					<Input
 						label='Назва'
 						type='text'
 						value={name}
 						onChange={changeHandler(setName, resetError)}
+						required={true}
 					/>
-					<Input
-						label='Опис'
-						type='text'
-						value={description}
-						onChange={changeHandler(setDescription)}
-					/>
+					<div>
+						<label htmlFor='description'>Опис</label>
+						<textarea
+							className='form-control'
+							id='description'
+							value={description}
+							onChange={changeHandler(setDescription)}
+						/>
+					</div>
 					<Input
 						label='Дата початку'
 						type='date'
 						value={dateStart}
 						onChange={changeHandler(setDateStart, resetError)}
+						required={true}
 					/>
 					<Input
 						label='Дата закінчення'
 						type='date'
 						value={dateEnd}
 						onChange={changeHandler(setDateEnd, resetError)}
+						required={true}
 					/>
 					<ItemManager
 						selectedItem={categoryId}
@@ -141,22 +198,16 @@ export const CreateEventModal = ({
 						updateFunc={updateCategory}
 						deleteFunc={deleteCategory}
 						createFunc={createCategory}
-						selectTitle='Категорія події'
+						selectTitle='Категорія'
 						modalTitle='Усі категорії'
 						placeholder='Нова категорія'
-					/>
-					<Input
-						label='Посилання на фото'
-						placeholder='https://...'
-						type='text'
-						onChange={changeHandler(setPhotoUrl)}
-						value={photoUrl}
+						isRequired={true}
 					/>
 				</div>
 				<ErrorMessage message={error} />
 			</Modal.Body>
 			<Modal.Footer>
-				<Button onClick={toggleShow} className='btn-danger'>
+				<Button onClick={toggleShow} className='btn-secondary'>
 					Скасувати
 				</Button>
 				<Button onClick={create}>Створити</Button>

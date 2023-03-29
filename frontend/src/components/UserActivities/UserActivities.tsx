@@ -3,10 +3,12 @@ import React, { FC, useEffect, useState } from 'react';
 import { Activity, getActivitiesOfUser } from '../../api/activity';
 
 import './UserActivities.css';
+import { useNavigate } from 'react-router-dom';
 
 export const UserActivities: FC<{ personId: number }> = ({ personId }) => {
 	const [activities, setActivities] = useState<Activity[]>([]);
 	const [activityGroups, setActivityGroups] = useState<Activity[][]>([]);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		fetchData();
@@ -42,6 +44,10 @@ export const UserActivities: FC<{ personId: number }> = ({ personId }) => {
 		return activityGroups.map((g) => oneYearGroupRows(g));
 	};
 
+	const goToEventProfile = (eventId: number) => {
+		navigate(`/events/${eventId}`, { replace: true });
+	};
+
 	const oneYearGroupRows = (activitiesGroup: Activity[]) => {
 		return (
 			<tbody key={activitiesGroup[0].year}>
@@ -52,7 +58,14 @@ export const UserActivities: FC<{ personId: number }> = ({ personId }) => {
 				</tr>
 				{activitiesGroup.map((a) => (
 					<tr key={(a as any).person_id + ' ' + (a as any).event_id}>
-						<td>{a.event.name}</td>
+						<td>
+							<button
+								className='link-button'
+								onClick={(e) => goToEventProfile(a.event_id)}
+							>
+								{a.event.name}
+							</button>
+						</td>
 						<td>{a.position}</td>
 						<td>{a.contribution}</td>
 						<td>{a.hours}</td>
@@ -73,7 +86,7 @@ export const UserActivities: FC<{ personId: number }> = ({ personId }) => {
 	};
 
 	return (
-		<div>
+		<div className='activities'>
 			{activityGroups.length > 0 ? (
 				<table className='table'>
 					<thead>
@@ -94,7 +107,7 @@ export const UserActivities: FC<{ personId: number }> = ({ personId }) => {
 					</tbody>
 				</table>
 			) : (
-				<p>В учасника немає жодних активностей</p>
+				<p>У людини немає жодних активностей</p>
 			)}
 		</div>
 	);

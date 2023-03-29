@@ -12,50 +12,44 @@ export class ActivityService {
                        @inject(PersonService) private personService: PersonService) {
     }
 
-    getActivityByEventId = (event_id: number) => {
-        return this.activityRepository.getActivityByEventId(event_id);
+    getActivitiesByEventId = (event_id: number) => {
+        return this.activityRepository.getActivitiesByEventId(event_id);
     };
 
-    getActivityByPersonId = (person_id: number) => {
-        return this.activityRepository.getActivityByPersonId(person_id);
+    getActivitiesByPersonId = (person_id: number) => {
+        return this.activityRepository.getActivitiesByPersonId(person_id);
     };
 
     createActivity = async (activity: Activity) => {
         return this.activityRepository.createActivity(activity);
     };
 
-    updateActivity = async (person_id: number, event_id: number, activity: Activity) => {
-        return this.activityRepository.updateActivity(person_id, event_id, activity);
+    updateActivity = async (activity: Activity) => {
+        return this.activityRepository.updateActivity(activity);
     };
 
     checkAndFormatActivityDataPost = async (activityData: any) => {
         // check whether person exists
-        let person_id = activityData.person_id ?
+        const person_id = (activityData.person_id || activityData.person_id === 0) ?
             await this.personService.getPersonById(activityData.person_id) : undefined;
-        if(activityData.person_id === 0){
-            person_id = await this.personService.getPersonById(activityData.person_id);
-        }
-        if (person_id === undefined)
+        if (!person_id)
             {throw ApiError.badRequest('Людини з таким id не існує');}
         // check whether event exists
-        let event_id = activityData.event_id ?
+        const event_id = (activityData.event_id || activityData.event_id === 0) ?
             await this.eventService.getEventById(activityData.event_id) : undefined;
-        if(activityData.event_id === 0){
-            event_id = await this.eventService.getEventById(activityData.event_id);
-        }
-        if(event_id === undefined)
+        if(!event_id)
             {throw ApiError.badRequest('Події з таким id не існує');}
         const activity: Activity = {
             person_id: activityData.person_id,
             event_id: activityData.event_id,
-            hours: activityData.hours,
-            position: activityData.position,
-            contribution: activityData.contribution
+            hours: 0,
+            position: 'Учасник',
+            contribution: 'Організація події'
         };
         return activity;
     };
 
-    checkAndFormatActivityDataPatch = async (activityData: any) => {
+    checkAndFormatActivityDataPut = async (activityData: any) => {
         const activity: Activity = {
             person_id: activityData.person_id,
             event_id: activityData.event_id,
@@ -66,7 +60,7 @@ export class ActivityService {
         return activity;
     };
 
-    deleteActivityById = (person_id: number, event_id: number): Promise<Activity> => {
+    deleteActivityById = (person_id: number, event_id: number) => {
         return this.activityRepository.deleteActivity(person_id, event_id);
     };
 }

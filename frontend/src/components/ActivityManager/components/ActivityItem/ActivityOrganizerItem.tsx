@@ -15,28 +15,33 @@ import {
 import { ErrorMessage } from '../../../../common/ErrorMessage/ErrorMessage';
 import { changeHandler } from '../../../../shared';
 import { fetchEventActivitiesThunk } from '../../../../store/eventActivities/thunk';
-import { useDispatch } from 'react-redux';
-import { getFullName } from '../../../../api/person';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { UserRole } from '../../../../api/common/types';
+import { getUserRole } from '../../../../store/selectors';
 
 export const ActivityOrganizerItem = ({ activity }: { activity: Activity }) => {
 	const dispatch = useDispatch();
+	const userRole = useSelector(getUserRole);
 
 	const [edit, setEdit] = useState(false);
 	const [error, setError] = useState('');
 
-	const [inputRef, setInputRef] = useState<React.MutableRefObject<null>>();
+	const [inputRef] = useState<React.MutableRefObject<null>>();
 
 	const [position, setPosition] = useState(activity.position);
 	const [contribution, setContribution] = useState(activity.contribution);
 	const [hours, setHours] = useState(activity.hours);
 
+	const navigate = useNavigate();
+
+	const goToPersonProfile = () => {
+		navigate(`/members/${activity.person_id}`, { replace: true });
+	};
+
 	const toggleEdit = () => {
 		setError('');
 		setEdit(!edit);
-	};
-
-	const refCallback = (ref: React.MutableRefObject<null>) => {
-		setInputRef(ref);
 	};
 
 	useEffect(() => {
@@ -89,32 +94,39 @@ export const ActivityOrganizerItem = ({ activity }: { activity: Activity }) => {
 			<div className='show-on-hover item-card d-flex gap-2 align-items-center'>
 				<div>
 					<div className='activity-card-grid activity-card-grid-header'>
-						<div>Імʼя та прізвище</div>
+						<div>Прізвище та ім'я</div>
 						<div>Посада</div>
 						<div>Внесок</div>
 						<div>Години</div>
 					</div>
 					<div className='activity-card-grid'>
-						<Input
-							type='text'
-							value={getFullName(activity.person)}
-							disabled={true}
-						/>
-						<Input
-							placeholder='Посада учасника'
-							refCallback={refCallback}
-							disabled={!edit}
-							type='text'
-							onChange={changeHandler(setPosition, () => setError(''))}
-							value={position}
-						/>
-						<Input
-							placeholder='Внесок учасника'
-							disabled={!edit}
-							type='text'
-							onChange={changeHandler(setContribution, () => setError(''))}
-							value={contribution}
-						/>
+						<div className='align-self-center ms-2'>
+							<button className='link-button' onClick={goToPersonProfile}>
+								{activity.person.surname + ' ' + activity.person.name}
+							</button>
+						</div>
+						<div>
+							<textarea
+								className='form-control'
+								placeholder='Посада людини'
+								id='position'
+								value={position}
+								disabled={!edit}
+								onChange={changeHandler(setPosition, () => setError(''))}
+								style={{ background: 'white' }}
+							/>
+						</div>
+						<div>
+							<textarea
+								className='form-control'
+								placeholder='Внесок людини'
+								id='contribution'
+								value={contribution}
+								disabled={!edit}
+								onChange={changeHandler(setContribution, () => setError(''))}
+								style={{ background: 'white' }}
+							/>
+						</div>
 						<Input
 							placeholder='Кількість годин стажування'
 							min={0}
@@ -125,28 +137,30 @@ export const ActivityOrganizerItem = ({ activity }: { activity: Activity }) => {
 						/>
 					</div>
 				</div>
-				<div>
-					<div
-						className={`d-flex gap-1 ${
-							edit ? 'display-none' : 'visible-on-hover'
-						}`}
-					>
-						<button onClick={toggleEdit} className='empty pen'>
-							{penIcon(24, 'blue')}
-						</button>
-						<button onClick={deleteAct} className='empty bin'>
-							{binIcon(24, 'red')}
-						</button>
+				{userRole === UserRole.HR ? (
+					<div>
+						<div
+							className={`d-flex gap-1 ${
+								edit ? 'display-none' : 'visible-on-hover'
+							}`}
+						>
+							<button onClick={toggleEdit} className='empty pen'>
+								{penIcon(24, 'blue')}
+							</button>
+							<button onClick={deleteAct} className='empty bin'>
+								{binIcon(24, 'red')}
+							</button>
+						</div>
+						<div className={`d-flex gap-1 ${edit ? '' : 'display-none'}`}>
+							<button onClick={update} className='empty check'>
+								{checkIcon(28, '#31c410')}
+							</button>
+							<button onClick={closeEdit} className='empty bin'>
+								{crossIcon(20, 'red')}
+							</button>
+						</div>
 					</div>
-					<div className={`d-flex gap-1 ${edit ? '' : 'display-none'}`}>
-						<button onClick={update} className='empty check'>
-							{checkIcon(28, '#31c410')}
-						</button>
-						<button onClick={closeEdit} className='empty bin'>
-							{crossIcon(20, 'red')}
-						</button>
-					</div>
-				</div>
+				) : null}
 			</div>
 			<ErrorMessage message={error} />
 		</div>

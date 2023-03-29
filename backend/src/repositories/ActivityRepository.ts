@@ -31,16 +31,13 @@ export class ActivityRepository {
         }
     };
 
-    updateActivity = async (person_id: number, event_id: number, activity: Activity) => {
-        const act = await this.activityExists(person_id, event_id);
+    updateActivity = async (activity: Activity) => {
+        const act = await this.activityExists(activity.person_id, activity.event_id);
         try {
-            return await prisma.activity.update({
+            return await prisma.activity.updateMany({
                 where: {
-                    person_id_event_id:
-                        {
-                            person_id,
-                            event_id
-                        }
+                    person_id: activity.person_id,
+                    event_id: activity.event_id
                 },
                 data: {
                     hours: activity.hours ? activity.hours : act.hours,
@@ -49,57 +46,98 @@ export class ActivityRepository {
                 }
             });
         } catch (err) {
-            if (this.errorUtil.isUniqueConstraintViolation(err)) {
-                throw ApiError.badRequest('Ця активність вже існує');
-            } else {
-                throw ApiError.internal('Помилка при оновленні активності');
-            }
+            throw ApiError.internal('Помилка при оновленні активності');
         }
     };
 
     deleteActivity = async (person_id: number, event_id: number) => {
         try {
-            return await prisma.activity.delete({
+            return await prisma.activity.deleteMany({
                 where: {
-                    person_id_event_id:
-                        {
-                            person_id,
-                            event_id
-                        }
+                    person_id,
+                    event_id
                 }
             });
         } catch (err) {
             console.log(err);
             if (this.errorUtil.isNotFound(err)) {
-                throw ApiError.notFound(`Людина з id:${person_id} не має активності у події з id:${event_id}`);
+                return [];
             } else {
                 throw ApiError.internal('Помилка при видаленні активності');
             }
         }
     };
 
-    getActivityByEventId = async (event_id: number) => {
+    getActivitiesByEventId = async (event_id: number) => {
         try {
-            return await prisma.activity.findMany({
-                where: {event_id}
-            });
+            return await prisma.activity.findMany(
+                {
+                    where: {
+                        event_id
+                    },
+                    include: {
+                        person: {
+                            select: {
+                                name: true,
+                                parental: true,
+                                surname: true,
+                                status: true
+                            },
+                        },
+                        event: {
+                            select: {
+                                name: true,
+                                date_start: true
+                            }
+                        }
+                    },
+                    orderBy: {
+                        person: {
+                            surname: 'asc'
+                        }
+                    }
+                });
         } catch (e: any) {
             if (this.errorUtil.isNotFound(e)) {
-                throw ApiError.notFound(`Активності на події з id:${event_id} не знайдено`);
+                return [];
             } else {
                 throw ApiError.internal(`Помилка при отриманні активності на події`);
             }
         }
     };
 
-    getActivityByPersonId = async (person_id: number) => {
+    getActivitiesByPersonId = async (person_id: number) => {
         try {
-            return await prisma.activity.findMany({
-                where: {person_id}
-            });
+            return await prisma.activity.findMany(
+                {
+                    where: {
+                        person_id
+                    },
+                    include: {
+                        person: {
+                            select: {
+                                name: true,
+                                parental: true,
+                                surname: true,
+                                status: true
+                            },
+                        },
+                        event: {
+                            select: {
+                                name: true,
+                                date_start: true
+                            }
+                        }
+                    },
+                    orderBy: {
+                        event: {
+                            date_start: 'desc'
+                        }
+                    }
+                });
         } catch (e: any) {
             if (this.errorUtil.isNotFound(e)) {
-                throw ApiError.notFound(`Активності людини з id:${person_id} не знайдено`);
+                return [];
             } else {
                 throw ApiError.internal(`Помилка при отриманні активності людини`);
             }

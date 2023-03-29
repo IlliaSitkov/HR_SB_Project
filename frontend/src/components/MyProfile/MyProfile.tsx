@@ -161,6 +161,16 @@ export const MyProfile: FC = () => {
 								label='Опис'
 								id='about'
 							/>
+							<div>
+								<label htmlFor='about'>Опис</label>
+								<textarea
+									className='form-control'
+									id='about'
+									value={getFieldValue('about')}
+									disabled={true}
+									style={{ background: 'white' }}
+								/>
+							</div>
 							{person && person.status !== Statuses.NEWCOMER ? (
 								<TextField
 									value={

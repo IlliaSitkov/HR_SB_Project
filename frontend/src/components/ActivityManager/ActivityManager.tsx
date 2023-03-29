@@ -6,14 +6,18 @@ import {
 	getEventActivitiesWithOrganizers,
 	getPossibleGuests,
 	getPossibleOrganizers,
+	getUserRole,
 } from '../../store/selectors';
 import { ActivityOrganizerItem } from './components/ActivityItem/ActivityOrganizerItem';
 import { Activity } from '../../api/activity';
 import { ActivityGuestItem } from './components/ActivityItem/ActivityGuestItem';
 import { CreateEventModal } from '../CreateEvent/CreateEventModal';
+import { UserRole } from '../../api/common/types';
+import { useSelector } from 'react-redux';
 
 export const ActivityManager = ({ eventId }: { eventId: number }) => {
 	const [show, setShow] = useState(false);
+	const userRole = useSelector(getUserRole);
 
 	const toggleModal = () => {
 		setShow(!show);
@@ -26,11 +30,13 @@ export const ActivityManager = ({ eventId }: { eventId: number }) => {
 				<div className='col-12 col-lg-8 offset-lg-2'>
 					<div className='d-flex justify-content-between mb-3 align-items-center'>
 						<h4>Організатори</h4>
-						<AddEventPerson
-							buttonTitle='Додати учасника'
-							eventId={eventId}
-							eventPersonSelector={getPossibleOrganizers}
-						/>
+						{userRole === UserRole.HR ? (
+							<AddEventPerson
+								buttonTitle='Додати організатора'
+								eventId={eventId}
+								eventPersonSelector={getPossibleOrganizers}
+							/>
+						) : null}
 					</div>
 					<div>
 						<ActivitiesList
@@ -48,11 +54,13 @@ export const ActivityManager = ({ eventId }: { eventId: number }) => {
 				<div className='col-12 col-lg-8 offset-lg-2'>
 					<div className='d-flex justify-content-between mb-3 align-items-center'>
 						<h4>Запрошені гості</h4>
-						<AddEventPerson
-							buttonTitle='Додати гостя'
-							eventId={eventId}
-							eventPersonSelector={getPossibleGuests}
-						/>
+						{userRole === UserRole.HR ? (
+							<AddEventPerson
+								buttonTitle='Додати гостя'
+								eventId={eventId}
+								eventPersonSelector={getPossibleGuests}
+							/>
+						) : null}
 					</div>
 					<div>
 						<ActivitiesList

@@ -34,7 +34,6 @@ npm install
 cd ..
 # start services
 sudo cp backend/backend.service /etc/systemd/system/backend.service
-chmod +x backend/backend.sh
 sudo systemctl daemon-reload
 sudo systemctl enable backend
 sudo systemctl start backend

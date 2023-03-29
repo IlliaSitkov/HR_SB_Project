@@ -6,7 +6,6 @@ import { MyProfile } from '../components/MyProfile/MyProfile';
 import { PeopleList } from '../components/PeopleList/PeopleList';
 import { EventsList } from '../components/EventsList/EventsList';
 import NearestBirthdays from '../components/NearestBritdays/NearestBirthdays';
-import { ItemManagerDemo } from '../ItemManagerDemo';
 import {
 	AuthenticatedTemplate,
 	UnauthenticatedTemplate,
@@ -41,7 +40,7 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '/members/:memberId',
 				element: (
-					<PrivateRoute allowedRoles={[UserRole.HR]}>
+					<PrivateRoute allowedRoles={[UserRole.HR, UserRole.USER]}>
 						<PersonProfile />
 					</PrivateRoute>
 				),
@@ -49,7 +48,7 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '/members',
 				element: (
-					<PrivateRoute allowedRoles={[UserRole.HR]}>
+					<PrivateRoute allowedRoles={[UserRole.HR, UserRole.USER]}>
 						<PeopleList />
 					</PrivateRoute>
 				),
@@ -57,7 +56,7 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '/events/:eventId',
 				element: (
-					<PrivateRoute allowedRoles={[UserRole.HR]}>
+					<PrivateRoute allowedRoles={[UserRole.HR, UserRole.USER]}>
 						<EventProfile />
 					</PrivateRoute>
 				),
@@ -65,7 +64,7 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '/events',
 				element: (
-					<PrivateRoute allowedRoles={[UserRole.HR]}>
+					<PrivateRoute allowedRoles={[UserRole.HR, UserRole.USER]}>
 						<EventsList />
 					</PrivateRoute>
 				),
@@ -73,7 +72,9 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '/profile',
 				element: (
-					<PrivateRoute allowedRoles={[UserRole.USER, UserRole.HR]}>
+					<PrivateRoute
+						allowedRoles={[UserRole.HR, UserRole.USER, UserRole.NEWCOMER]}
+					>
 						<MyProfile />
 					</PrivateRoute>
 				),
@@ -90,14 +91,6 @@ export const routes: NonIndexRouteObject[] = [
 								</div>
 							</div>
 						</AuthenticatedTemplate>
-					</PrivateRoute>
-				),
-			},
-			{
-				path: '/items',
-				element: (
-					<PrivateRoute allowedRoles={[UserRole.HR]}>
-						<ItemManagerDemo />
 					</PrivateRoute>
 				),
 			},

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -6,10 +6,12 @@ import {
 	getGotData,
 	getPeople,
 	getPeoplePossibleParents,
+	getUserRole,
 } from '../../store/selectors';
 import {
 	getAllPeople,
 	getFullName,
+	getRoleUkr,
 	getStatusStyle,
 	getStatusUkr,
 	Person,
@@ -46,10 +48,12 @@ import {
 import { UserRole } from '../../api/common/types';
 import { gotDataSet } from '../../store/gotData/actionCreators';
 import { errorMessageSet } from '../../store/errorMessage/actionCreators';
-import { DEFAULT_AVATAR_URL } from '../../utils/constants';
-import { EditPhotoUrlModal } from '../EditPhotoUrlModal/EditPhotoUrlModal';
+import { DEFAULT_AVATAR_URL, VALUE_NOT_SET } from '../../utils/constants';
 import { ConfirmationModal } from '../ConfirmationModal/ConfirmationModal';
 import { GotDataStatus } from '../../store/gotDataEnum';
+import { TextField } from '../../common/TextField/TextField';
+import { ImageInput } from '../../common/ImageInput/ImageInput';
+import { uploadImageAndGetUrl } from '../../utils/uploadImages';
 
 export const PersonProfile: FC = () => {
 	const gotData = useSelector<number>(getGotData);
@@ -67,6 +71,7 @@ export const PersonProfile: FC = () => {
 	const [parental, setParental] = useState<string>('');
 	const [date_birth, setDate_birth] = useState<string>('');
 	const [avatar, setAvatar] = useState<string>('');
+	const [avatarFilePath, setAvatarFilePath] = useState<string>('');
 
 	const [faculty_id, setFaculty_id] = useState<number>(-1);
 	const [specialty_id, setSpecialty_id] = useState<number>(-1);
@@ -91,8 +96,6 @@ export const PersonProfile: FC = () => {
 	const [faculties, setFaculties] = useState<Faculty[]>([]);
 	const [specialties, setSpecialties] = useState<Specialty[]>([]);
 	const [yearsEnter, setYearsEnter] = useState<number[]>([]);
-	const [showEditAvatarModal, setShowEditAvatarModal] =
-		useState<boolean>(false);
 
 	const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
 		useState<boolean>(false);
@@ -118,6 +121,7 @@ export const PersonProfile: FC = () => {
 	//1 - fetched, user is HR
 	const [isHR, setIsHR] = useState<number>(-1);
 	const [userId, setUserId] = useState<number>(-1);
+	const userRole = useSelector(getUserRole);
 
 	const goBack = () => {
 		resetError();
@@ -369,7 +373,7 @@ export const PersonProfile: FC = () => {
 		addFieldIfNeeded(p, role, 'role');
 		addFieldIfNeeded(
 			p,
-			date_fill_form === '' ? null : new Date(date_vysviata),
+			date_vysviata === '' ? null : new Date(date_vysviata),
 			'date_vysviata'
 		);
 	};
@@ -451,6 +455,54 @@ export const PersonProfile: FC = () => {
 		}
 	};
 
+	const getFieldValue = (fieldName: string) => {
+		// @ts-ignore
+		return person && person[fieldName] ? person[fieldName] : VALUE_NOT_SET;
+	};
+
+	const getDeepFieldValue = (
+		parentFieldName: string,
+		childFieldName: string
+	) => {
+		return person &&
+			// @ts-ignore
+			person[parentFieldName] &&
+			// @ts-ignore
+			person[parentFieldName][childFieldName]
+			? // @ts-ignore
+			  person[parentFieldName][childFieldName]
+			: VALUE_NOT_SET;
+	};
+
+	const getDateFieldValue = (fieldName: string) => {
+		// @ts-ignore
+		return person && person[fieldName]
+			? // @ts-ignore
+			  new Date(person[fieldName]).toLocaleDateString()
+			: VALUE_NOT_SET;
+	};
+
+	const processFileChosen = async (event: ChangeEvent) => {
+		resetError();
+		// @ts-ignore
+		setAvatarFilePath(event.target.value);
+		const errorText = 'Не вдалося встановити новий аватар';
+		try {
+			// @ts-ignore
+			const selectedFile = event.target.files[0];
+			const newAvatarUrl = await uploadImageAndGetUrl(
+				selectedFile,
+				surname + name
+			);
+			if (newAvatarUrl) {
+				setAvatar(newAvatarUrl);
+				console.log(newAvatarUrl);
+			} else dispatch(errorMessageSet(errorText));
+		} catch (e) {
+			dispatch(errorMessageSet(errorText));
+		}
+	};
+
 	return (
 		<>
 			<Button
@@ -466,27 +518,42 @@ export const PersonProfile: FC = () => {
 				<Row xs={1} sm={1} md={2} lg={2} className='m-2'>
 					<Col>
 						<div className='m-2 justify-content-center d-flex'>
-							{status !== Statuses.NEWCOMER ? (
+							{status !== Statuses.NEWCOMER && userRole === UserRole.HR ? (
+								<>
+									<ImageInput
+										id='selectAvatarPersonProfile'
+										value={avatarFilePath}
+										onChange={(e) => processFileChosen(e)}
+									/>
+									<img
+										src={avatar ? avatar : DEFAULT_AVATAR_URL}
+										className='rounded'
+										style={{
+											maxWidth: '320px',
+											maxHeight: '320px',
+											cursor: 'pointer',
+										}}
+										alt='Аватар'
+										onClick={() =>
+											document
+												.getElementById('selectAvatarPersonProfile')!
+												.click()
+										}
+									/>
+								</>
+							) : null}
+							{status !== Statuses.NEWCOMER && userRole !== UserRole.HR ? (
 								<img
 									src={avatar ? avatar : DEFAULT_AVATAR_URL}
 									className='rounded'
 									style={{
 										maxWidth: '350px',
 										maxHeight: '350px',
-										cursor: 'pointer',
 									}}
 									alt='Аватар'
-									onClick={() => setShowEditAvatarModal(!showEditAvatarModal)}
 								/>
 							) : null}
 						</div>
-						<EditPhotoUrlModal
-							title={'Посилання на аватар'}
-							setShow={setShowEditAvatarModal}
-							show={showEditAvatarModal}
-							photoUrl={avatar}
-							setPhotoUrl={setAvatar}
-						/>
 						<h5
 							style={getStatusStyle(status)}
 							className='rounded mt-2 p-1 text-center ms-5 me-5'
@@ -499,37 +566,50 @@ export const PersonProfile: FC = () => {
 							<h6 className='text-center'>Загальні дані</h6>
 							<Input
 								id='surname'
-								placeholder={'Введіть прізвище...'}
 								type='text'
 								onChange={changeHandler(setSurname, resetError)}
 								value={surname}
 								label='Прізвище'
 								required={true}
+								disabled={userRole !== UserRole.HR}
+								inputStyle={{ background: 'white' }}
 							/>
 							<Input
 								id='name'
-								placeholder={'Введіть ім`я...'}
 								type='text'
 								onChange={changeHandler(setName, resetError)}
 								value={name}
 								label='Ім`я'
 								required={true}
+								disabled={userRole !== UserRole.HR}
+								inputStyle={{ background: 'white' }}
 							/>
 							<Input
 								id='parental'
-								placeholder={'Введіть по батькові...'}
 								type='text'
 								onChange={changeHandler(setParental, resetError)}
-								value={parental}
+								value={
+									userRole === UserRole.HR
+										? parental
+										: getFieldValue('parental')
+								}
 								label='По батькові'
+								disabled={userRole !== UserRole.HR}
+								inputStyle={{ background: 'white' }}
 							/>
 							{status !== Statuses.NEWCOMER ? (
 								<Input
 									id='dateBirth'
 									type='date'
 									onChange={changeHandler(setDate_birth, resetError)}
-									value={date_birth}
+									value={
+										userRole === UserRole.HR
+											? date_birth
+											: getDateFieldValue('date_birth')
+									}
 									label='Дата народження'
+									disabled={userRole !== UserRole.HR}
+									inputStyle={{ background: 'white' }}
 								/>
 							) : null}
 						</div>
@@ -540,39 +620,64 @@ export const PersonProfile: FC = () => {
 					<Col className='d-flex'>
 						<div className='border-secondary border border-1 p-2 rounded m-2 flex-fill'>
 							<h6 className='text-center'>Навчання в КМА</h6>
-							<Select
-								id='selectFaculty'
-								noneSelectedOption={true}
-								value={faculty_id}
-								label='Факультет'
-								onChange={changeHandler(setFaculty_id)}
-								data={faculties}
-								idSelector={(f) => f.id}
-								nameSelector={(f) => f.name}
-							/>
-							<Select
-								id='selectSpecialty'
-								noneSelectedOption={true}
-								value={specialty_id}
-								label='Спеціальність'
-								onChange={changeHandler(setSpecialty_id)}
-								data={specialties}
-								idSelector={(s) => s.id}
-								nameSelector={(s) => s.name}
-							/>
-							{status !== Statuses.POSHANOVANYI &&
-							status !== Statuses.EX_BRATCHYK ? (
-								<Select
-									id='selectYearEnter'
-									noneSelectedOption={true}
-									value={year_enter}
-									label='Рік вступу в КМА'
-									onChange={changeHandler(setYear_enter)}
-									data={yearsEnter}
-									idSelector={(y) => y}
-									nameSelector={(y) => y}
-								/>
-							) : null}
+							{userRole === UserRole.HR ? (
+								<>
+									<Select
+										id='selectFaculty'
+										noneSelectedOption={true}
+										value={faculty_id}
+										label='Факультет'
+										onChange={changeHandler(setFaculty_id)}
+										data={faculties}
+										idSelector={(f) => f.id}
+										nameSelector={(f) => f.name}
+									/>
+									<Select
+										id='selectSpecialty'
+										noneSelectedOption={true}
+										value={specialty_id}
+										label='Спеціальність'
+										onChange={changeHandler(setSpecialty_id)}
+										data={specialties}
+										idSelector={(s) => s.id}
+										nameSelector={(s) => s.name}
+									/>
+									{status !== Statuses.POSHANOVANYI &&
+									status !== Statuses.EX_BRATCHYK ? (
+										<Select
+											id='selectYearEnter'
+											noneSelectedOption={true}
+											value={year_enter}
+											label='Рік вступу в КМА'
+											onChange={changeHandler(setYear_enter)}
+											data={yearsEnter}
+											idSelector={(y) => y}
+											nameSelector={(y) => y}
+										/>
+									) : null}
+								</>
+							) : (
+								<>
+									<TextField
+										value={getDeepFieldValue('faculty', 'name')}
+										label='Факультет'
+										id='faculty'
+									/>
+									<TextField
+										id='specialty'
+										value={getDeepFieldValue('specialty', 'name')}
+										label='Спеціальність'
+									/>
+									{status !== Statuses.POSHANOVANYI &&
+									status !== Statuses.EX_BRATCHYK ? (
+										<TextField
+											value={getFieldValue('year_enter')}
+											label='Рік вступу в КМА'
+											id='year_enter'
+										/>
+									) : null}
+								</>
+							)}
 						</div>
 					</Col>
 					<Col className='d-flex'>
@@ -580,98 +685,161 @@ export const PersonProfile: FC = () => {
 							<h6 className='text-center'>Контакти</h6>
 							<Input
 								id='email'
-								placeholder={'Введіть email...'}
 								type='text'
 								onChange={changeHandler(setEmail, resetError)}
-								value={email}
+								value={
+									userRole === UserRole.HR ? email : getFieldValue('email')
+								}
 								label='Email'
+								disabled={userRole !== UserRole.HR}
+								inputStyle={{ background: 'white' }}
 							/>
 							<Input
 								id='telephone'
-								placeholder={'Введіть телефон...'}
 								type='text'
 								onChange={changeHandler(setTelephone, resetError)}
-								value={telephone}
+								value={
+									userRole === UserRole.HR
+										? telephone
+										: getFieldValue('telephone')
+								}
 								label='Телефон'
+								disabled={userRole !== UserRole.HR}
+								inputStyle={{ background: 'white' }}
 							/>
 							<Input
 								id='telegram'
-								placeholder={'Введіть телеграм...'}
 								type='text'
 								onChange={changeHandler(setTelegram, resetError)}
-								value={telegram}
+								value={
+									userRole === UserRole.HR
+										? telegram
+										: getFieldValue('telegram')
+								}
 								label='Телеграм'
+								disabled={userRole !== UserRole.HR}
+								inputStyle={{ background: 'white' }}
 							/>
 							<Input
 								id='facebook'
-								placeholder={'Введіть фейсбук...'}
 								type='text'
 								onChange={changeHandler(setFacebook, resetError)}
-								value={facebook}
+								value={
+									userRole === UserRole.HR
+										? facebook
+										: getFieldValue('facebook')
+								}
 								label='Фейсбук'
+								disabled={userRole !== UserRole.HR}
+								inputStyle={{ background: 'white' }}
 							/>
 						</div>
 					</Col>
 					<Col className='d-flex'>
 						<div className='border-secondary border border-1 p-2 rounded m-2 flex-fill'>
 							<h6 className='text-center'>Дані в СБ</h6>
-							<Input
-								id='about'
-								placeholder={'Введіть опис...'}
-								type='text'
-								onChange={changeHandler(setAbout, resetError)}
-								value={about}
-								label='Опис'
-							/>
-							{status !== Statuses.NEWCOMER ? (
-								<Select
-									id='selectParent'
-									noneSelectedOption={true}
-									value={parent_id}
-									label='Патрон'
-									onChange={changeHandler(setParent_id)}
-									data={possibleParents}
-									idSelector={(p) => p.id}
-									nameSelector={(p) =>
-										//@ts-ignore
-										`${getFullName(p)} (${getStatusUkr(p.status)})`
+							<div>
+								<label htmlFor='about'>Опис</label>
+								<textarea
+									className='form-control'
+									id='about'
+									value={
+										userRole === UserRole.HR ? about : getFieldValue('about')
 									}
+									onChange={changeHandler(setAbout, resetError)}
+									disabled={userRole !== UserRole.HR}
+									style={{ background: 'white' }}
 								/>
-							) : null}
-							{status === Statuses.BRATCHYK ? (
-								<Select
-									id='selectRole'
-									noneSelectedOption={true}
-									value={roleId}
-									label='Посада'
-									onChange={changeHandler(setRoleId)}
-									data={roles}
-									idSelector={(r) => r.id}
-									nameSelector={(r) => r.ukr}
-								/>
-							) : null}
-							{status === Statuses.POSHANOVANYI ||
-							status === Statuses.EX_BRATCHYK ? (
-								<ItemManager
-									selectedItem={generation_id}
-									setSelectedItem={setGeneration_id}
-									getAllFunc={getAllGenerations}
-									updateFunc={updateGeneration}
-									deleteFunc={deleteGeneration}
-									createFunc={createGeneration}
-									selectTitle='Покоління'
-									modalTitle='Усі покоління'
-									placeholder='Нове покоління'
-								/>
-							) : null}
-
+							</div>
+							{userRole === UserRole.HR ? (
+								<>
+									{status !== Statuses.NEWCOMER ? (
+										<Select
+											id='selectParent'
+											noneSelectedOption={true}
+											value={parent_id}
+											label='Патрон'
+											onChange={changeHandler(setParent_id)}
+											data={possibleParents}
+											idSelector={(p) => p.id}
+											nameSelector={(p) =>
+												//@ts-ignore
+												`${getFullName(p)} (${getStatusUkr(p.status)})`
+											}
+										/>
+									) : null}
+									{status === Statuses.BRATCHYK ? (
+										<Select
+											id='selectRole'
+											noneSelectedOption={true}
+											value={roleId}
+											label='Посада'
+											onChange={changeHandler(setRoleId)}
+											data={roles}
+											idSelector={(r) => r.id}
+											nameSelector={(r) => r.ukr}
+										/>
+									) : null}
+									{status === Statuses.POSHANOVANYI ||
+									status === Statuses.EX_BRATCHYK ? (
+										<ItemManager
+											selectedItem={generation_id}
+											setSelectedItem={setGeneration_id}
+											getAllFunc={getAllGenerations}
+											updateFunc={updateGeneration}
+											deleteFunc={deleteGeneration}
+											createFunc={createGeneration}
+											selectTitle='Покоління'
+											modalTitle='Усі покоління'
+											placeholder='Нове покоління'
+										/>
+									) : null}
+								</>
+							) : (
+								<>
+									{status !== Statuses.NEWCOMER ? (
+										<TextField
+											id='parent'
+											value={
+												person && person.parent
+													? `${getFullName(person.parent)} (${getStatusUkr(
+															person.parent.status
+													  )})`
+													: VALUE_NOT_SET
+											}
+											label='Патрон'
+										/>
+									) : null}
+									{status === Statuses.BRATCHYK ? (
+										<TextField
+											id='role'
+											value={person ? getRoleUkr(person.role) : VALUE_NOT_SET}
+											label='Посада'
+										/>
+									) : null}
+									{status === Statuses.POSHANOVANYI ||
+									status === Statuses.EX_BRATCHYK ? (
+										<TextField
+											value={getDeepFieldValue('generation', 'name')}
+											label='Покоління'
+											id='generation'
+										/>
+									) : null}
+								</>
+							)}
 							{status === Statuses.NEWCOMER || status === Statuses.MALIUK ? (
 								<Input
 									id='dateFillForm'
 									type='date'
 									onChange={changeHandler(setDate_fill_form, resetError)}
-									value={date_fill_form}
+									value={
+										userRole === UserRole.HR
+											? date_fill_form
+											: getDateFieldValue('date_fill_form')
+									}
 									label='Дата заповнення форми для приєднання'
+									disabled={userRole !== UserRole.HR}
+									inputStyle={{ background: 'white' }}
 								/>
 							) : null}
 							{status === Statuses.BRATCHYK ? (
@@ -679,8 +847,14 @@ export const PersonProfile: FC = () => {
 									id='dateVysviata'
 									type='date'
 									onChange={changeHandler(setDate_vysviata, resetError)}
-									value={date_vysviata}
+									value={
+										userRole === UserRole.HR
+											? date_vysviata
+											: getDateFieldValue('date_vysviata')
+									}
 									label='Дата висвяти'
+									disabled={userRole !== UserRole.HR}
+									inputStyle={{ background: 'white' }}
 								/>
 							) : null}
 							{status === Statuses.POSHANOVANYI ? (
@@ -688,8 +862,14 @@ export const PersonProfile: FC = () => {
 									id='datePoshanuvannia'
 									type='date'
 									onChange={changeHandler(setDate_poshanuvannia, resetError)}
-									value={date_poshanuvannia}
+									value={
+										userRole === UserRole.HR
+											? date_poshanuvannia
+											: getDateFieldValue('date_poshanuvannia')
+									}
 									label='Дата пошанування'
+									disabled={userRole !== UserRole.HR}
+									inputStyle={{ background: 'white' }}
 								/>
 							) : null}
 							{status === Statuses.EX_BRATCHYK ? (
@@ -697,8 +877,14 @@ export const PersonProfile: FC = () => {
 									id='dateExclusion'
 									type='date'
 									onChange={changeHandler(setDate_exclusion, resetError)}
-									value={date_exclusion}
+									value={
+										userRole === UserRole.HR
+											? date_exclusion
+											: getDateFieldValue('date_exclusion')
+									}
 									label='Дата виключення'
+									disabled={userRole !== UserRole.HR}
+									inputStyle={{ background: 'white' }}
 								/>
 							) : null}
 						</div>
@@ -706,158 +892,163 @@ export const PersonProfile: FC = () => {
 				</Row>
 			</div>
 			<div>
-				{status === Statuses.NEWCOMER ? (
-					<Button
-						variant='primary'
-						onClick={() =>
-							setShowConfirmUpdateStatusToMaliukModal(
-								!showConfirmUpdateStatusToMaliukModal
-							)
-						}
-						id='updateStatus'
-						className='m-2'
-					>
-						{'Новенький -> Малюк'}
-					</Button>
-				) : null}
-				{status === Statuses.MALIUK ? (
-					<Button
-						variant='primary'
-						onClick={() =>
-							setShowConfirmUpdateStatusToBratchykModal(
-								!showConfirmUpdateStatusToBratchykModal
-							)
-						}
-						id='updateStatus'
-						className='m-2'
-					>
-						{'Малюк -> Братчик'}
-					</Button>
-				) : null}
-				{status === Statuses.BRATCHYK ? (
-					<Button
-						variant='primary'
-						onClick={() =>
-							setShowConfirmUpdateStatusToPoshanovanyiModal(
-								!showConfirmUpdateStatusToPoshanovanyiModal
-							)
-						}
-						id='updateStatus'
-						className='m-2'
-					>
-						{'Братчик -> Пошанований'}
-					</Button>
-				) : null}
-				{status === Statuses.BRATCHYK ? (
-					<Button
-						variant='primary'
-						onClick={() =>
-							setShowConfirmUpdateStatusToExBratchykModal(
-								!showConfirmUpdateStatusToExBratchykModal
-							)
-						}
-						id='updateStatus'
-						className='m-2'
-					>
-						{'Братчик -> Виключений братчик'}
-					</Button>
-				) : null}
-			</div>
-			<div>
 				<ErrorMessageBig
 					message={typeof errorMessage === 'string' ? errorMessage : ''}
 				/>
 			</div>
-			<div>
-				{isHR === 0 && status !== Statuses.NEWCOMER ? (
-					<Button
-						variant='info'
-						onClick={makePersonToBeHR}
-						id='addUser'
-						className='m-2'
-					>
-						{'Зробити HR-ом'}
-					</Button>
-				) : null}
-				{isHR === 1 ? (
-					<Button
-						variant='info'
-						onClick={deletePersonFromHRs}
-						id='deleteUser'
-						className='m-2'
-					>
-						{'Видалити з HR-ів'}
-					</Button>
-				) : null}
-				<Button
-					variant='primary'
-					onClick={updatePerson}
-					id='updatePerson'
-					className='m-2'
-				>
-					{'Оновити'}
-				</Button>
-				<Button
-					variant='danger'
-					onClick={() => setShowConfirmDeleteModal(!showConfirmDeleteModal)}
-					id='deletePerson'
-					className='m-2'
-				>
-					{'Видалити'}
-				</Button>
-			</div>
-			<UserActivities personId={Number(memberId)} />
+			{userRole === UserRole.HR ? (
+				<>
+					<div>
+						<Button
+							variant='primary'
+							onClick={updatePerson}
+							id='updatePerson'
+							className='m-2'
+						>
+							{'Оновити'}
+						</Button>
+						{isHR === 0 && status !== Statuses.NEWCOMER ? (
+							<Button
+								variant='info'
+								onClick={makePersonToBeHR}
+								id='addUser'
+								className='m-2'
+							>
+								{'Зробити HR-ом'}
+							</Button>
+						) : null}
+						{isHR === 1 ? (
+							<Button
+								variant='info'
+								onClick={deletePersonFromHRs}
+								id='deleteUser'
+								className='m-2'
+							>
+								{'Видалити з HR-ів'}
+							</Button>
+						) : null}
+						<Button
+							variant='danger'
+							onClick={() => setShowConfirmDeleteModal(!showConfirmDeleteModal)}
+							id='deletePerson'
+							className='m-2'
+						>
+							{'Видалити'}
+						</Button>
+					</div>
+					<div>
+						{status === Statuses.NEWCOMER ? (
+							<Button
+								variant='primary'
+								onClick={() =>
+									setShowConfirmUpdateStatusToMaliukModal(
+										!showConfirmUpdateStatusToMaliukModal
+									)
+								}
+								id='updateStatus'
+								className='m-2'
+							>
+								{'Новенький -> Малюк'}
+							</Button>
+						) : null}
+						{status === Statuses.MALIUK ? (
+							<Button
+								variant='primary'
+								onClick={() =>
+									setShowConfirmUpdateStatusToBratchykModal(
+										!showConfirmUpdateStatusToBratchykModal
+									)
+								}
+								id='updateStatus'
+								className='m-2'
+							>
+								{'Малюк -> Братчик'}
+							</Button>
+						) : null}
+						{status === Statuses.BRATCHYK ? (
+							<Button
+								variant='primary'
+								onClick={() =>
+									setShowConfirmUpdateStatusToPoshanovanyiModal(
+										!showConfirmUpdateStatusToPoshanovanyiModal
+									)
+								}
+								id='updateStatus'
+								className='m-2'
+							>
+								{'Братчик -> Пошанований'}
+							</Button>
+						) : null}
+						{status === Statuses.BRATCHYK ? (
+							<Button
+								variant='primary'
+								onClick={() =>
+									setShowConfirmUpdateStatusToExBratchykModal(
+										!showConfirmUpdateStatusToExBratchykModal
+									)
+								}
+								id='updateStatus'
+								className='m-2'
+							>
+								{'Братчик -> Виключений братчик'}
+							</Button>
+						) : null}
+					</div>
 
-			<ConfirmationModal
-				question={
-					'Ви впевнені, що хочете видалити всю інформацію про людину ' +
-					(person ? getFullName(person) : '') +
-					'?'
-				}
-				setShow={setShowConfirmDeleteModal}
-				show={showConfirmDeleteModal}
-				action={deletePerson}
-			/>
-			<ConfirmationModal
-				question={
-					'Ви впевнені, що хочете змінити статус людини ' +
-					(person ? getFullName(person) + ' ' : '') +
-					'на Малюк?'
-				}
-				setShow={setShowConfirmUpdateStatusToMaliukModal}
-				show={showConfirmUpdateStatusToMaliukModal}
-				action={updateStatusToMaliuk}
-			/>
-			<ConfirmationModal
-				question={
-					'Ви впевнені, що хочете змінити статус людини ' +
-					(person ? getFullName(person) + ' ' : '') +
-					'на Братчик?'
-				}
-				setShow={setShowConfirmUpdateStatusToBratchykModal}
-				show={showConfirmUpdateStatusToBratchykModal}
-				action={updateStatusToBratchyk}
-			/>
-			<ConfirmationModal
-				question={
-					'Ви впевнені, що хочете змінити статус людини ' +
-					(person ? getFullName(person) + ' ' : '') +
-					'на Пошанований?'
-				}
-				setShow={setShowConfirmUpdateStatusToPoshanovanyiModal}
-				show={showConfirmUpdateStatusToPoshanovanyiModal}
-				action={updateStatusToPoshanovanyi}
-			/>
-			<ConfirmationModal
-				question={
-					'Ви впевнені, що хочете змінити статус людини ' +
-					(person ? getFullName(person) + ' ' : '') +
-					'на Виключений братчик?'
-				}
-				setShow={setShowConfirmUpdateStatusToExBratchykModal}
-				show={showConfirmUpdateStatusToExBratchykModal}
-				action={updateStatusToExBratchyk}
-			/>
+					<ConfirmationModal
+						question={
+							'Ви впевнені, що хочете видалити всю інформацію про людину ' +
+							(person ? getFullName(person) : '') +
+							'?'
+						}
+						setShow={setShowConfirmDeleteModal}
+						show={showConfirmDeleteModal}
+						action={deletePerson}
+					/>
+					<ConfirmationModal
+						question={
+							'Ви впевнені, що хочете змінити статус людини ' +
+							(person ? getFullName(person) + ' ' : '') +
+							'на Малюк?'
+						}
+						setShow={setShowConfirmUpdateStatusToMaliukModal}
+						show={showConfirmUpdateStatusToMaliukModal}
+						action={updateStatusToMaliuk}
+					/>
+					<ConfirmationModal
+						question={
+							'Ви впевнені, що хочете змінити статус людини ' +
+							(person ? getFullName(person) + ' ' : '') +
+							'на Братчик?'
+						}
+						setShow={setShowConfirmUpdateStatusToBratchykModal}
+						show={showConfirmUpdateStatusToBratchykModal}
+						action={updateStatusToBratchyk}
+					/>
+					<ConfirmationModal
+						question={
+							'Ви впевнені, що хочете змінити статус людини ' +
+							(person ? getFullName(person) + ' ' : '') +
+							'на Пошанований?'
+						}
+						setShow={setShowConfirmUpdateStatusToPoshanovanyiModal}
+						show={showConfirmUpdateStatusToPoshanovanyiModal}
+						action={updateStatusToPoshanovanyi}
+					/>
+					<ConfirmationModal
+						question={
+							'Ви впевнені, що хочете змінити статус людини ' +
+							(person ? getFullName(person) + ' ' : '') +
+							'на Виключений братчик?'
+						}
+						setShow={setShowConfirmUpdateStatusToExBratchykModal}
+						show={showConfirmUpdateStatusToExBratchykModal}
+						action={updateStatusToExBratchyk}
+					/>
+				</>
+			) : null}
+
+			<UserActivities personId={Number(memberId)} />
 		</>
 	);
 };

@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import {inject, injectable} from 'inversify';
 import {prisma} from '../datasource/connectDB';
-import {User, UserAdd, UserOptionalUpdate} from '../models/User';
+import {User, UserAdd, UserOptionalUpdate, UserUpdateByPersonId} from '../models/User';
 import {RoleEnum} from '../utils/enum/Role.enum';
 import {PrismaErrorUtil} from '../datasource/PrismaErrorUtil';
 import {ApiError} from '../models/ApiError';
@@ -55,6 +55,7 @@ export class UserRepository {
         try {
             const query = await prisma.user.create({
                 data: {
+                    // @ts-ignore
                     role: RoleEnum[user.role],
                     person: {connect: {id: user.personId}}
                 },
@@ -116,6 +117,7 @@ export class UserRepository {
         try {
             const query = await prisma.user.update({
                 where: {id: user.id},
+                // @ts-ignore
                 data: {
                     //Include role only if defined
                     ...(user.role && {role: RoleEnum[user.role]}),
@@ -129,6 +131,29 @@ export class UserRepository {
         } catch (e: any) {
             if (this.errorUtil.isNotFound(e)) {
                 throw ApiError.badRequest(`Користувача з id:${user.id} не знайдено`);
+            } else {
+                throw ApiError.internal('Помилка при редагуванні користувача');
+            }
+        }
+    }
+
+    async updateUserByPersonId(user: UserUpdateByPersonId) {
+        try {
+            const query = await prisma.user.update({
+                where: {person_id: user.personId},
+                data: {
+                    // @ts-ignore
+                    role: RoleEnum[user.role],
+                },
+            });
+            return {
+                id: query.id,
+                personId: query.person_id,
+                role: RoleEnum[query.role]
+            };
+        } catch (e: any) {
+            if (this.errorUtil.isNotFound(e)) {
+                return this.addUser(user);
             } else {
                 throw ApiError.internal('Помилка при редагуванні користувача');
             }

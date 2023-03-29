@@ -5,6 +5,10 @@ export interface Event {
 	date_end: Date;
 	description?: string | null;
 	category_id: number;
+	category?: {
+		id: number;
+		name: string;
+	};
 	photo?: string | null;
 }
 

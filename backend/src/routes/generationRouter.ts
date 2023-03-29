@@ -15,7 +15,7 @@ const generationService = container.get<GenerationService>(GenerationService);
 // @route GET api/generations
 generationRouter.route('/')
     .get(
-        ...authMiddleware(RoleEnum.HR),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         asyncHandler(async (req: Request, res: Response) => {
             const generations = await generationService.getGenerations();
             res.json(generations);
@@ -34,7 +34,7 @@ generationRouter.route('/')
 // @route  GET api/generations/:id
 generationRouter.route('/:id')
     .get(
-        ...authMiddleware(RoleEnum.HR),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER),
         requestValidator(idSchema, 'params'),
         asyncHandler(async (req: Request, res: Response) => {
             const generation = await generationService.getGenerationById(Number(req.params.id));

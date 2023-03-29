@@ -1,31 +1,41 @@
 /*eslint-disable react-hooks/exhaustive-deps*/
-import React, { FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	getErrorMessage,
 	getEvents,
 	getEventsData,
+	getUserRole,
 } from '../../store/selectors';
 import { getAllEvents, Event } from '../../api/event';
 import { changeHandler } from '../../shared';
 import { Input } from '../../common/Input/Input';
 import { Button, Col, Row } from 'react-bootstrap';
-import { Select } from '../../common/Select/SelectComponent';
-import { Category, getAllCategories } from '../../api/category';
+import {
+	createCategory,
+	deleteCategory,
+	getAllCategories,
+	updateCategory,
+} from '../../api/category';
 import { deleteAnEvent, updateAnEvent } from '../../store/events/thunk';
 import { eventsGet } from '../../store/events/actionCreators';
 import { dateToString } from '../../utils/dates';
 import { ErrorMessageBig } from '../../common/ErrorMessage/ErrorMessageBig';
 import { errorMessageSet } from '../../store/errorMessage/actionCreators';
-import { DEFAULT_PHOTO_URL } from '../../utils/constants';
-import { EditPhotoUrlModal } from '../EditPhotoUrlModal/EditPhotoUrlModal';
+import { DEFAULT_PHOTO_URL, VALUE_NOT_SET } from '../../utils/constants';
 import { ActivityManager } from '../ActivityManager/ActivityManager';
 // @ts-ignore
 import { getAllPeopleThunk } from '../../store/people/thunk';
 import { gotEventDataSet } from '../../store/gotEventData/actionCreators';
 import { ConfirmationModal } from '../ConfirmationModal/ConfirmationModal';
 import { GotDataStatus } from '../../store/gotDataEnum';
+import { ItemManager } from '../ItemManager/ItemManager';
+import './EventProfile.css';
+import { UserRole } from '../../api/common/types';
+import { TextField } from '../../common/TextField/TextField';
+import { uploadImageAndGetUrl } from '../../utils/uploadImages';
+import { ImageInput } from '../../common/ImageInput/ImageInput';
 
 export const EventProfile: FC = () => {
 	const gotEventData = useSelector<number>(getEventsData);
@@ -42,10 +52,10 @@ export const EventProfile: FC = () => {
 	const [description, setDescription] = useState<string>('');
 	const [category_id, setCategory_id] = useState<number>(-1);
 	const [photo, setPhoto] = useState<string>('');
-	const [categories, setCategories] = useState<Category[]>([]);
-	const [showEditPhotoModal, setShowEditPhotoModal] = useState<boolean>(false);
+	const [photoFilePath, setPhotoFilePath] = useState<string>('');
 	const [showConfirmDeleteModal, setShowConfirmDeleteModal] =
 		useState<boolean>(false);
+	const userRole = useSelector(getUserRole);
 
 	const goBack = () => {
 		resetError();
@@ -97,8 +107,6 @@ export const EventProfile: FC = () => {
 			if (ev.description) setDescription(ev.description);
 			if (ev.category_id) setCategory_id(ev.category_id);
 			if (ev.photo) setPhoto(ev.photo);
-			const categories = await getAllCategories();
-			setCategories(categories);
 		}
 	};
 
@@ -171,6 +179,54 @@ export const EventProfile: FC = () => {
 		} else return false;
 	};
 
+	const getFieldValue = (fieldName: string) => {
+		// @ts-ignore
+		return event && event[fieldName] ? event[fieldName] : VALUE_NOT_SET;
+	};
+
+	const getDeepFieldValue = (
+		parentFieldName: string,
+		childFieldName: string
+	) => {
+		return event &&
+			// @ts-ignore
+			event[parentFieldName] &&
+			// @ts-ignore
+			event[parentFieldName][childFieldName]
+			? // @ts-ignore
+			  event[parentFieldName][childFieldName]
+			: VALUE_NOT_SET;
+	};
+
+	const getDateFieldValue = (fieldName: string) => {
+		// @ts-ignore
+		return event && event[fieldName]
+			? // @ts-ignore
+			  new Date(event[fieldName]).toLocaleDateString()
+			: VALUE_NOT_SET;
+	};
+
+	const processFileChosen = async (event: ChangeEvent) => {
+		resetError();
+		// @ts-ignore
+		setPhotoFilePath(event.target.value);
+		const errorText = 'Не вдалося встановити фото';
+		try {
+			// @ts-ignore
+			const selectedFile = event.target.files[0];
+			const newPhotoUrl = await uploadImageAndGetUrl(
+				selectedFile,
+				name + (date_end ? new Date(date_end).getFullYear() : '')
+			);
+			if (newPhotoUrl) {
+				setPhoto(newPhotoUrl);
+				console.log(newPhotoUrl);
+			} else dispatch(errorMessageSet(errorText));
+		} catch (e) {
+			dispatch(errorMessageSet(errorText));
+		}
+	};
+
 	return (
 		<>
 			<Button
@@ -186,72 +242,121 @@ export const EventProfile: FC = () => {
 				<Row xs={1} sm={1} md={2} lg={2} className='m-2'>
 					<Col>
 						<div className='m-2 justify-content-center d-flex'>
-							<img
-								src={photo ? photo : DEFAULT_PHOTO_URL}
-								className='rounded'
-								style={{
-									maxWidth: '350px',
-									maxHeight: '350px',
-									cursor: 'pointer',
-								}}
-								alt='Фото'
-								onClick={() => setShowEditPhotoModal(!showEditPhotoModal)}
-							/>
+							{userRole === UserRole.HR ? (
+								<>
+									<ImageInput
+										id='selectPhotoEventProfile'
+										value={photoFilePath}
+										onChange={(e) => processFileChosen(e)}
+									/>
+									<img
+										src={photo ? photo : DEFAULT_PHOTO_URL}
+										className='rounded'
+										style={{
+											maxWidth: '320px',
+											maxHeight: '320px',
+											cursor: 'pointer',
+										}}
+										alt='Фото'
+										onClick={() =>
+											document
+												.getElementById('selectPhotoEventProfile')!
+												.click()
+										}
+									/>
+								</>
+							) : (
+								<img
+									src={photo ? photo : DEFAULT_PHOTO_URL}
+									className='rounded'
+									style={{
+										maxWidth: '350px',
+										maxHeight: '350px',
+									}}
+									alt='Фото'
+								/>
+							)}
 						</div>
-						<EditPhotoUrlModal
-							title={'Посилання на фото'}
-							setShow={setShowEditPhotoModal}
-							show={showEditPhotoModal}
-							photoUrl={photo}
-							setPhotoUrl={setPhoto}
-						/>
 					</Col>
 					<Col className='d-flex'>
 						<div className='border-secondary border border-1 p-2 rounded m-2 flex-fill'>
 							<Input
 								id='name'
-								placeholder={'Введіть назву...'}
 								type='text'
 								onChange={changeHandler(setName, resetError)}
-								value={name}
+								value={userRole === UserRole.HR ? name : getFieldValue('name')}
 								label='Назва'
 								required={true}
+								disabled={userRole !== UserRole.HR}
+								inputStyle={{ background: 'white' }}
 							/>
+							<div>
+								<label htmlFor='description'>Опис</label>
+								<textarea
+									className='form-control'
+									id='description'
+									value={
+										userRole === UserRole.HR
+											? description
+											: getFieldValue('description')
+									}
+									onChange={changeHandler(setDescription, resetError)}
+									disabled={userRole !== UserRole.HR}
+									style={{ background: 'white' }}
+								/>
+							</div>
 							<Input
 								id='dateStart'
 								type='date'
 								onChange={changeHandler(setDate_start, resetError)}
-								value={date_start}
-								label='Дата початку події'
+								value={
+									userRole === UserRole.HR
+										? date_start
+										: getDateFieldValue('date_start')
+								}
+								label='Дата початку'
 								required={true}
+								disabled={userRole !== UserRole.HR}
+								inputStyle={{ background: 'white' }}
 							/>
 							<Input
 								id='dateEnd'
 								type='date'
 								onChange={changeHandler(setDate_end, resetError)}
-								value={date_end}
-								label='Дата завершення події'
+								value={
+									userRole === UserRole.HR
+										? date_end
+										: getDateFieldValue('date_end')
+								}
+								label='Дата закінчення'
 								required={true}
+								disabled={userRole !== UserRole.HR}
+								inputStyle={{ background: 'white' }}
 							/>
-							<Input
-								id='description'
-								placeholder={'Введіть опис...'}
-								type='text'
-								onChange={changeHandler(setDescription, resetError)}
-								value={description}
-								label='Опис'
-								required={false}
-							/>
-							<Select
-								id='selectCategory'
-								noneSelectedOption={true}
-								value={category_id}
-								label='Категорія'
-								onChange={changeHandler(setCategory_id)}
-								data={categories}
-								idSelector={(c) => c.id}
-								nameSelector={(c) => c.name}
-							/>
+							{userRole === UserRole.HR ? (
+								<ItemManager
+									selectedItem={category_id}
+									setSelectedItem={(id) => {
+										setCategory_id(id);
+										resetError();
+									}}
+									getAllFunc={getAllCategories}
+									updateFunc={updateCategory}
+									deleteFunc={deleteCategory}
+									createFunc={createCategory}
+									selectTitle='Категорія'
+									modalTitle='Усі категорії'
+									placeholder='Нова категорія'
+									isRequired={true}
+								/>
+							) : (
+								<TextField
+									id='category'
+									value={getDeepFieldValue('category', 'name')}
+									label='Категорія'
+									required={true}
+								/>
+							)}
 						</div>
 					</Col>
 				</Row>
@@ -264,34 +369,38 @@ export const EventProfile: FC = () => {
 			<div className='mt-3 w-100 mb-5'>
 				<ActivityManager eventId={Number(eventId)} />
 			</div>
-			<div>
-				<Button
-					variant='primary'
-					onClick={updateEvent}
-					id='updateEvent'
-					className='m-2'
-				>
-					{'Оновити'}
-				</Button>
-				<Button
-					variant='danger'
-					onClick={() => setShowConfirmDeleteModal(!showConfirmDeleteModal)}
-					id='deleteEvent'
-					className='m-2'
-				>
-					{'Видалити'}
-				</Button>
-			</div>
-			<ConfirmationModal
-				question={
-					'Ви впевнені, що хочете видалити всю інформацію про подію ' +
-					(event ? event.name : '') +
-					'?'
-				}
-				setShow={setShowConfirmDeleteModal}
-				show={showConfirmDeleteModal}
-				action={deleteEvent}
-			/>
+			{userRole === UserRole.HR ? (
+				<>
+					<div>
+						<Button
+							variant='primary'
+							onClick={updateEvent}
+							id='updateEvent'
+							className='buttons-margin'
+						>
+							{'Оновити'}
+						</Button>
+						<Button
+							variant='danger'
+							onClick={() => setShowConfirmDeleteModal(!showConfirmDeleteModal)}
+							id='deleteEvent'
+							className='buttons-margin'
+						>
+							{'Видалити'}
+						</Button>
+					</div>
+					<ConfirmationModal
+						question={
+							'Ви впевнені, що хочете видалити всю інформацію про подію ' +
+							(event ? event.name : '') +
+							'?'
+						}
+						setShow={setShowConfirmDeleteModal}
+						show={showConfirmDeleteModal}
+						action={deleteEvent}
+					/>
+				</>
+			) : null}
 		</>
 	);
 };

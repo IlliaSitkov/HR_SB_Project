@@ -35,7 +35,7 @@ export const Navbar = () => {
 		{
 			name: 'Люди',
 			path: '/members',
-			roles: [UserRole.HR],
+			roles: [UserRole.HR, UserRole.USER],
 		},
 		{
 			name: 'Дні народження',
@@ -45,12 +45,12 @@ export const Navbar = () => {
 		{
 			name: 'Події',
 			path: '/events',
-			roles: [UserRole.HR],
+			roles: [UserRole.HR, UserRole.USER],
 		},
 		{
 			name: 'Профіль',
 			path: '/profile',
-			roles: [UserRole.HR, UserRole.USER],
+			roles: [UserRole.HR, UserRole.USER, UserRole.NEWCOMER],
 		},
 		{
 			name: 'Приєднатись до СО "Спудейське Братство НаУКМА"',
@@ -71,8 +71,8 @@ export const Navbar = () => {
 				</nav>
 			</UnauthenticatedTemplate>
 			<AuthenticatedTemplate>
-				<nav className='menu-bar d-flex justify-content-between align-items-center mb-4'>
-					<div className='d-flex gap-4'>
+				<nav className='menu-bar d-flex justify-content-between align-items-center mb-4 sticky-top'>
+					<div className='d-flex gap-2 gap-md-4 gap-lg-4 gap-xl-4 gap-xxl-4'>
 						{tabs
 							.filter((tab) => tab.roles.includes(role as UserRole))
 							.map((tab) => (

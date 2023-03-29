@@ -4,6 +4,7 @@ import { ActivityPersonDropdownItem } from '../ActivityPerson/ActivityPersonDrop
 import { Person } from '../../../../api/person';
 import { useDispatch, useSelector } from 'react-redux';
 import { createEventActivitiesThunk } from '../../../../store/eventActivities/thunk';
+import './AddEventPerson.css';
 
 export const AddEventPerson = ({
 	eventId,
@@ -35,7 +36,7 @@ export const AddEventPerson = ({
 		>
 			<Dropdown.Toggle variant='outline-primary'>{buttonTitle}</Dropdown.Toggle>
 
-			<Dropdown.Menu>
+			<Dropdown.Menu className='overflow-auto organizers'>
 				{members.length <= 0 && (
 					<div className='p-2 text-center'>Усіх додано</div>
 				)}

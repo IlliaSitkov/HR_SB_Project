@@ -9,7 +9,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "npx ts-node src/index.ts",
-	"start:prod": "node dist/index.js",
+    "start:prod": "node dist/index.js",
     "dev": "nodemon src/index.ts",
     "eslint": "eslint --ext .js --ext .jsx src",
     "eslint:fix": "eslint --fix --ext .ts --ext .tsx src"

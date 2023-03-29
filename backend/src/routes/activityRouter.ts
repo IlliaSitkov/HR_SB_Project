@@ -1,7 +1,7 @@
 import {Request, Response, Router} from 'express';
-import authMiddleware from '../middleware/authMiddleware';
+import authMiddleware, {newcomerAccessMiddleware} from '../middleware/authMiddleware';
 import {requestValidator} from '../middleware/requestMiddleware';
-import {activityCreateSchema, activityUpdateSchema} from '../validators/activitySchema';
+import {activityCreateSchema, activityDeleteSchema, activityUpdateSchema} from '../validators/activitySchema';
 import asyncHandler from 'express-async-handler';
 import {container} from '../config/container';
 import {ActivityService} from '../services/ActivityService';
@@ -15,13 +15,21 @@ const activityService: ActivityService = container.get<ActivityService>(Activity
 
 activityRouter.route('/')
     .get(
-        ...authMiddleware(RoleEnum.HR),
-        requestValidator(idSchema, 'person_id'),
+        ...authMiddleware(RoleEnum.HR, RoleEnum.USER, RoleEnum.NEWCOMER),
+        requestValidator(idSchema, 'personId'),
+        requestValidator(idSchema, 'eventId'),
+        newcomerAccessMiddleware(false),
         asyncHandler(async (req: Request, res: Response) => {
-            const activity: Activity[] = await activityService.getActivityByPersonId(Number(req.query.person_id));
-            res.json(activity);
-        })
-    )
+            const personId = req.query.personId;
+            const eventId = req.query.eventId;
+            let activities: Activity[] = [];
+            if (personId) {
+                activities = await activityService.getActivitiesByPersonId(Number(personId));
+            } else if (eventId) {
+                activities = await activityService.getActivitiesByEventId(Number(eventId));
+            }
+            res.json(activities);
+        }))
     .post(
         ...authMiddleware(RoleEnum.HR),
         requestValidator(activityCreateSchema, 'body'),
@@ -31,24 +39,23 @@ activityRouter.route('/')
             res.json(newActivity);
         })
     )
-    .patch(
+    .put(
         ...authMiddleware(RoleEnum.HR),
-        requestValidator(idSchema, 'person_id'),
-        requestValidator(idSchema, 'event_id'),
         requestValidator(activityUpdateSchema, 'body'),
         asyncHandler(async (req: Request, res: Response) => {
-            const activityDTO = await activityService.checkAndFormatActivityDataPatch(req.body);
-            const updatedActivity: Activity = await activityService.updateActivity(Number(req.query.person_id), Number(req.query.event_id), activityDTO);
-            res.json(updatedActivity);
+            const activityDTO = await activityService.checkAndFormatActivityDataPut(req.body);
+            //@ts-ignore
+            const updatedActivities: Activity[] = await activityService.updateActivity(activityDTO);
+            res.json(updatedActivities);
         })
     )
     .delete(
         ...authMiddleware(RoleEnum.HR),
-        requestValidator(idSchema, 'person_id'),
-        requestValidator(idSchema, 'event_id'),
+        requestValidator(activityDeleteSchema, 'body'),
         asyncHandler(async (req: Request, res: Response) => {
-            const activity: Activity = await activityService.deleteActivityById(Number(req.query.person_id), Number(req.query.event_id));
-            res.json(activity);
+            //@ts-ignore
+            const activities: Activity[] = await activityService.deleteActivityById(Number(req.body.person_id), Number(req.body.event_id));
+            res.json(activities);
         })
     );
 
