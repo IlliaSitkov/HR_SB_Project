@@ -7,6 +7,7 @@ const axios: AxiosInstance = authHost;
 const url: string = `${process.env.REACT_APP_API_URL}/api/user`;
 
 export const getUserMe = async (): Promise<User> => {
+	console.log(`${url}/me`);
 	return (await axios.get(`${url}/me`)).data;
 };
 

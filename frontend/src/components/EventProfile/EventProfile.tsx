@@ -31,6 +31,7 @@ import { gotEventDataSet } from '../../store/gotEventData/actionCreators';
 import { ConfirmationModal } from '../ConfirmationModal/ConfirmationModal';
 import { GotDataStatus } from '../../store/gotDataEnum';
 import { ItemManager } from '../ItemManager/ItemManager';
+import './EventProfile.css';
 
 export const EventProfile: FC = () => {
 	const gotEventData = useSelector<number>(getEventsData);
@@ -276,7 +277,7 @@ export const EventProfile: FC = () => {
 					variant='primary'
 					onClick={updateEvent}
 					id='updateEvent'
-					className='m-2'
+					className='buttons-margin'
 				>
 					{'Оновити'}
 				</Button>
@@ -284,7 +285,7 @@ export const EventProfile: FC = () => {
 					variant='danger'
 					onClick={() => setShowConfirmDeleteModal(!showConfirmDeleteModal)}
 					id='deleteEvent'
-					className='m-2'
+					className='buttons-margin'
 				>
 					{'Видалити'}
 				</Button>

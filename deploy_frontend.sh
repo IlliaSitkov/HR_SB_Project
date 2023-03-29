@@ -1,13 +1,13 @@
 #!/bin/sh
 
 # build frontend
-#cd frontend
+cd frontend
 
-#npm i --legacy-peer-deps
+npm i --legacy-peer-deps
 
-#npm run build:ec2
+npm run build:ec2
 
-#cd ..
+cd ..
 
 # import .env
 set -a
