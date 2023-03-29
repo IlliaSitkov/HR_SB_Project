@@ -3,7 +3,7 @@ import { authHost } from '../index';
 import { Category, CategoryCreateDTO, CategoryUpdateDTO } from './types';
 
 const axios: AxiosInstance = authHost;
-const url: string = 'http://localhost:8000/api/categories';
+const url: string = `${process.env.REACT_APP_API_URL}/api/categories`;
 
 const urlById = (id: number): string => `${url}/${id}`;
 

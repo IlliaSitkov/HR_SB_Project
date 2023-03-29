@@ -1,0 +1,11 @@
+[Unit]
+Description=instance for a backend
+After=network.target
+[Service]
+User=ec2-user
+Group=ec2-user
+WorkingDirectory=/home/ec2-user/backend
+ExecStart=/bin/bash npm run start:prod
+Restart=always
+[Install]
+WantedBy=multi-user.target

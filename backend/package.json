@@ -4,12 +4,13 @@
   "description": "",
   "main": "src/index.js",
   "engines": {
-    "node": "19.x"
+    "node": "16.x"
   },
   "scripts": {
     "build": "npx tsc",
-    "start": "node dist/index.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "start": "npx ts-node src/index.ts",
+	"start:prod": "node dist/index.js",
+    "dev": "nodemon src/index.ts",
     "eslint": "eslint --ext .js --ext .jsx src",
     "eslint:fix": "eslint --fix --ext .ts --ext .tsx src"
   },

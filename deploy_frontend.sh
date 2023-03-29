@@ -11,7 +11,7 @@
 
 # import .env
 set -a
-. C:/Users/Iryna/WebStormProjects/HR_SB/.env
+. ./.env
 set +a
 
 # certificate name
@@ -26,10 +26,15 @@ ssh -tt -i $EC2_KEY_NAME_WITH_EXTENSION ec2-user@$EC2_PUBLIC_IP 'rm -rf /home/ec
 ssh -tt -i $EC2_KEY_NAME_WITH_EXTENSION ec2-user@$EC2_PUBLIC_IP 'mkdir -p /home/ec2-user/frontend'
 scp -i $EC2_KEY_NAME_WITH_EXTENSION -r ./frontend/build/* ec2-user@$EC2_PUBLIC_IP:/home/ec2-user/frontend
 # establish ssh and execute the following script
+
 ssh -tt -i $EC2_KEY_NAME_WITH_EXTENSION ec2-user@$EC2_PUBLIC_IP << "ENDSSH"
+
+# convert to unix standard file
+sed -ie "s/\r//g" .env
+
 # import .env
 set -a
-. .env
+. ./.env
 set +a
 # create folder
 sudo rm -rf /usr/share/nginx/$DOMAIN_NAME/html

@@ -4,7 +4,7 @@ import { User, UserRole } from '../common/types';
 import { getGraphApiAccessToken, graphConfig } from '../../utils/authConfig';
 
 const axios: AxiosInstance = authHost;
-const url: string = 'http://localhost:8000/api/user';
+const url: string = `${process.env.REACT_APP_API_URL}/api/user`;
 
 export const getUserMe = async (): Promise<User> => {
 	return (await axios.get(`${url}/me`)).data;

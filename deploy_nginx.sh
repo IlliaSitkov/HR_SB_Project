@@ -2,7 +2,7 @@
 
 # import .env
 set -a
-. C:/Users/Iryna/WebStormProjects/HR_SB/.env
+. ./.env
 set +a
 
 # certificate name
@@ -19,6 +19,10 @@ scp -i $EC2_KEY_NAME_WITH_EXTENSION .env ec2-user@$EC2_PUBLIC_IP:/home/ec2-user/
 scp -i $EC2_KEY_NAME_WITH_EXTENSION  nginx_ec2.conf ec2-user@$EC2_PUBLIC_IP:/home/ec2-user/nginx.conf
 # establish ssh and execute the following script
 ssh -tt -i $EC2_KEY_NAME_WITH_EXTENSION ec2-user@$EC2_PUBLIC_IP << "ENDSSH"
+
+# convert to unix standard file
+sed -ie "s/\r//g" .env
+
 # import .env
 set -a
 . .env

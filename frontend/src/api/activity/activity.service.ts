@@ -3,7 +3,7 @@ import { authHost } from '../index';
 import { Activity, ActivityPost, ActivityUpdate } from './types';
 
 const axios: AxiosInstance = authHost;
-const url: string = 'http://localhost:8000/api/categories/activities';
+const url: string = `${process.env.REACT_APP_API_URL}/api/categories/activities`;
 
 export const getActivitiesOfUser = async (
 	personId: number

@@ -63,7 +63,7 @@ http {
         include /etc/nginx/default.d/*.conf;
 
         location ^~ /api {
-            proxy_pass https://127.0.0.1:8000;
+            proxy_pass http://127.0.0.1:8000/api;
         }
 
         location / {

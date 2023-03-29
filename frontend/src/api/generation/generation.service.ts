@@ -3,7 +3,7 @@ import { authHost } from '../index';
 import { Generation, GenerationCreateDTO, GenerationUpdateDTO } from './types';
 
 const axios: AxiosInstance = authHost;
-const url: string = 'http://localhost:8000/api/generations';
+const url: string = `${process.env.REACT_APP_API_URL}/api/generations`;
 
 const urlById = (id: number): string => `${url}/${id}`;
 
