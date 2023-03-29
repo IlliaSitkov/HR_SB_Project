@@ -249,7 +249,7 @@ export const PersonProfile: FC = () => {
 				updateAPersonStatus(person.id, {
 					oldStatus: Statuses.MALIUK,
 					newStatus: Statuses.BRATCHYK,
-					date: date_vysviata === '' ? null : new Date(date_vysviata),
+					date: date_vysviata === '' ? new Date() : new Date(date_vysviata),
 				})
 			);
 		}
@@ -266,7 +266,10 @@ export const PersonProfile: FC = () => {
 				updateAPersonStatus(person.id, {
 					oldStatus: Statuses.BRATCHYK,
 					newStatus: Statuses.POSHANOVANYI,
-					date: date_poshanuvannia === '' ? null : new Date(date_poshanuvannia),
+					date:
+						date_poshanuvannia === ''
+							? new Date()
+							: new Date(date_poshanuvannia),
 				})
 			);
 		}
@@ -283,7 +286,7 @@ export const PersonProfile: FC = () => {
 				updateAPersonStatus(person.id, {
 					oldStatus: Statuses.BRATCHYK,
 					newStatus: Statuses.EX_BRATCHYK,
-					date: date_exclusion === '' ? null : new Date(date_exclusion),
+					date: date_exclusion === '' ? new Date() : new Date(date_exclusion),
 				})
 			);
 		}

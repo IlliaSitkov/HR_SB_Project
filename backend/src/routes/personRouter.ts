@@ -129,7 +129,7 @@ personRouter.route('/:id/status')
         oldStatusValidator({
             oldStatusSchema,
             NEWCOMER: statusUpdateSchemaToMaliuk,
-            MALIUK: statusUpdateSchemaToMaliuk,
+            MALIUK: statusUpdateSchema,
             BRATCHYK: statusUpdateSchema,
             POSHANOVANYI: statusUpdateSchema,
             EX_BRATCHYK: statusUpdateSchema

@@ -3,7 +3,7 @@ import { authHost } from '../index';
 import { Person, PersonBirthday, StatusUpdateDto } from './types';
 
 const axios: AxiosInstance = authHost;
-const url: string = 'http://localhost:8000/api/people';
+const url: string = `${process.env.REACT_APP_API_URL}/api/people`;
 
 const urlById = (id: number): string => `${url}/${id}`;
 

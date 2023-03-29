@@ -3,7 +3,7 @@ import { authHost } from '../index';
 import { Event, EventPostDto, EventPatchDto } from './types';
 
 const axios: AxiosInstance = authHost;
-const url: string = 'http://localhost:8000/api/events';
+const url: string = `${process.env.REACT_APP_API_URL}/api/events`;
 
 const urlById = (id: number): string => `${url}/${id}`;
 
