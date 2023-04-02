@@ -10,11 +10,23 @@ const PrivateRoute: FC<{
 	allowedRoles?: UserRole[];
 }> = ({ children, allowedRoles }) => {
 	if (!allowedRoles)
-		allowedRoles = [UserRole.ANONYMOUS, UserRole.USER, UserRole.HR];
+		allowedRoles = [
+			UserRole.ANONYMOUS,
+			UserRole.NEWCOMER,
+			UserRole.USER,
+			UserRole.HR,
+		];
 	const role = useSelector<UserRole>(getUserRole);
 
 	if (isAuthenticated() && allowedRoles.includes(role as UserRole)) {
 		return children;
+	} else if (
+		isAuthenticated() &&
+		// @ts-ignore
+		children.type.name === 'JoinForm' &&
+		role === UserRole.NEWCOMER
+	) {
+		return <Navigate to='/profile' />;
 	} else {
 		return <Navigate to='/' />;
 	}
