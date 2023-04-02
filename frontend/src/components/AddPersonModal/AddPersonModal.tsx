@@ -29,6 +29,7 @@ import { saveNewPerson } from '../../store/people/thunk';
 import { getErrorMessage } from '../../store/selectors';
 import { uploadImageAndGetUrl } from '../../utils/uploadImages';
 import { ImageInput } from '../../common/ImageInput/ImageInput';
+import RequiredStar from '../common/RequiredStar';
 
 const AddPersonModal: React.FC<{
 	isShown: boolean;
@@ -118,7 +119,7 @@ const AddPersonModal: React.FC<{
 			if (parental !== '') {
 				p.parental = parental;
 			} else if (isRequired('parental')) {
-				dispatch(errorMessageSet("Ім'я по-батькові не має бути порожнім"));
+				dispatch(errorMessageSet('По батькові не має бути порожнім'));
 				return;
 			}
 			if (avatar !== '') {
@@ -131,7 +132,7 @@ const AddPersonModal: React.FC<{
 			if (date_birth !== '') {
 				p.date_birth = new Date(date_birth);
 			} else if (isRequired('dateBirth')) {
-				dispatch(errorMessageSet('Аватар не має бути порожнім'));
+				dispatch(errorMessageSet('День народження не має бути порожнім'));
 				return;
 			}
 			if (facultyId !== -1) {
@@ -242,6 +243,12 @@ const AddPersonModal: React.FC<{
 		}
 	};
 
+	const cancelCreate = () => {
+		onHide();
+		resetFields();
+		resetError();
+	};
+
 	const isRequired = (field: string): boolean => {
 		if (!statusToNecessaryFields.has(status)) return false;
 		return statusToNecessaryFields.get(status)?.includes(field) as boolean;
@@ -269,7 +276,7 @@ const AddPersonModal: React.FC<{
 	};
 
 	return (
-		<Modal className='modal-xl' show={isShown} onHide={onHide}>
+		<Modal className='modal-xl' show={isShown} onHide={cancelCreate}>
 			<Modal.Header closeButton={true}>
 				<Modal.Title>Додати людину</Modal.Title>
 			</Modal.Header>
@@ -427,7 +434,15 @@ const AddPersonModal: React.FC<{
 									isRequired={true}
 								/>
 								<div>
-									<label htmlFor='about'>Опис</label>
+									{status === Statuses.NEWCOMER ||
+									status === Statuses.MALIUK ? (
+										<label htmlFor='about'>
+											<RequiredStar />
+											{'Опис'}
+										</label>
+									) : (
+										<label htmlFor='about'>Опис</label>
+									)}
 									<textarea
 										className='form-control'
 										placeholder='Введіть опис...'
@@ -509,7 +524,7 @@ const AddPersonModal: React.FC<{
 				/>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button onClick={onHide} className='btn-secondary'>
+				<Button onClick={cancelCreate} className='btn-secondary'>
 					Скасувати
 				</Button>
 				<Button onClick={createP}>Створити</Button>

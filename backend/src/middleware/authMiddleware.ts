@@ -18,10 +18,12 @@ export default (...roles: string[]) => {
         const user = await userService.getUserByEmail(authInfo.preferred_username!);
         console.log(user);
         console.log(roles);
-        if (!user || !roles.includes(user.role)) {
-            return res.status(StatusCode.ClientErrorUnauthorized).json({error: ApiError.notFound('Not Authorized')});
+        if (roles.length > 0) {
+            if (!user || !roles.includes(user.role)) {
+                return res.status(StatusCode.ClientErrorUnauthorized).json({error: ApiError.notFound('Not Authorized')});
+            }
+            req.user = user;
         }
-        req.user = user;
         return next();
     };
 
@@ -35,8 +37,8 @@ export const newcomerAccessMiddleware = (isId: boolean) =>
         const user: User = req.user!;
         const id = isId ? Number(req.params.id) : Number(req.query.personId);
         if (user.role === RoleEnum.NEWCOMER) {
-            if (user.id !== id) {
-                throw ApiError.accessForbidden('Access is forbidden for Newcomer');
+            if (user.personId !== id) {
+                throw ApiError.accessForbidden('Доступ заборонений для Новенького');
             }
         }
         next();

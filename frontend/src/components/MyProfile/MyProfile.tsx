@@ -156,11 +156,6 @@ export const MyProfile: FC = () => {
 					<Col className='d-flex'>
 						<div className='border-secondary border border-1 p-2 rounded m-2 flex-fill'>
 							<h6 className='text-center'>Дані в СБ</h6>
-							<TextField
-								value={getFieldValue('about')}
-								label='Опис'
-								id='about'
-							/>
 							<div>
 								<label htmlFor='about'>Опис</label>
 								<textarea

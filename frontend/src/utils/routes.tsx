@@ -28,7 +28,7 @@ export const routes: NonIndexRouteObject[] = [
 					<>
 						<UnauthenticatedTemplate>
 							<HelloPage
-								helloText={`Вітаємо!\nДля доступу до системи необхідно автризуватись`}
+								helloText={`Вітаємо!\nДля доступу до системи необхідно авторизуватись`}
 							/>
 						</UnauthenticatedTemplate>
 						<AuthenticatedTemplate>
@@ -97,7 +97,7 @@ export const routes: NonIndexRouteObject[] = [
 			{
 				path: '/join',
 				element: (
-					<PrivateRoute>
+					<PrivateRoute allowedRoles={[UserRole.ANONYMOUS]}>
 						<JoinForm />
 					</PrivateRoute>
 				),
